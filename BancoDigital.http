@@ -1,0 +1,6 @@
+@BancoDigital_HostAddress = http://localhost:5118
+
+GET {{BancoDigital_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
