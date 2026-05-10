@@ -1,0 +1,372 @@
+/* ==========================================
+   BANCO DIGITAL — Estilo Customizado
+   Substitui o Bootstrap com nomes em PT-BR
+   ========================================== */
+
+/* Reset básico */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 16px;
+  background-color: #f8f9fa;
+  color: #212529;
+}
+
+/* ==========================================
+   CONTAINER — centraliza o conteúdo
+   ========================================== */
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+.container-pequeno {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+/* ==========================================
+   ESPACAMENTO VERTICAL
+   ========================================== */
+.espacamento-topo-grande  { padding-top: 48px; }
+.espacamento-topo-medio   { padding-top: 24px; }
+.espacamento-topo-pequeno { padding-top: 16px; }
+.espacamento-baixo-grande  { padding-bottom: 48px; }
+.espacamento-baixo-medio   { padding-bottom: 24px; }
+.espacamento-baixo-pequeno { padding-bottom: 16px; }
+.margem-baixo-grande  { margin-bottom: 32px; }
+.margem-baixo-medio   { margin-bottom: 16px; }
+.margem-baixo-pequeno { margin-bottom: 8px; }
+.margem-direita-pequeno { margin-right: 8px; }
+
+/* ==========================================
+   CARTAO — caixa com sombra
+   ========================================== */
+.cartao {
+  background-color: #ffffff;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.cartao-sombra {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+}
+
+.cartao-selecionado {
+  border: 2px solid #0d6efd;
+}
+
+.cartao-corpo {
+  padding: 20px;
+}
+
+.cartao-titulo {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+/* ==========================================
+   GRADE — sistema de colunas
+   ========================================== */
+.grade {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.coluna-4 {
+  flex: 0 0 calc(33.333% - 11px);
+  min-width: 260px;
+}
+
+.coluna-3 {
+  flex: 0 0 calc(25% - 12px);
+  min-width: 160px;
+}
+
+.coluna-2 {
+  flex: 0 0 calc(16.666% - 14px);
+  min-width: 120px;
+}
+
+.coluna-cheia {
+  flex: 1 1 100%;
+}
+
+@media (max-width: 768px) {
+  .coluna-4,
+  .coluna-3,
+  .coluna-2 {
+    flex: 1 1 100%;
+  }
+}
+
+/* ==========================================
+   LINHA FLEXIVEL
+   ========================================== */
+.linha-flex {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.linha-flex-entre {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.alinhar-baixo {
+  display: flex;
+  align-items: flex-end;
+}
+
+/* ==========================================
+   TIPOGRAFIA
+   ========================================== */
+.titulo-pagina    { font-size: 26px; font-weight: 700; }
+.titulo-secao     { font-size: 20px; font-weight: 600; margin-bottom: 12px; }
+.titulo-cartao    { font-size: 17px; font-weight: 600; margin-bottom: 4px; }
+.texto-pequeno    { font-size: 13px; }
+.texto-discreto   { color: #6c757d; }
+.texto-negrito    { font-weight: 700; }
+.texto-destaque   { font-size: 28px; font-weight: 700; }
+
+/* ==========================================
+   CORES DE TEXTO
+   ========================================== */
+.texto-verde    { color: #198754; }
+.texto-vermelho { color: #dc3545; }
+.texto-azul     { color: #0d6efd; }
+.texto-cinza    { color: #6c757d; }
+.texto-branco   { color: #ffffff; }
+
+/* ==========================================
+   EMBLEMA (badge)
+   ========================================== */
+.emblema {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  background-color: #6c757d;
+  color: #ffffff;
+  margin-left: 8px;
+}
+
+/* ==========================================
+   CAMPOS DE FORMULARIO
+   ========================================== */
+.rotulo {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 4px;
+  color: #495057;
+}
+
+.campo-texto,
+.campo-numero,
+.campo-senha,
+.campo-email,
+.campo-selecao {
+  width: 100%;
+  padding: 8px 12px;
+  font-size: 15px;
+  border: 1px solid #ced4da;
+  border-radius: 6px;
+  background-color: #fff;
+  color: #212529;
+  transition: border-color 0.2s;
+  outline: none;
+}
+
+.campo-texto:focus,
+.campo-numero:focus,
+.campo-senha:focus,
+.campo-email:focus,
+.campo-selecao:focus {
+  border-color: #0d6efd;
+  box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.15);
+}
+
+.campo-margem-baixo {
+  margin-bottom: 10px;
+}
+
+/* ==========================================
+   BOTOES
+   ========================================== */
+.botao {
+  display: inline-block;
+  padding: 8px 16px;
+  font-size: 15px;
+  font-weight: 500;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  text-align: center;
+  transition: opacity 0.2s, transform 0.1s;
+  width: auto;
+}
+
+.botao:hover   { opacity: 0.88; }
+.botao:active  { transform: scale(0.97); }
+.botao-largura-total { width: 100%; }
+
+.botao-primario    { background-color: #0d6efd; color: #ffffff; }
+.botao-sucesso     { background-color: #198754; color: #ffffff; }
+.botao-perigo      { background-color: #dc3545; color: #ffffff; }
+.botao-secundario  { background-color: #6c757d; color: #ffffff; }
+
+.botao-contorno-primario {
+  background-color: transparent;
+  border: 1px solid #0d6efd;
+  color: #0d6efd;
+}
+.botao-contorno-primario:hover { background-color: #0d6efd; color: #fff; }
+
+.botao-contorno-perigo {
+  background-color: transparent;
+  border: 1px solid #dc3545;
+  color: #dc3545;
+}
+.botao-contorno-perigo:hover { background-color: #dc3545; color: #fff; }
+
+.botao-contorno-secundario {
+  background-color: transparent;
+  border: 1px solid #6c757d;
+  color: #6c757d;
+}
+.botao-contorno-secundario:hover { background-color: #6c757d; color: #fff; }
+
+.botao-pequeno { padding: 5px 10px; font-size: 13px; }
+
+/* ==========================================
+   ALERTAS / MENSAGENS
+   ========================================== */
+.alerta {
+  padding: 12px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  margin-top: 8px;
+}
+
+.alerta-sucesso  { background-color: #d1e7dd; color: #0f5132; border: 1px solid #badbcc; }
+.alerta-erro     { background-color: #f8d7da; color: #842029; border: 1px solid #f5c2c7; }
+.alerta-aviso    { background-color: #fff3cd; color: #664d03; border: 1px solid #ffecb5; }
+.alerta-info     { background-color: #cff4fc; color: #055160; border: 1px solid #b6effb; }
+
+/* ==========================================
+   TABELA
+   ========================================== */
+.tabela {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.tabela th,
+.tabela td {
+  padding: 10px 12px;
+  text-align: left;
+  border: 1px solid #dee2e6;
+}
+
+.tabela-cabecalho th {
+  background-color: #212529;
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.tabela-listrada tbody tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+.tabela-listrada tbody tr:hover {
+  background-color: #e9ecef;
+}
+
+/* ==========================================
+   DIVISOR
+   ========================================== */
+.divisor {
+  border: none;
+  border-top: 1px solid #dee2e6;
+  margin: 24px 0;
+}
+
+/* ==========================================
+   OCULTO / VISIVEL
+   ========================================== */
+.oculto  { display: none !important; }
+.visivel { display: block !important; }
+
+/* ==========================================
+   MODAL
+   ========================================== */
+.fundo-modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  justify-content: center;
+  align-items: center;
+}
+
+.fundo-modal.ativo {
+  display: flex;
+}
+
+.caixa-modal {
+  background: #fff;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 480px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+}
+
+.cabecalho-modal {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  background-color: #dc3545;
+  color: #fff;
+}
+
+.cabecalho-modal h5 { font-size: 18px; font-weight: 600; }
+
+.fechar-modal {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 22px;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.corpo-modal  { padding: 20px; }
+.rodape-modal {
+  padding: 16px 20px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  border-top: 1px solid #dee2e6;
+}

@@ -1,399 +1,387 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Banco Digital</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Banco Digital</title>
+  <link rel="stylesheet" href="style.css">
 </head>
-<body class="bg-light">
+<body>
 
-    <div class="container py-5" id="telaLogin">
-        <div class="card mx-auto shadow" style="max-width:420px">
-            <div class="card-body p-4">
-                <h4 class="text-center mb-4">Banco Digital</h4>
-                <input id="email" class="form-control mb-2" placeholder="E-mail">
-                <input id="senha" class="form-control mb-3" type="password" placeholder="Senha">
-                <button class="btn btn-primary w-100 mb-2" onclick="login()">Entrar</button>
-                <button class="btn btn-outline-secondary w-100" onclick="toggleRegistro()">Criar conta</button>
-                <div id="formRegistro" class="d-none mt-3">
-                    <hr>
-                    <input id="regNome" class="form-control mb-2" placeholder="Nome completo">
-                    <input id="regEmail" class="form-control mb-2" placeholder="E-mail">
-                    <input id="regSenha" class="form-control mb-2" type="password" placeholder="Senha (min. 6 caracteres)">
-                    <button class="btn btn-success w-100" onclick="registrar()">Registrar</button>
-                </div>
-                <div id="msgLogin" class="alert mt-3 d-none"></div>
-            </div>
+<!-- TELA LOGIN -->
+<div class="container espacamento-topo-grande espacamento-baixo-grande" id="telaLogin">
+  <div class="container-pequeno">
+    <div class="cartao cartao-sombra">
+      <div class="cartao-corpo">
+        <h4 class="titulo-secao" style="text-align:center">Banco Digital</h4>
+        <input id="email" class="campo-email campo-margem-baixo" placeholder="E-mail">
+        <input id="senha" class="campo-senha campo-margem-baixo" type="password" placeholder="Senha">
+        <button class="botao botao-primario botao-largura-total margem-baixo-pequeno" onclick="login()">Entrar</button>
+        <button class="botao botao-contorno-secundario botao-largura-total" onclick="toggleRegistro()">Criar conta</button>
+        <div id="formRegistro" class="oculto espacamento-topo-pequeno">
+          <hr class="divisor">
+          <input id="regNome" class="campo-texto campo-margem-baixo" placeholder="Nome completo">
+          <input id="regEmail" class="campo-email campo-margem-baixo" placeholder="E-mail">
+          <input id="regSenha" class="campo-senha campo-margem-baixo" type="password" placeholder="Senha (min. 6 caracteres)">
+          <button class="botao botao-sucesso botao-largura-total" onclick="registrar()">Registrar</button>
         </div>
+        <div id="msgLogin" class="oculto"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TELA PRINCIPAL -->
+<div class="container espacamento-topo-medio oculto" id="telaPrincipal">
+
+  <!-- Cabecalho -->
+  <div class="linha-flex-entre margem-baixo-grande">
+    <h4 class="titulo-pagina">Banco Digital — <span id="nomeUsuario" class="texto-azul"></span></h4>
+    <div class="linha-flex">
+      <button class="botao botao-contorno-perigo botao-pequeno" onclick="sair()">Sair</button>
+      <button class="botao botao-perigo botao-pequeno" onclick="abrirModalExcluir()">Apagar Usuário</button>
+    </div>
+  </div>
+
+  <!-- Abrir nova conta -->
+  <div class="grade margem-baixo-grande">
+    <div class="coluna-4">
+      <div class="cartao cartao-sombra">
+        <div class="cartao-corpo">
+          <p class="titulo-cartao">Abrir nova conta</p>
+          <select id="tipoConta" class="campo-selecao campo-margem-baixo">
+            <option value="Corrente">Corrente (taxa R$ 5,00 no saque)</option>
+            <option value="Poupanca">Poupanca (sem taxas)</option>
+            <option value="Empresarial">Empresarial (1% no saque)</option>
+          </select>
+          <button class="botao botao-primario botao-largura-total" onclick="abrirConta()">Abrir Conta</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Minhas contas -->
+  <h5 class="titulo-secao">Minhas Contas <span class="texto-discreto texto-pequeno">(clique em Selecionar para operar)</span></h5>
+  <div class="grade margem-baixo-grande" id="listaContas"></div>
+
+  <!-- Painel de operacao -->
+  <div id="painelOperacao" class="oculto">
+    <hr class="divisor">
+    <h5 class="titulo-secao">
+      Operacao — Conta ID: <span id="contaAtual" class="texto-azul texto-negrito"></span>
+      <span class="emblema" id="tipoContaAtual"></span>
+    </h5>
+
+    <div class="grade margem-baixo-medio">
+      <div class="coluna-3">
+        <label class="rotulo">Tipo</label>
+        <select id="tipoOp" class="campo-selecao" onchange="toggleCampoDestino()">
+          <option value="Deposito">Deposito</option>
+          <option value="Saque">Saque</option>
+          <option value="Transferencia">Transferencia</option>
+        </select>
+      </div>
+      <div class="coluna-2">
+        <label class="rotulo">Valor (R$)</label>
+        <input id="valor" type="number" step="0.01" min="0.01" class="campo-numero" placeholder="0,00">
+      </div>
+      <div class="coluna-3 oculto" id="campoDestino">
+        <label class="rotulo">ID conta destino</label>
+        <input id="contaDest" type="number" class="campo-numero" placeholder="Ex: 2">
+      </div>
+      <div class="coluna-3">
+        <label class="rotulo">Descricao</label>
+        <input id="descricao" class="campo-texto" placeholder="Opcional">
+      </div>
+      <div class="coluna-2 alinhar-baixo">
+        <button class="botao botao-sucesso botao-largura-total" onclick="realizarOperacao()">Confirmar</button>
+      </div>
     </div>
 
-    <div class="container py-4 d-none" id="telaPrincipal">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h4>🏦 Banco Digital — <span id="nomeUsuario" class="text-primary"></span></h4>
-            <div>
-                <button class="btn btn-sm btn-outline-danger me-2" onclick="sair()">Sair</button>
-                <button class="btn btn-sm btn-danger" onclick="abrirModalExcluir()">Apagar Usuário</button>
-            </div>
-        </div>
+    <div id="msgRetorno" class="oculto margem-baixo-medio"></div>
 
-        <!-- MODAL EXCLUIR CONTA -->
-        <div class="modal fade" id="modalExcluir" tabindex="-1">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header bg-danger text-white">
-                        <h5 class="modal-title">⚠ Apagar Usuário</h5>
-                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                    </div>
-                    <div class="modal-body">
-                        <p>Essa ação é <strong>irreversível</strong>. Todas as suas contas e transações serão excluídas.</p>
-                        <p>Digite seu e-mail e senha para confirmar:</p>
-                        <input id="emailExcluir" type="email" class="form-control mb-2" placeholder="Seu e-mail">
-                        <input id="senhaExcluir" type="password" class="form-control" placeholder="Sua senha atual">
-                        <div id="msgExcluir" class="alert mt-3 d-none"></div>
-                    </div>
-                    <div class="modal-footer">
-                        <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                        <button class="btn btn-danger" onclick="excluirConta()">Confirmar exclusão</button>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <h5 class="titulo-secao">Extrato</h5>
+    <table class="tabela tabela-listrada">
+      <thead class="tabela-cabecalho">
+        <tr>
+          <th>Tipo</th>
+          <th>Valor</th>
+          <th>Taxa</th>
+          <th>Descricao</th>
+          <th>Remetente / Destinatario</th>
+          <th>Data</th>
+        </tr>
+      </thead>
+      <tbody id="extrato"></tbody>
+    </table>
+  </div>
+</div>
 
-        <div class="row mb-4">
-            <div class="col-md-4">
-                <div class="card shadow-sm">
-                    <div class="card-body">
-                        <h6>Abrir nova conta</h6>
-                        <select id="tipoConta" class="form-select mb-2">
-                            <option value="Corrente">Corrente (taxa R$ 5,00 no saque)</option>
-                            <option value="Poupanca">Poupanca (sem taxas)</option>
-                            <option value="Empresarial">Empresarial (1% no saque)</option>
-                        </select>
-                        <button class="btn btn-primary w-100" onclick="abrirConta()">Abrir Conta</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <h5>Minhas Contas</h5>
-        <div id="listaContas" class="row mb-4"></div>
-
-        <div id="painelOperacao" class="d-none">
-            <hr>
-            <h5>
-                Operacao — Conta ID: <span id="contaAtual" class="text-primary fw-bold"></span>
-                <span class="badge bg-secondary ms-2" id="tipoContaAtual"></span>
-            </h5>
-            <div class="row g-2 mb-3">
-                <div class="col-md-3">
-                    <label class="form-label">Tipo</label>
-                    <select id="tipoOp" class="form-select" onchange="toggleCampoDestino()">
-                        <option value="Deposito">Deposito</option>
-                        <option value="Saque">Saque</option>
-                        <option value="Transferencia">Transferencia</option>
-                    </select>
-                </div>
-                <div class="col-md-2">
-                    <label class="form-label">Valor (R$)</label>
-                    <input id="valor" type="number" step="0.01" min="0.01" class="form-control" placeholder="0,00">
-                </div>
-                <div class="col-md-3 d-none" id="campoDestino">
-                    <label class="form-label">ID conta destino</label>
-                    <input id="contaDest" type="number" class="form-control" placeholder="Ex: 2">
-                </div>
-                <div class="col-md-3">
-                    <label class="form-label">Descricao</label>
-                    <input id="descricao" class="form-control" placeholder="Opcional">
-                </div>
-                <div class="col-md-1 d-flex align-items-end">
-                    <button class="btn btn-success w-100" onclick="realizarOperacao()">OK</button>
-                </div>
-            </div>
-            <div id="msgRetorno" class="alert d-none mb-3"></div>
-
-            <h5>Extrato</h5>
-            <table class="table table-sm table-striped table-bordered">
-                <thead class="table-dark">
-                    <tr>
-                        <th>Tipo</th>
-                        <th>Valor</th>
-                        <th>Taxa</th>
-                        <th>Descricao</th>
-                        <th>Remetente / Destinatario</th>
-                        <th>Data</th>
-                    </tr>
-                </thead>
-                <tbody id="extrato"></tbody>
-            </table>
-        </div>
+<!-- MODAL APAGAR USUARIO -->
+<div class="fundo-modal" id="modalExcluir">
+  <div class="caixa-modal">
+    <div class="cabecalho-modal">
+      <h5>⚠ Apagar Usuario</h5>
+      <button class="fechar-modal" onclick="fecharModalExcluir()">✕</button>
     </div>
+    <div class="corpo-modal">
+      <p class="margem-baixo-medio">Essa acao e <strong>irreversivel</strong>. Todas as suas contas e transacoes serao excluidas.</p>
+      <p class="margem-baixo-pequeno">Digite seu e-mail e senha para confirmar:</p>
+      <input id="emailExcluir" type="email" class="campo-email campo-margem-baixo" placeholder="Seu e-mail">
+      <input id="senhaExcluir" type="password" class="campo-senha" placeholder="Sua senha atual">
+      <div id="msgExcluir" class="oculto"></div>
+    </div>
+    <div class="rodape-modal">
+      <button class="botao botao-secundario" onclick="fecharModalExcluir()">Cancelar</button>
+      <button class="botao botao-perigo" onclick="excluirConta()">Confirmar exclusao</button>
+    </div>
+  </div>
+</div>
 
-    <script>
-        var BASE = 'https://localhost:7200/api';
-        var token = '';
-        var contaSelecionadaId = null;
+<script>
+var BASE = 'https://localhost:7200/api';
+var token = '';
+var contaSelecionadaId = null;
 
-        function toggleCampoDestino() {
-            var tipo = document.getElementById('tipoOp').value;
-            var campo = document.getElementById('campoDestino');
-            if (tipo === 'Transferencia') {
-                campo.classList.remove('d-none');
-            } else {
-                campo.classList.add('d-none');
-                document.getElementById('contaDest').value = '';
-            }
+function toggleCampoDestino() {
+  var tipo = document.getElementById('tipoOp').value;
+  var campo = document.getElementById('campoDestino');
+  if (tipo === 'Transferencia') {
+    campo.classList.remove('oculto');
+  } else {
+    campo.classList.add('oculto');
+    document.getElementById('contaDest').value = '';
+  }
+}
+
+function mostrarMsg(id, texto, tipo) {
+  var mapa = { success: 'alerta-sucesso', danger: 'alerta-erro', warning: 'alerta-aviso' };
+  var el = document.getElementById(id);
+  el.className = 'alerta ' + (mapa[tipo] || 'alerta-info');
+  el.textContent = texto;
+  el.classList.remove('oculto');
+}
+
+function toggleRegistro() {
+  var f = document.getElementById('formRegistro');
+  if (f.classList.contains('oculto')) { f.classList.remove('oculto'); }
+  else { f.classList.add('oculto'); }
+}
+
+function registrar() {
+  var body = {
+    nome: document.getElementById('regNome').value,
+    email: document.getElementById('regEmail').value,
+    senha: document.getElementById('regSenha').value
+  };
+  fetch(BASE + '/auth/registro', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  }).then(function(res) {
+    return res.json().then(function(data) {
+      mostrarMsg('msgLogin', data.mensagem, res.ok ? 'success' : 'danger');
+    });
+  }).catch(function() { mostrarMsg('msgLogin', 'Erro ao conectar.', 'danger'); });
+}
+
+function login() {
+  var body = {
+    email: document.getElementById('email').value,
+    senha: document.getElementById('senha').value
+  };
+  fetch(BASE + '/auth/login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  }).then(function(res) {
+    return res.json().then(function(data) {
+      if (res.ok) {
+        token = data.token;
+        document.getElementById('nomeUsuario').textContent = data.nome;
+        document.getElementById('telaLogin').classList.add('oculto');
+        document.getElementById('telaPrincipal').classList.remove('oculto');
+        carregarContas();
+      } else {
+        mostrarMsg('msgLogin', data.mensagem || 'Erro no login', 'danger');
+      }
+    });
+  }).catch(function() { mostrarMsg('msgLogin', 'Erro ao conectar.', 'danger'); });
+}
+
+function sair() {
+  token = '';
+  contaSelecionadaId = null;
+  document.getElementById('telaLogin').classList.remove('oculto');
+  document.getElementById('telaPrincipal').classList.add('oculto');
+  document.getElementById('painelOperacao').classList.add('oculto');
+}
+
+function abrirConta() {
+  fetch(BASE + '/contas', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+    body: JSON.stringify({ tipo: document.getElementById('tipoConta').value })
+  }).then(function(res) {
+    if (res.ok) { carregarContas(); alert('Conta aberta com sucesso!'); }
+  });
+}
+
+function carregarContas() {
+  fetch(BASE + '/contas?t=' + new Date().getTime(), {
+    headers: { 'Authorization': 'Bearer ' + token }
+  }).then(function(res) { return res.json(); })
+  .then(function(contas) {
+    var div = document.getElementById('listaContas');
+    div.innerHTML = '';
+    if (contas.length === 0) {
+      div.innerHTML = '<p class="texto-discreto">Nenhuma conta. Abra uma acima.</p>';
+      return;
+    }
+    contas.forEach(function(c) {
+      var selecionada = contaSelecionadaId === c.id ? 'cartao-selecionado' : '';
+      div.innerHTML +=
+        '<div class="coluna-4">' +
+        '<div class="cartao cartao-sombra ' + selecionada + '">' +
+        '<div class="cartao-corpo">' +
+        '<p class="titulo-cartao">' + c.tipo + '</p>' +
+        '<p class="texto-pequeno texto-discreto margem-baixo-pequeno">ID: ' + c.id + '</p>' +
+        '<p class="texto-destaque texto-verde margem-baixo-medio">R$ ' + c.saldo.toFixed(2) + '</p>' +
+        '<button class="botao botao-contorno-primario botao-pequeno margem-direita-pequeno" onclick="selecionarConta(' + c.id + ', \'' + c.tipo + '\')">Selecionar</button>' +
+        '<button class="botao botao-contorno-perigo botao-pequeno" onclick="encerrarConta(' + c.id + ')">Encerrar</button>' +
+        '</div></div></div>';
+    });
+  });
+}
+
+function selecionarConta(id, tipo) {
+  contaSelecionadaId = id;
+  document.getElementById('contaAtual').textContent = id;
+  document.getElementById('tipoContaAtual').textContent = tipo;
+  document.getElementById('painelOperacao').classList.remove('oculto');
+  document.getElementById('msgRetorno').classList.add('oculto');
+  document.getElementById('tipoOp').value = 'Deposito';
+  toggleCampoDestino();
+  carregarContas();
+  carregarExtrato(id);
+}
+
+function encerrarConta(id) {
+  if (!confirm('Deseja encerrar esta conta? O saldo restante sera sacado automaticamente.')) return;
+  fetch(BASE + '/contas/' + id, {
+    method: 'DELETE',
+    headers: { 'Authorization': 'Bearer ' + token }
+  }).then(function(res) {
+    return res.json().then(function(data) {
+      alert(data.mensagem);
+      if (res.ok) {
+        if (contaSelecionadaId === id) {
+          contaSelecionadaId = null;
+          document.getElementById('painelOperacao').classList.add('oculto');
         }
+        carregarContas();
+      }
+    });
+  });
+}
 
-        function mostrarMsg(id, texto, tipo) {
-            var el = document.getElementById(id);
-            el.className = 'alert alert-' + tipo;
-            el.textContent = texto;
-            el.classList.remove('d-none');
-        }
+function realizarOperacao() {
+  if (!contaSelecionadaId) { alert('Selecione uma conta!'); return; }
+  var destVal = document.getElementById('contaDest').value;
+  var dto = {
+    tipo: document.getElementById('tipoOp').value,
+    valor: parseFloat(document.getElementById('valor').value),
+    descricao: document.getElementById('descricao').value,
+    contaDestinoId: destVal && destVal.trim() !== '' ? parseInt(destVal) : null
+  };
+  fetch(BASE + '/contas/' + contaSelecionadaId + '/transacoes', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+    body: JSON.stringify(dto)
+  }).then(function(res) {
+    return res.json().then(function(data) {
+      mostrarMsg('msgRetorno', data.mensagem, res.ok ? 'success' : 'danger');
+      if (res.ok) {
+        document.getElementById('valor').value = '';
+        document.getElementById('contaDest').value = '';
+        document.getElementById('descricao').value = '';
+        carregarContas();
+        carregarExtrato(contaSelecionadaId);
+      }
+    });
+  }).catch(function() { mostrarMsg('msgRetorno', 'Erro ao conectar.', 'danger'); });
+}
 
-        function toggleRegistro() {
-            document.getElementById('formRegistro').classList.toggle('d-none');
-        }
+function carregarExtrato(contaId) {
+  fetch(BASE + '/contas/' + contaId + '/transacoes?t=' + new Date().getTime(), {
+    headers: { 'Authorization': 'Bearer ' + token }
+  }).then(function(res) {
+    if (!res.ok) return null;
+    return res.json();
+  }).then(function(dados) {
+    if (!dados) return;
+    var tbody = document.getElementById('extrato');
+    tbody.innerHTML = '';
+    if (dados.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="6" class="texto-discreto" style="text-align:center;padding:16px">Nenhuma transacao.</td></tr>';
+      return;
+    }
+    dados.forEach(function(t) {
+      var cor, tipoLabel, parteLabel;
+      if (t.tipo === 'Deposito') {
+        cor = 'texto-verde'; tipoLabel = 'Deposito'; parteLabel = '-';
+      } else if (t.tipo === 'Saque') {
+        cor = 'texto-vermelho'; tipoLabel = 'Saque'; parteLabel = '-';
+      } else if (t.nomeDestinatario && t.nomeDestinatario !== '') {
+        cor = 'texto-vermelho'; tipoLabel = 'Transf. Enviada'; parteLabel = 'Para: ' + t.nomeDestinatario;
+      } else {
+        cor = 'texto-verde'; tipoLabel = 'Transf. Recebida'; parteLabel = 'De: ' + (t.nomeRemetente || '-');
+      }
+      tbody.innerHTML +=
+        '<tr>' +
+        '<td>' + tipoLabel + '</td>' +
+        '<td class="' + cor + ' texto-negrito">R$ ' + t.valor.toFixed(2) + '</td>' +
+        '<td>R$ ' + t.taxa.toFixed(2) + '</td>' +
+        '<td>' + (t.descricao || '-') + '</td>' +
+        '<td>' + parteLabel + '</td>' +
+        '<td>' + new Date(t.realizadaEm).toLocaleString('pt-BR') + '</td>' +
+        '</tr>';
+    });
+  });
+}
 
-        function registrar() {
-            var body = {
-                nome: document.getElementById('regNome').value,
-                email: document.getElementById('regEmail').value,
-                senha: document.getElementById('regSenha').value
-            };
-            fetch(BASE + '/auth/registro', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(body)
-            }).then(function (res) {
-                return res.json().then(function (data) {
-                    mostrarMsg('msgLogin', data.mensagem, res.ok ? 'success' : 'danger');
-                });
-            }).catch(function () {
-                mostrarMsg('msgLogin', 'Erro ao conectar.', 'danger');
-            });
-        }
+function abrirModalExcluir() {
+  document.getElementById('emailExcluir').value = '';
+  document.getElementById('senhaExcluir').value = '';
+  document.getElementById('msgExcluir').classList.add('oculto');
+  document.getElementById('modalExcluir').classList.add('ativo');
+}
 
-        function login() {
-            var body = {
-                email: document.getElementById('email').value,
-                senha: document.getElementById('senha').value
-            };
-            fetch(BASE + '/auth/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(body)
-            }).then(function (res) {
-                return res.json().then(function (data) {
-                    if (res.ok) {
-                        token = data.token;
-                        document.getElementById('nomeUsuario').textContent = data.nome;
-                        document.getElementById('telaLogin').classList.add('d-none');
-                        document.getElementById('telaPrincipal').classList.remove('d-none');
-                        carregarContas();
-                    } else {
-                        mostrarMsg('msgLogin', data.mensagem || 'Erro no login', 'danger');
-                    }
-                });
-            }).catch(function () {
-                mostrarMsg('msgLogin', 'Erro ao conectar com a API.', 'danger');
-            });
-        }
+function fecharModalExcluir() {
+  document.getElementById('modalExcluir').classList.remove('ativo');
+}
 
-        function sair() {
-            token = '';
-            contaSelecionadaId = null;
-            document.getElementById('telaLogin').classList.remove('d-none');
-            document.getElementById('telaPrincipal').classList.add('d-none');
-            document.getElementById('painelOperacao').classList.add('d-none');
-        }
-
-        function abrirConta() {
-            fetch(BASE + '/contas', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
-                body: JSON.stringify({ tipo: document.getElementById('tipoConta').value })
-            }).then(function (res) {
-                if (res.ok) { carregarContas(); alert('Conta aberta com sucesso!'); }
-            });
-        }
-
-        function carregarContas() {
-            fetch(BASE + '/contas?t=' + new Date().getTime(), {
-                headers: { 'Authorization': 'Bearer ' + token }
-            }).then(function (res) {
-                return res.json();
-            }).then(function (contas) {
-                var div = document.getElementById('listaContas');
-                div.innerHTML = '';
-                if (contas.length === 0) {
-                    div.innerHTML = '<div class="col"><p class="text-muted">Nenhuma conta. Abra uma acima.</p></div>';
-                    return;
-                }
-                contas.forEach(function (c) {
-                    var borda = contaSelecionadaId === c.id ? 'border-primary border-2' : '';
-                    div.innerHTML += '<div class="col-md-4 mb-3">' +
-                        '<div class="card shadow-sm ' + borda + '">' +
-                        '<div class="card-body">' +
-                        '<h6>' + c.tipo + '</h6>' +
-                        '<p class="mb-1 text-muted small">ID: ' + c.id + '</p>' +
-                        '<h4 class="text-success">R$ ' + c.saldo.toFixed(2) + '</h4>' +
-                        '<button class="btn btn-sm btn-outline-primary me-1" onclick="selecionarConta(' + c.id + ', \'' + c.tipo + '\')">Selecionar</button>' +
-                        '<button class="btn btn-sm btn-outline-danger" onclick="encerrarConta(' + c.id + ')">Encerrar</button>' +
-                        '</div></div></div>';
-                });
-            });
-        }
-
-        function selecionarConta(id, tipo) {
-            contaSelecionadaId = id;
-            document.getElementById('contaAtual').textContent = id;
-            document.getElementById('tipoContaAtual').textContent = tipo;
-            document.getElementById('painelOperacao').classList.remove('d-none');
-            document.getElementById('msgRetorno').classList.add('d-none');
-            document.getElementById('tipoOp').value = 'Deposito';
-            toggleCampoDestino();
-            carregarContas();
-            carregarExtrato(id);
-        }
-
-        function encerrarConta(id) {
-            if (!confirm('Deseja encerrar esta conta? O saldo restante sera sacado automaticamente (menos taxas).')) return;
-            fetch(BASE + '/contas/' + id, {
-                method: 'DELETE',
-                headers: { 'Authorization': 'Bearer ' + token }
-            }).then(function (res) {
-                return res.json().then(function (data) {
-                    if (res.ok) {
-                        alert(data.mensagem);
-                        if (contaSelecionadaId === id) {
-                            contaSelecionadaId = null;
-                            document.getElementById('painelOperacao').classList.add('d-none');
-                        }
-                        carregarContas();
-                    } else {
-                        alert(data.mensagem);
-                    }
-                });
-            });
-        }
-
-        function realizarOperacao() {
-            if (!contaSelecionadaId) { alert('Selecione uma conta!'); return; }
-            var destVal = document.getElementById('contaDest').value;
-            var dto = {
-                tipo: document.getElementById('tipoOp').value,
-                valor: parseFloat(document.getElementById('valor').value),
-                descricao: document.getElementById('descricao').value,
-                contaDestinoId: destVal && destVal.trim() !== '' ? parseInt(destVal) : null
-            };
-            fetch(BASE + '/contas/' + contaSelecionadaId + '/transacoes', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
-                body: JSON.stringify(dto)
-            }).then(function (res) {
-                return res.json().then(function (data) {
-                    mostrarMsg('msgRetorno', data.mensagem, res.ok ? 'success' : 'danger');
-                    if (res.ok) {
-                        document.getElementById('valor').value = '';
-                        document.getElementById('contaDest').value = '';
-                        document.getElementById('descricao').value = '';
-                        carregarContas();
-                        carregarExtrato(contaSelecionadaId);
-                    }
-                });
-            }).catch(function () {
-                mostrarMsg('msgRetorno', 'Erro ao conectar com a API.', 'danger');
-            });
-        }
-
-        function carregarExtrato(contaId) {
-            fetch(BASE + '/contas/' + contaId + '/transacoes?t=' + new Date().getTime(), {
-                headers: { 'Authorization': 'Bearer ' + token }
-            }).then(function (res) {
-                if (!res.ok) return null;
-                return res.json();
-            }).then(function (dados) {
-                if (!dados) return;
-                var tbody = document.getElementById('extrato');
-                tbody.innerHTML = '';
-                if (dados.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted">Nenhuma transacao.</td></tr>';
-                    return;
-                }
-                dados.forEach(function (t) {
-                    var cor, tipoLabel, parteLabel;
-
-                    if (t.tipo === 'Deposito') {
-                        cor = 'text-success';
-                        tipoLabel = 'Deposito';
-                        parteLabel = '-';
-                    } else if (t.tipo === 'Saque') {
-                        cor = 'text-danger';
-                        tipoLabel = 'Saque';
-                        parteLabel = '-';
-                    } else if (t.tipo === 'Transferencia') {
-                        // Se tem destinatario = quem ENVIOU (vermelho)
-                        // Se tem remetente = quem RECEBEU (verde)
-                        if (t.nomeDestinatario && t.nomeDestinatario !== '') {
-                            cor = 'text-danger';
-                            tipoLabel = 'Transf. Enviada';
-                            parteLabel = 'Para: ' + t.nomeDestinatario;
-                        } else {
-                            cor = 'text-success';
-                            tipoLabel = 'Transf. Recebida';
-                            parteLabel = 'De: ' + (t.nomeRemetente || '-');
-                        }
-                    }
-
-                    tbody.innerHTML += '<tr>' +
-                        '<td>' + tipoLabel + '</td>' +
-                        '<td class="' + cor + '"><strong>R$ ' + t.valor.toFixed(2) + '</strong></td>' +
-                        '<td>R$ ' + t.taxa.toFixed(2) + '</td>' +
-                        '<td>' + (t.descricao || '-') + '</td>' +
-                        '<td>' + parteLabel + '</td>' +
-                        '<td>' + new Date(t.realizadaEm).toLocaleString('pt-BR') + '</td>' +
-                        '</tr>';
-                });
-            });
-        }
-
-        var modalExcluir = null;
-
-        function abrirModalExcluir() {
-            document.getElementById('senhaExcluir').value = '';
-            document.getElementById('msgExcluir').classList.add('d-none');
-            if (!modalExcluir) {
-                modalExcluir = new bootstrap.Modal(document.getElementById('modalExcluir'));
-            }
-            modalExcluir.show();
-        }
-
-        function excluirConta() {
-            var email = document.getElementById('emailExcluir').value;
-            var senha = document.getElementById('senhaExcluir').value;
-            if (!email) { mostrarMsg('msgExcluir', 'Digite seu e-mail.', 'warning'); return; }
-            if (!senha) { mostrarMsg('msgExcluir', 'Digite sua senha.', 'warning'); return; }
-            fetch(BASE + '/auth/excluir-conta', {
-                method: 'DELETE',
-                headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
-                body: JSON.stringify({ email: email, senha: senha })
-            }).then(function (res) {
-                return res.json().then(function (data) {
-                    if (res.ok) {
-                        modalExcluir.hide();
-                        alert(data.mensagem);
-                        sair();
-                    } else {
-                        mostrarMsg('msgExcluir', data.mensagem, 'danger');
-                    }
-                });
-            }).catch(function () {
-                mostrarMsg('msgExcluir', 'Erro ao conectar.', 'danger');
-            });
-        }
-        </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+function excluirConta() {
+  var email = document.getElementById('emailExcluir').value;
+  var senha = document.getElementById('senhaExcluir').value;
+  if (!email) { mostrarMsg('msgExcluir', 'Digite seu e-mail.', 'warning'); return; }
+  if (!senha) { mostrarMsg('msgExcluir', 'Digite sua senha.', 'warning'); return; }
+  fetch(BASE + '/auth/excluir-conta', {
+    method: 'DELETE',
+    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+    body: JSON.stringify({ email: email, senha: senha })
+  }).then(function(res) {
+    return res.json().then(function(data) {
+      if (res.ok) {
+        fecharModalExcluir();
+        alert(data.mensagem);
+        sair();
+      } else {
+        mostrarMsg('msgExcluir', data.mensagem, 'danger');
+      }
+    });
+  }).catch(function() { mostrarMsg('msgExcluir', 'Erro ao conectar.', 'danger'); });
+}
+</script>
 </body>
 </html>
