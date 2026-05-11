@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Banco Digital</title>
+  <title>.NET Bank</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -12,21 +12,25 @@
 <div class="container espacamento-topo-grande espacamento-baixo-grande" id="telaLogin">
   <div class="container-pequeno">
     <div class="cartao cartao-sombra">
-      <div class="cartao-corpo">
-        <h4 class="titulo-secao" style="text-align:center">Banco Digital</h4>
-        <input id="email" class="campo-email campo-margem-baixo" placeholder="E-mail">
-        <input id="senha" class="campo-senha campo-margem-baixo" type="password" placeholder="Senha">
-        <button class="botao botao-primario botao-largura-total margem-baixo-pequeno" onclick="login()">Entrar</button>
-        <button class="botao botao-contorno-secundario botao-largura-total" onclick="toggleRegistro()">Criar conta</button>
-        <div id="formRegistro" class="oculto espacamento-topo-pequeno">
-          <hr class="divisor">
-          <input id="regNome" class="campo-texto campo-margem-baixo" placeholder="Nome completo">
-          <input id="regEmail" class="campo-email campo-margem-baixo" placeholder="E-mail">
-          <input id="regSenha" class="campo-senha campo-margem-baixo" type="password" placeholder="Senha (min. 6 caracteres)">
-          <button class="botao botao-sucesso botao-largura-total" onclick="registrar()">Registrar</button>
+        <div class="cartao-corpo">
+            <h4 class="titulo-secao" style="text-align:center">
+                <img src="./imagens/dotnet.png"
+                     style="width:32px;vertical-align:middle;margin-right:6px">
+                <span style="vertical-align:middle">Bank</span>
+            </h4>
+            <input id="email" class="campo-email campo-margem-baixo" placeholder="E-mail">
+            <input id="senha" class="campo-senha campo-margem-baixo" type="password" placeholder="Senha">
+            <button class="botao botao-primario botao-largura-total margem-baixo-pequeno" onclick="login()">Entrar</button>
+            <button class="botao botao-contorno-secundario botao-largura-total" onclick="toggleRegistro()">Criar conta</button>
+            <div id="formRegistro" class="oculto espacamento-topo-pequeno">
+                <hr class="divisor">
+                <input id="regNome" class="campo-texto campo-margem-baixo" placeholder="Nome completo">
+                <input id="regEmail" class="campo-email campo-margem-baixo" placeholder="E-mail">
+                <input id="regSenha" class="campo-senha campo-margem-baixo" type="password" placeholder="Senha (min. 6 caracteres)">
+                <button class="botao botao-sucesso botao-largura-total" onclick="registrar()">Registrar</button>
+            </div>
+            <div id="msgLogin" class="oculto"></div>
         </div>
-        <div id="msgLogin" class="oculto"></div>
-      </div>
     </div>
   </div>
 </div>
@@ -36,7 +40,13 @@
 
   <!-- Cabecalho -->
   <div class="linha-flex-entre margem-baixo-grande">
-    <h4 class="titulo-pagina">Banco Digital — <span id="nomeUsuario" class="texto-azul"></span></h4>
+      <h4 class="titulo-pagina">
+          <img src="./imagens/dotnet.png"
+               style="width:36px;vertical-align:middle;margin-right:8px">
+          <span style="vertical-align:middle">Bank</span>
+          
+      </h4>
+      <h4 class="titulo-pagina">Usuario: <span id="nomeUsuario" class="texto-azul"></span></h4>
     <div class="linha-flex">
       <button class="botao botao-contorno-perigo botao-pequeno" onclick="sair()">Sair</button>
       <button class="botao botao-perigo botao-pequeno" onclick="abrirModalExcluir()">Apagar Usuário</button>
@@ -121,7 +131,10 @@
 <div class="fundo-modal" id="modalExcluir">
   <div class="caixa-modal">
     <div class="cabecalho-modal">
-      <h5>⚠ Apagar Usuario</h5>
+        <h5>
+            ⚠ Apagar Usuario do <img src="./imagens/dotnet.png" style="width:32px;vertical-align:middle;margin-right:6px">
+            <span style="vertical-align:middle">Bank</span>
+        </h5>
       <button class="fechar-modal" onclick="fecharModalExcluir()">✕</button>
     </div>
     <div class="corpo-modal">
