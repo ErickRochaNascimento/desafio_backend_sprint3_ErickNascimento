@@ -45,6 +45,12 @@ public class ContasController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Criar([FromBody] ContaDTO dto)
     {
+        var jaExiste = await _context.Contas
+            .AnyAsync(c => c.UsuarioId == GetUsuarioId() && c.Tipo == dto.Tipo);
+
+        if (jaExiste)
+            return BadRequest(new { mensagem = $"Você já possui uma conta do tipo {dto.Tipo}." });
+
         var conta = new Conta
         {
             Tipo = dto.Tipo,

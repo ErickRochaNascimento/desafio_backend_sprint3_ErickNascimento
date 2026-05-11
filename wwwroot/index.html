@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>.NET Bank</title>
   <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="./imagens/dotnet.png" type="image/x-icon">
 </head>
 <body>
 
@@ -18,16 +19,30 @@
                      style="width:32px;vertical-align:middle;margin-right:6px">
                 <span style="vertical-align:middle">Bank</span>
             </h4>
-            <input id="email" class="campo-email campo-margem-baixo" placeholder="E-mail">
-            <input id="senha" class="campo-senha campo-margem-baixo" type="password" placeholder="Senha">
-            <button class="botao botao-primario botao-largura-total margem-baixo-pequeno" onclick="login()">Entrar</button>
-            <button class="botao botao-contorno-secundario botao-largura-total" onclick="toggleRegistro()">Criar conta</button>
+            <div id="formLogin" class="margem-baixo-medio texto-discreto" style="text-align:center">
+                Faça login para acessar sua conta
+                <input id="email" class="campo-email campo-margem-baixo" placeholder="E-mail">
+                <input id="senha" class="campo-senha campo-margem-baixo" type="password" placeholder="Senha">
+                <button class="botao botao-primario botao-largura-total margem-baixo-pequeno" onclick="login()">Entrar</button>
+                <button class="botao botao-contorno-secundario botao-largura-total" onclick="toggleRegistro()">Criar conta</button>
+            </div>
+            
             <div id="formRegistro" class="oculto espacamento-topo-pequeno">
-                <hr class="divisor">
                 <input id="regNome" class="campo-texto campo-margem-baixo" placeholder="Nome completo">
                 <input id="regEmail" class="campo-email campo-margem-baixo" placeholder="E-mail">
+                <input id="regCpf" class="campo-texto campo-margem-baixo" placeholder="CPF (somente números)" maxlength="11">
+                <input id="regNasc" class="campo-texto campo-margem-baixo" type="date" placeholder="Data de nascimento">
                 <input id="regSenha" class="campo-senha campo-margem-baixo" type="password" placeholder="Senha (min. 6 caracteres)">
-                <button class="botao botao-sucesso botao-largura-total" onclick="registrar()">Registrar</button>
+                <button class="botao botao-sucesso botao-largura-total margem-baixo-pequeno" onclick="registrar()">Registrar</button>
+                <button class="botao botao-contorno-secundario botao-largura-total" onclick="toggleAlterarSenha()">Esqueci minha senha</button>
+            </div>
+
+            <div id="formAlterarSenha" class="oculto espacamento-topo-pequeno">
+                <p class="margem-baixo-pequeno" style="color:#e0e0f0;font-size:14px">Informe seu CPF e e-mail para redefinir a senha:</p>
+                <input id="altCpf" class="campo-texto campo-margem-baixo" placeholder="CPF (somente números)" maxlength="11">
+                <input id="altEmail" class="campo-email campo-margem-baixo" placeholder="E-mail cadastrado">
+                <input id="altSenha" class="campo-senha campo-margem-baixo" type="password" placeholder="Nova senha (min. 6 caracteres)">
+                <button class="botao botao-primario botao-largura-total" onclick="alterarSenha()">Alterar Senha</button>
             </div>
             <div id="msgLogin" class="oculto"></div>
         </div>
@@ -176,27 +191,60 @@ function mostrarMsg(id, texto, tipo) {
 }
 
 function toggleRegistro() {
-  var f = document.getElementById('formRegistro');
-  if (f.classList.contains('oculto')) { f.classList.remove('oculto'); }
-  else { f.classList.add('oculto'); }
+    var f = document.getElementById('formRegistro');
+    var fLogin = document.getElementById('formLogin');
+  if (f.classList.contains('oculto')) { f.classList.remove('oculto'); fLogin.classList.add('oculto'); }
+  else { f.classList.add('oculto'); fLogin.classList.remove('oculto'); }
 }
 
-function registrar() {
-  var body = {
-    nome: document.getElementById('regNome').value,
-    email: document.getElementById('regEmail').value,
-    senha: document.getElementById('regSenha').value
-  };
-  fetch(BASE + '/auth/registro', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body)
-  }).then(function(res) {
-    return res.json().then(function(data) {
-      mostrarMsg('msgLogin', data.mensagem, res.ok ? 'success' : 'danger');
-    });
-  }).catch(function() { mostrarMsg('msgLogin', 'Erro ao conectar.', 'danger'); });
-}
+    function registrar() {
+        var body = {
+            nome: document.getElementById('regNome').value,
+            email: document.getElementById('regEmail').value,
+            cpf: document.getElementById('regCpf').value,
+            dataNascimento: document.getElementById('regNasc').value,
+            senha: document.getElementById('regSenha').value
+        };
+        fetch(BASE + '/auth/registro', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body)
+        }).then(function (res) {
+            return res.json().then(function (data) {
+                mostrarMsg('msgLogin', data.mensagem, res.ok ? 'success' : 'danger');
+            });
+        }).catch(function () { mostrarMsg('msgLogin', 'Erro ao conectar.', 'danger'); });
+    }
+
+    function toggleAlterarSenha() {
+        var f = document.getElementById('formAlterarSenha');
+        if (f.classList.contains('oculto')) { f.classList.remove('oculto'); }
+        else { f.classList.add('oculto'); }
+    }
+
+    function alterarSenha() {
+        var cpf = document.getElementById('altCpf').value;
+        var email = document.getElementById('altEmail').value;
+        var senha = document.getElementById('altSenha').value;
+
+        if (!cpf || !email || !senha) {
+            mostrarMsg('msgLogin', 'Preencha todos os campos.', 'warning');
+            return;
+        }
+
+        fetch(BASE + '/auth/alterar-senha', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ cpf: cpf, email: email, novaSenha: senha })
+        }).then(function (res) {
+            return res.json().then(function (data) {
+                mostrarMsg('msgLogin', data.mensagem, res.ok ? 'success' : 'danger');
+                if (res.ok) {
+                    document.getElementById('formAlterarSenha').classList.add('oculto');
+                }
+            });
+        }).catch(function () { mostrarMsg('msgLogin', 'Erro ao conectar.', 'danger'); });
+    }
 
 function login() {
   var body = {

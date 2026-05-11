@@ -29,10 +29,15 @@ public class AuthController : ControllerBase
         if (await _context.Usuarios.AnyAsync(u => u.Email == dto.Email))
             return BadRequest(new { mensagem = "E-mail já cadastrado." });
 
+        if (await _context.Usuarios.AnyAsync(u => u.Cpf == dto.Cpf))
+            return BadRequest(new { mensagem = "CPF já cadastrado." });
+
         var usuario = new Usuario
         {
-            Nome = dto.Nome.ToUpper(),
+            Nome = dto.Nome,
             Email = dto.Email,
+            Cpf = dto.Cpf,
+            DataNascimento = dto.DataNascimento,
             SenhaHash = BCrypt.Net.BCrypt.HashPassword(dto.Senha)
         };
 
@@ -113,5 +118,20 @@ public class AuthController : ControllerBase
         await _context.SaveChangesAsync();
 
         return Ok(new { mensagem = "Conta excluída com sucesso." });
+    }
+
+    [HttpPut("alterar-senha")]
+    public async Task<IActionResult> AlterarSenha([FromBody] AlterarSenhaDTO dto)
+    {
+        var usuario = await _context.Usuarios
+            .FirstOrDefaultAsync(u => u.Cpf == dto.Cpf && u.Email == dto.Email);
+
+        if (usuario == null)
+            return NotFound(new { mensagem = "CPF ou e-mail incorretos." });
+
+        usuario.SenhaHash = BCrypt.Net.BCrypt.HashPassword(dto.NovaSenha);
+        await _context.SaveChangesAsync();
+
+        return Ok(new { mensagem = "Senha alterada com sucesso!" });
     }
 }

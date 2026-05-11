@@ -3,7 +3,6 @@ using BancoDigital.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Scalar.AspNetCore;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -49,14 +48,29 @@ builder.Services.AddCors(options =>
     });
 });
 
-builder.Services.AddOpenApi();
+builder.Services.AddOpenApiDocument(config =>
+{
+    config.Title = ".NET Bank API";
+    config.Version = "v1";
+    config.Description = "API REST do sistema bancário .NET Bank";
+    config.AddSecurity("JWT", new NSwag.OpenApiSecurityScheme
+    {
+        Type = NSwag.OpenApiSecuritySchemeType.ApiKey,
+        Name = "Authorization",
+        In = NSwag.OpenApiSecurityApiKeyLocation.Header,
+        Description = "Informe: Bearer {seu_token}"
+    });
+});
 
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
-    app.MapScalarApiReference();
+    app.UseOpenApi();
+    app.UseSwaggerUi(c =>
+    {
+        c.DocumentTitle = ".NET Bank API";
+    });
 }
 
 app.UseHttpsRedirection();
