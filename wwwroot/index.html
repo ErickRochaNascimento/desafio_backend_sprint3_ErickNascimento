@@ -152,7 +152,7 @@
                 <p class="margem-baixo-medio">Essa acao e <strong>irreversivel</strong>. Todas as suas contas e transacoes serao excluidas.</p>
                 <p class="margem-baixo-pequeno">Digite seu e-mail e senha para confirmar:</p>
                 <input id="emailExcluir" type="email" class="campo-email campo-margem-baixo" placeholder="Seu e-mail">
-                <input id="senhaExcluir" type="password" class="campo-senha" placeholder="Sua senha atual">
+                <input id="senhaExcluir" type="password" class="campo-senha" placeholder="Sua senha">
                 <div id="msgExcluir" class="oculto"></div>
             </div>
             <div class="rodape-modal">
@@ -264,7 +264,7 @@
                 return res.json().then(function (data) {
                     mostrarMsg('msgEditar', data.mensagem, res.ok ? 'success' : 'danger');
                     if (res.ok) {
-                        document.getElementById('formAlterarSenha').classList.add('oculto');
+                        fecharModalEditar();
                     }
                 });
             }).catch(function () { mostrarMsg('msgEditar', 'Erro ao conectar.', 'danger'); });
@@ -451,17 +451,16 @@
             document.getElementById('altSenha').value = '';
 
             document.getElementById('msgEditar').classList.add('oculto');
-            
+
 
             document.getElementById('modalEditar').classList.add('ativo');
-            document.getElementById('formAlterarSenha').classList.add('ativo')
         }
         function fecharModalEditar() {
             document.getElementById('modalEditar').classList.remove('ativo');
         }
 
 
-    
+
 
         function excluirConta() {
             var email = document.getElementById('emailExcluir').value;
