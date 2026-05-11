@@ -1,448 +1,489 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>.NET Bank</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>.NET Bank</title>
+    <link rel="stylesheet" href="style.css">
     <link rel="icon" href="./imagens/dotnet.png" type="image/x-icon">
 </head>
 <body>
 
-<!-- TELA LOGIN -->
-<div class="container espacamento-topo-grande espacamento-baixo-grande" id="telaLogin">
-  <div class="container-pequeno">
-    <div class="cartao cartao-sombra">
-        <div class="cartao-corpo">
-            <h4 class="titulo-secao" style="text-align:center">
-                <img src="./imagens/dotnet.png"
-                     style="width:32px;vertical-align:middle;margin-right:6px">
-                <span style="vertical-align:middle">Bank</span>
-            </h4>
-            <div id="formLogin" class="margem-baixo-medio texto-discreto" style="text-align:center">
-                Faça login para acessar sua conta
-                <input id="email" class="campo-email campo-margem-baixo" placeholder="E-mail">
-                <input id="senha" class="campo-senha campo-margem-baixo" type="password" placeholder="Senha">
-                <button class="botao botao-primario botao-largura-total margem-baixo-pequeno" onclick="login()">Entrar</button>
-                <button class="botao botao-contorno-secundario botao-largura-total" onclick="toggleRegistro()">Criar conta</button>
+    <!-- TELA LOGIN -->
+    <div class="container espacamento-topo-grande espacamento-baixo-grande" id="telaLogin">
+        <div class="container-pequeno">
+            <div class="cartao cartao-sombra">
+                <div class="cartao-corpo">
+                    <h4 class="titulo-secao" style="text-align:center">
+                        <img src="./imagens/dotnet.png"
+                             style="width:32px;vertical-align:middle;margin-right:6px">
+                        <span style="vertical-align:middle">Bank</span>
+                    </h4>
+                    <div id="formLogin" class="margem-baixo-medio texto-discreto" style="text-align:center">
+                        Faça login para acessar sua conta
+                        <input id="email" class="campo-email campo-margem-baixo" placeholder="E-mail">
+                        <input id="senha" class="campo-senha campo-margem-baixo" type="password" placeholder="Senha">
+                        <button class="botao botao-primario botao-largura-total margem-baixo-pequeno" onclick="login()">Entrar</button>
+                        <button class="botao botao-contorno-secundario botao-largura-total" onclick="toggleRegistro()">Criar conta</button>
+                    </div>
+
+                    <div id="formRegistro" class="oculto espacamento-topo-pequeno">
+                        <input id="regNome" class="campo-texto campo-margem-baixo" placeholder="Nome completo">
+                        <input id="regEmail" class="campo-email campo-margem-baixo" placeholder="E-mail">
+                        <input id="regCpf" class="campo-texto campo-margem-baixo" placeholder="CPF (somente números)" maxlength="11">
+                        <input id="regNasc" class="campo-texto campo-margem-baixo" type="date" placeholder="Data de nascimento">
+                        <input id="regSenha" class="campo-senha campo-margem-baixo" type="password" placeholder="Senha (min. 6 caracteres)">
+                        <button class="botao botao-sucesso botao-largura-total margem-baixo-pequeno" onclick="registrar()">Registrar</button>
+                        <button class="botao botao-primario botao-largura-total margem-baixo-pequeno" onclick="toggleLogin()">Acessar Conta</button>
+
+                    </div>
+
+
+                    <div id="msgLogin" class="oculto"></div>
+                </div>
             </div>
-            
-            <div id="formRegistro" class="oculto espacamento-topo-pequeno">
-                <input id="regNome" class="campo-texto campo-margem-baixo" placeholder="Nome completo">
-                <input id="regEmail" class="campo-email campo-margem-baixo" placeholder="E-mail">
-                <input id="regCpf" class="campo-texto campo-margem-baixo" placeholder="CPF (somente números)" maxlength="11">
-                <input id="regNasc" class="campo-texto campo-margem-baixo" type="date" placeholder="Data de nascimento">
-                <input id="regSenha" class="campo-senha campo-margem-baixo" type="password" placeholder="Senha (min. 6 caracteres)">
-                <button class="botao botao-sucesso botao-largura-total margem-baixo-pequeno" onclick="registrar()">Registrar</button>
-                <button class="botao botao-contorno-secundario botao-largura-total" onclick="toggleAlterarSenha()">Esqueci minha senha</button>
+        </div>
+    </div>
+
+    <!-- TELA PRINCIPAL -->
+    <div class="container espacamento-topo-medio oculto" id="telaPrincipal">
+
+        <!-- Cabecalho -->
+        <div class="linha-flex-entre margem-baixo-grande">
+            <h4 class="titulo-pagina">
+                <img src="./imagens/dotnet.png"
+                     style="width:36px;vertical-align:middle;margin-right:8px">
+                <span style="vertical-align:middle">Bank</span>
+
+            </h4>
+            <h4 class="titulo-pagina">Usuario: <span id="nomeUsuario" class="texto-azul"></span></h4>
+            <div class="linha-flex">
+                <button class="botao-pequeno" onclick="abrirModalEditar()">Editar Usuário</button>
+                <button class="botao botao-contorno-perigo botao-pequeno" onclick="sair()">Sair</button>
+                <button class="botao botao-perigo botao-pequeno" onclick="abrirModalExcluir()">Apagar Usuário</button>
+            </div>
+        </div>
+
+        <!-- Abrir nova conta -->
+        <div class="grade margem-baixo-grande">
+            <div class="coluna-4">
+                <div class="cartao cartao-sombra">
+                    <div class="cartao-corpo">
+                        <p class="titulo-cartao">Abrir nova conta</p>
+                        <select id="tipoConta" class="campo-selecao campo-margem-baixo">
+                            <option value="Corrente">Corrente (taxa R$ 5,00 no saque)</option>
+                            <option value="Poupanca">Poupanca (sem taxas)</option>
+                            <option value="Empresarial">Empresarial (1% no saque)</option>
+                        </select>
+                        <button class="botao botao-primario botao-largura-total" onclick="abrirConta()">Abrir Conta</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Minhas contas -->
+        <h5 class="titulo-secao">Minhas Contas <span class="texto-discreto texto-pequeno">(clique em Selecionar para operar)</span></h5>
+        <div class="grade margem-baixo-grande" id="listaContas"></div>
+
+        <!-- Painel de operacao -->
+        <div id="painelOperacao" class="oculto">
+            <hr class="divisor">
+            <h5 class="titulo-secao">
+                Operacao — Conta ID: <span id="contaAtual" class="texto-azul texto-negrito"></span>
+                <span class="emblema" id="tipoContaAtual"></span>
+            </h5>
+
+            <div class="grade margem-baixo-medio">
+                <div class="coluna-3">
+                    <label class="rotulo">Tipo</label>
+                    <select id="tipoOp" class="campo-selecao" onchange="toggleCampoDestino()">
+                        <option value="Deposito">Deposito</option>
+                        <option value="Saque">Saque</option>
+                        <option value="Transferencia">Transferencia</option>
+                    </select>
+                </div>
+                <div class="coluna-2">
+                    <label class="rotulo">Valor (R$)</label>
+                    <input id="valor" type="number" step="0.01" min="0.01" class="campo-numero" placeholder="0,00">
+                </div>
+                <div class="coluna-3 oculto" id="campoDestino">
+                    <label class="rotulo">ID conta destino</label>
+                    <input id="contaDest" type="number" class="campo-numero" placeholder="Ex: 2">
+                </div>
+                <div class="coluna-3">
+                    <label class="rotulo">Descricao</label>
+                    <input id="descricao" class="campo-texto" placeholder="Opcional">
+                </div>
+                <div class="coluna-2 alinhar-baixo">
+                    <button class="botao botao-sucesso botao-largura-total" onclick="realizarOperacao()">Confirmar</button>
+                </div>
             </div>
 
-            <div id="formAlterarSenha" class="oculto espacamento-topo-pequeno">
-                <p class="margem-baixo-pequeno" style="color:#e0e0f0;font-size:14px">Informe seu CPF e e-mail para redefinir a senha:</p>
-                <input id="altCpf" class="campo-texto campo-margem-baixo" placeholder="CPF (somente números)" maxlength="11">
-                <input id="altEmail" class="campo-email campo-margem-baixo" placeholder="E-mail cadastrado">
-                <input id="altSenha" class="campo-senha campo-margem-baixo" type="password" placeholder="Nova senha (min. 6 caracteres)">
+            <div id="msgRetorno" class="oculto margem-baixo-medio"></div>
+
+            <h5 class="titulo-secao">Extrato</h5>
+            <table class="tabela tabela-listrada">
+                <thead class="tabela-cabecalho">
+                    <tr>
+                        <th id="extrato-th-inicial">Tipo</th>
+                        <th>Valor</th>
+                        <th>Taxa</th>
+                        <th>Descricao</th>
+                        <th>Remetente / Destinatario</th>
+                        <th id="extrato-th-final">Data</th>
+                    </tr>
+                </thead>
+                <tbody id="extrato"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- MODAL APAGAR USUARIO -->
+    <div class="fundo-modal" id="modalExcluir">
+        <div class="caixa-modal">
+            <div class="cabecalho-modal">
+                <h5>
+                    ⚠ Apagar Usuario do <img src="./imagens/dotnet.png" style="width:32px;vertical-align:middle;margin-right:6px">
+                    <span style="vertical-align:middle">Bank</span>
+                </h5>
+                <button class="fechar-modal" onclick="fecharModalExcluir()">✕</button>
+            </div>
+            <div class="corpo-modal">
+                <p class="margem-baixo-medio">Essa acao e <strong>irreversivel</strong>. Todas as suas contas e transacoes serao excluidas.</p>
+                <p class="margem-baixo-pequeno">Digite seu e-mail e senha para confirmar:</p>
+                <input id="emailExcluir" type="email" class="campo-email campo-margem-baixo" placeholder="Seu e-mail">
+                <input id="senhaExcluir" type="password" class="campo-senha" placeholder="Sua senha atual">
+                <div id="msgExcluir" class="oculto"></div>
+            </div>
+            <div class="rodape-modal">
+                <button class="botao botao-secundario" onclick="fecharModalExcluir()">Cancelar</button>
+                <button class="botao botao-perigo" onclick="excluirConta()">Confirmar exclusao</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL EDITAR USUARIO -->
+    <div class="fundo-modal" id="modalEditar">
+        <div class="caixa-modal">
+            <div class="cabecalho-modal">
+                <h5>
+                    ⚠ Editar Usuario do <img src="./imagens/dotnet.png" style="width:32px;vertical-align:middle;margin-right:6px">
+                    <span style="vertical-align:middle">Bank</span>
+                </h5>
+                <button class="fechar-modal" onclick="fecharModalEditar()">✕</button>
+            </div>
+            <div class="corpo-modal">
+                <div id="formAlterarSenha" class="espacamento-topo-pequeno">
+                    <p class="margem-baixo-pequeno" style="color:#e0e0f0;font-size:14px">Informe seu CPF e e-mail para redefinir a senha:</p>
+                    <input id="altCpf" class="campo-texto campo-margem-baixo" placeholder="CPF (somente números)" maxlength="11">
+                    <input id="altEmail" class="campo-email campo-margem-baixo" placeholder="E-mail cadastrado">
+                    <input id="altSenha" class="campo-senha campo-margem-baixo" type="password" placeholder="Nova senha (min. 6 caracteres)">
+                    <div id="msgEditar" class="oculto"></div>
+                </div>
+            </div>
+            <div class="rodape-modal">
+                <button class="botao botao-secundario" onclick="fecharModalEditar()">Cancelar</button>
                 <button class="botao botao-primario botao-largura-total" onclick="alterarSenha()">Alterar Senha</button>
             </div>
-            <div id="msgLogin" class="oculto"></div>
         </div>
     </div>
-  </div>
-</div>
 
-<!-- TELA PRINCIPAL -->
-<div class="container espacamento-topo-medio oculto" id="telaPrincipal">
+    <script>
+        var BASE = 'https://localhost:7200/api';
+        var token = '';
+        var contaSelecionadaId = null;
 
-  <!-- Cabecalho -->
-  <div class="linha-flex-entre margem-baixo-grande">
-      <h4 class="titulo-pagina">
-          <img src="./imagens/dotnet.png"
-               style="width:36px;vertical-align:middle;margin-right:8px">
-          <span style="vertical-align:middle">Bank</span>
-          
-      </h4>
-      <h4 class="titulo-pagina">Usuario: <span id="nomeUsuario" class="texto-azul"></span></h4>
-    <div class="linha-flex">
-      <button class="botao botao-contorno-perigo botao-pequeno" onclick="sair()">Sair</button>
-      <button class="botao botao-perigo botao-pequeno" onclick="abrirModalExcluir()">Apagar Usuário</button>
-    </div>
-  </div>
-
-  <!-- Abrir nova conta -->
-  <div class="grade margem-baixo-grande">
-    <div class="coluna-4">
-      <div class="cartao cartao-sombra">
-        <div class="cartao-corpo">
-          <p class="titulo-cartao">Abrir nova conta</p>
-          <select id="tipoConta" class="campo-selecao campo-margem-baixo">
-            <option value="Corrente">Corrente (taxa R$ 5,00 no saque)</option>
-            <option value="Poupanca">Poupanca (sem taxas)</option>
-            <option value="Empresarial">Empresarial (1% no saque)</option>
-          </select>
-          <button class="botao botao-primario botao-largura-total" onclick="abrirConta()">Abrir Conta</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Minhas contas -->
-  <h5 class="titulo-secao">Minhas Contas <span class="texto-discreto texto-pequeno">(clique em Selecionar para operar)</span></h5>
-  <div class="grade margem-baixo-grande" id="listaContas"></div>
-
-  <!-- Painel de operacao -->
-  <div id="painelOperacao" class="oculto">
-    <hr class="divisor">
-    <h5 class="titulo-secao">
-      Operacao — Conta ID: <span id="contaAtual" class="texto-azul texto-negrito"></span>
-      <span class="emblema" id="tipoContaAtual"></span>
-    </h5>
-
-    <div class="grade margem-baixo-medio">
-      <div class="coluna-3">
-        <label class="rotulo">Tipo</label>
-        <select id="tipoOp" class="campo-selecao" onchange="toggleCampoDestino()">
-          <option value="Deposito">Deposito</option>
-          <option value="Saque">Saque</option>
-          <option value="Transferencia">Transferencia</option>
-        </select>
-      </div>
-      <div class="coluna-2">
-        <label class="rotulo">Valor (R$)</label>
-        <input id="valor" type="number" step="0.01" min="0.01" class="campo-numero" placeholder="0,00">
-      </div>
-      <div class="coluna-3 oculto" id="campoDestino">
-        <label class="rotulo">ID conta destino</label>
-        <input id="contaDest" type="number" class="campo-numero" placeholder="Ex: 2">
-      </div>
-      <div class="coluna-3">
-        <label class="rotulo">Descricao</label>
-        <input id="descricao" class="campo-texto" placeholder="Opcional">
-      </div>
-      <div class="coluna-2 alinhar-baixo">
-        <button class="botao botao-sucesso botao-largura-total" onclick="realizarOperacao()">Confirmar</button>
-      </div>
-    </div>
-
-    <div id="msgRetorno" class="oculto margem-baixo-medio"></div>
-
-    <h5 class="titulo-secao">Extrato</h5>
-    <table class="tabela tabela-listrada">
-      <thead class="tabela-cabecalho">
-        <tr>
-          <th id="extrato-th-inicial">Tipo</th>
-          <th>Valor</th>
-          <th>Taxa</th>
-          <th>Descricao</th>
-          <th>Remetente / Destinatario</th>
-          <th id="extrato-th-final">Data</th>
-        </tr>
-      </thead>
-      <tbody id="extrato"></tbody>
-    </table>
-  </div>
-</div>
-
-<!-- MODAL APAGAR USUARIO -->
-<div class="fundo-modal" id="modalExcluir">
-  <div class="caixa-modal">
-    <div class="cabecalho-modal">
-        <h5>
-            ⚠ Apagar Usuario do <img src="./imagens/dotnet.png" style="width:32px;vertical-align:middle;margin-right:6px">
-            <span style="vertical-align:middle">Bank</span>
-        </h5>
-      <button class="fechar-modal" onclick="fecharModalExcluir()">✕</button>
-    </div>
-    <div class="corpo-modal">
-      <p class="margem-baixo-medio">Essa acao e <strong>irreversivel</strong>. Todas as suas contas e transacoes serao excluidas.</p>
-      <p class="margem-baixo-pequeno">Digite seu e-mail e senha para confirmar:</p>
-      <input id="emailExcluir" type="email" class="campo-email campo-margem-baixo" placeholder="Seu e-mail">
-      <input id="senhaExcluir" type="password" class="campo-senha" placeholder="Sua senha atual">
-      <div id="msgExcluir" class="oculto"></div>
-    </div>
-    <div class="rodape-modal">
-      <button class="botao botao-secundario" onclick="fecharModalExcluir()">Cancelar</button>
-      <button class="botao botao-perigo" onclick="excluirConta()">Confirmar exclusao</button>
-    </div>
-  </div>
-</div>
-
-<script>
-var BASE = 'https://localhost:7200/api';
-var token = '';
-var contaSelecionadaId = null;
-
-function toggleCampoDestino() {
-  var tipo = document.getElementById('tipoOp').value;
-  var campo = document.getElementById('campoDestino');
-  if (tipo === 'Transferencia') {
-    campo.classList.remove('oculto');
-  } else {
-    campo.classList.add('oculto');
-    document.getElementById('contaDest').value = '';
-  }
-}
-
-function mostrarMsg(id, texto, tipo) {
-  var mapa = { success: 'alerta-sucesso', danger: 'alerta-erro', warning: 'alerta-aviso' };
-  var el = document.getElementById(id);
-  el.className = 'alerta ' + (mapa[tipo] || 'alerta-info');
-  el.textContent = texto;
-  el.classList.remove('oculto');
-}
-
-function toggleRegistro() {
-    var f = document.getElementById('formRegistro');
-    var fLogin = document.getElementById('formLogin');
-  if (f.classList.contains('oculto')) { f.classList.remove('oculto'); fLogin.classList.add('oculto'); }
-  else { f.classList.add('oculto'); fLogin.classList.remove('oculto'); }
-}
-
-    function registrar() {
-        var body = {
-            nome: document.getElementById('regNome').value,
-            email: document.getElementById('regEmail').value,
-            cpf: document.getElementById('regCpf').value,
-            dataNascimento: document.getElementById('regNasc').value,
-            senha: document.getElementById('regSenha').value
-        };
-        fetch(BASE + '/auth/registro', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(body)
-        }).then(function (res) {
-            return res.json().then(function (data) {
-                mostrarMsg('msgLogin', data.mensagem, res.ok ? 'success' : 'danger');
-            });
-        }).catch(function () { mostrarMsg('msgLogin', 'Erro ao conectar.', 'danger'); });
-    }
-
-    function toggleAlterarSenha() {
-        var f = document.getElementById('formAlterarSenha');
-        if (f.classList.contains('oculto')) { f.classList.remove('oculto'); }
-        else { f.classList.add('oculto'); }
-    }
-
-    function alterarSenha() {
-        var cpf = document.getElementById('altCpf').value;
-        var email = document.getElementById('altEmail').value;
-        var senha = document.getElementById('altSenha').value;
-
-        if (!cpf || !email || !senha) {
-            mostrarMsg('msgLogin', 'Preencha todos os campos.', 'warning');
-            return;
+        function toggleCampoDestino() {
+            var tipo = document.getElementById('tipoOp').value;
+            var campo = document.getElementById('campoDestino');
+            if (tipo === 'Transferencia') {
+                campo.classList.remove('oculto');
+            } else {
+                campo.classList.add('oculto');
+                document.getElementById('contaDest').value = '';
+            }
         }
 
-        fetch(BASE + '/auth/alterar-senha', {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ cpf: cpf, email: email, novaSenha: senha })
-        }).then(function (res) {
-            return res.json().then(function (data) {
-                mostrarMsg('msgLogin', data.mensagem, res.ok ? 'success' : 'danger');
-                if (res.ok) {
-                    document.getElementById('formAlterarSenha').classList.add('oculto');
+        function mostrarMsg(id, texto, tipo) {
+            var mapa = { success: 'alerta-sucesso', danger: 'alerta-erro', warning: 'alerta-aviso' };
+            var el = document.getElementById(id);
+            el.className = 'alerta ' + (mapa[tipo] || 'alerta-info');
+            el.textContent = texto;
+            el.classList.remove('oculto');
+        }
+
+        function toggleRegistro() {
+            var f = document.getElementById('formRegistro');
+            var fLogin = document.getElementById('formLogin');
+            if (f.classList.contains('oculto')) { f.classList.remove('oculto'); fLogin.classList.add('oculto'); }
+            else { f.classList.add('oculto'); fLogin.classList.remove('oculto'); }
+        }
+
+        function toggleLogin() {
+            var f = document.getElementById('formRegistro');
+            var fLogin = document.getElementById('formLogin');
+            if (fLogin.classList.contains('oculto')) { fLogin.classList.remove('oculto'); f.classList.add('oculto'); }
+            else { f.classList.add('oculto'); fLogin.classList.remove('oculto'); }
+        }
+
+        function registrar() {
+            var body = {
+                nome: document.getElementById('regNome').value,
+                email: document.getElementById('regEmail').value,
+                cpf: document.getElementById('regCpf').value,
+                dataNascimento: document.getElementById('regNasc').value,
+                senha: document.getElementById('regSenha').value
+            };
+            fetch(BASE + '/auth/registro', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+            }).then(function (res) {
+                return res.json().then(function (data) {
+                    mostrarMsg('msgLogin', data.mensagem, res.ok ? 'success' : 'danger');
+                });
+            }).catch(function () { mostrarMsg('msgLogin', 'Erro ao conectar.', 'danger'); });
+        }
+
+
+        function alterarSenha() {
+            var cpf = document.getElementById('altCpf').value;
+            var email = document.getElementById('altEmail').value;
+            var senha = document.getElementById('altSenha').value;
+
+            if (!cpf || !email || !senha) {
+                mostrarMsg('msgEditar', 'Preencha todos os campos.', 'warning');
+                return;
+            }
+
+            fetch(BASE + '/auth/alterar-senha', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ cpf: cpf, email: email, novaSenha: senha })
+            }).then(function (res) {
+                return res.json().then(function (data) {
+                    mostrarMsg('msgEditar', data.mensagem, res.ok ? 'success' : 'danger');
+                    if (res.ok) {
+                        document.getElementById('formAlterarSenha').classList.add('oculto');
+                    }
+                });
+            }).catch(function () { mostrarMsg('msgEditar', 'Erro ao conectar.', 'danger'); });
+        }
+
+        function login() {
+            var body = {
+                email: document.getElementById('email').value,
+                senha: document.getElementById('senha').value
+            };
+            fetch(BASE + '/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+            }).then(function (res) {
+                return res.json().then(function (data) {
+                    if (res.ok) {
+                        token = data.token;
+                        document.getElementById('nomeUsuario').textContent = data.nome;
+                        document.getElementById('telaLogin').classList.add('oculto');
+                        document.getElementById('telaPrincipal').classList.remove('oculto');
+                        carregarContas();
+                    } else {
+                        mostrarMsg('msgLogin', data.mensagem || 'Erro no login', 'danger');
+                    }
+                });
+            }).catch(function () { mostrarMsg('msgLogin', 'Erro ao conectar.', 'danger'); });
+        }
+
+        function sair() {
+            token = '';
+            contaSelecionadaId = null;
+            document.getElementById('telaLogin').classList.remove('oculto');
+            document.getElementById('telaPrincipal').classList.add('oculto');
+            document.getElementById('painelOperacao').classList.add('oculto');
+        }
+
+        function abrirConta() {
+            fetch(BASE + '/contas', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+                body: JSON.stringify({ tipo: document.getElementById('tipoConta').value })
+            }).then(function (res) {
+                if (res.ok) { carregarContas(); alert('Conta aberta com sucesso!'); }
+            });
+        }
+
+        function carregarContas() {
+            fetch(BASE + '/contas?t=' + new Date().getTime(), {
+                headers: { 'Authorization': 'Bearer ' + token }
+            }).then(function (res) { return res.json(); })
+                .then(function (contas) {
+                    var div = document.getElementById('listaContas');
+                    div.innerHTML = '';
+                    if (contas.length === 0) {
+                        div.innerHTML = '<p class="texto-discreto">Nenhuma conta. Abra uma acima.</p>';
+                        return;
+                    }
+                    contas.forEach(function (c) {
+                        var selecionada = contaSelecionadaId === c.id ? 'cartao-selecionado' : '';
+                        div.innerHTML +=
+                            '<div class="coluna-4">' +
+                            '<div class="cartao cartao-sombra ' + selecionada + '">' +
+                            '<div class="cartao-corpo">' +
+                            '<p class="titulo-cartao">' + c.tipo + '</p>' +
+                            '<p class="texto-pequeno texto-discreto margem-baixo-pequeno">ID: ' + c.id + '</p>' +
+                            '<p class="texto-destaque texto-verde margem-baixo-medio">R$ ' + c.saldo.toFixed(2) + '</p>' +
+                            '<button class="botao botao-contorno-primario botao-pequeno margem-direita-pequeno" onclick="selecionarConta(' + c.id + ', \'' + c.tipo + '\')">Selecionar</button>' +
+                            '<button class="botao botao-contorno-perigo botao-pequeno" onclick="encerrarConta(' + c.id + ')">Encerrar</button>' +
+                            '</div></div></div>';
+                    });
+                });
+        }
+
+        function selecionarConta(id, tipo) {
+            contaSelecionadaId = id;
+            document.getElementById('contaAtual').textContent = id;
+            document.getElementById('tipoContaAtual').textContent = tipo;
+            document.getElementById('painelOperacao').classList.remove('oculto');
+            document.getElementById('msgRetorno').classList.add('oculto');
+            document.getElementById('tipoOp').value = 'Deposito';
+            toggleCampoDestino();
+            carregarContas();
+            carregarExtrato(id);
+        }
+
+        function encerrarConta(id) {
+            if (!confirm('Deseja encerrar esta conta? O saldo restante sera sacado automaticamente.')) return;
+            fetch(BASE + '/contas/' + id, {
+                method: 'DELETE',
+                headers: { 'Authorization': 'Bearer ' + token }
+            }).then(function (res) {
+                return res.json().then(function (data) {
+                    alert(data.mensagem);
+                    if (res.ok) {
+                        if (contaSelecionadaId === id) {
+                            contaSelecionadaId = null;
+                            document.getElementById('painelOperacao').classList.add('oculto');
+                        }
+                        carregarContas();
+                    }
+                });
+            });
+        }
+
+        function realizarOperacao() {
+            if (!contaSelecionadaId) { alert('Selecione uma conta!'); return; }
+            var destVal = document.getElementById('contaDest').value;
+            var dto = {
+                tipo: document.getElementById('tipoOp').value,
+                valor: parseFloat(document.getElementById('valor').value),
+                descricao: document.getElementById('descricao').value,
+                contaDestinoId: destVal && destVal.trim() !== '' ? parseInt(destVal) : null
+            };
+            fetch(BASE + '/contas/' + contaSelecionadaId + '/transacoes', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+                body: JSON.stringify(dto)
+            }).then(function (res) {
+                return res.json().then(function (data) {
+                    mostrarMsg('msgRetorno', data.mensagem, res.ok ? 'success' : 'danger');
+                    if (res.ok) {
+                        document.getElementById('valor').value = '';
+                        document.getElementById('contaDest').value = '';
+                        document.getElementById('descricao').value = '';
+                        carregarContas();
+                        carregarExtrato(contaSelecionadaId);
+                    }
+                });
+            }).catch(function () { mostrarMsg('msgRetorno', 'Erro ao conectar.', 'danger'); });
+        }
+
+        function carregarExtrato(contaId) {
+            fetch(BASE + '/contas/' + contaId + '/transacoes?t=' + new Date().getTime(), {
+                headers: { 'Authorization': 'Bearer ' + token }
+            }).then(function (res) {
+                if (!res.ok) return null;
+                return res.json();
+            }).then(function (dados) {
+                if (!dados) return;
+                var tbody = document.getElementById('extrato');
+                tbody.innerHTML = '';
+                if (dados.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" class="texto-discreto" style="text-align:center;padding:16px">Nenhuma transacao.</td></tr>';
+                    return;
                 }
+                dados.forEach(function (t) {
+                    var cor, tipoLabel, parteLabel;
+                    if (t.tipo === 'Deposito') {
+                        cor = 'texto-verde'; tipoLabel = 'Deposito'; parteLabel = '-';
+                    } else if (t.tipo === 'Saque') {
+                        cor = 'texto-vermelho'; tipoLabel = 'Saque'; parteLabel = '-';
+                    } else if (t.nomeDestinatario && t.nomeDestinatario !== '') {
+                        cor = 'texto-vermelho'; tipoLabel = 'Transf. Enviada'; parteLabel = 'Para: ' + t.nomeDestinatario;
+                    } else {
+                        cor = 'texto-verde'; tipoLabel = 'Transf. Recebida'; parteLabel = 'De: ' + (t.nomeRemetente || '-');
+                    }
+                    tbody.innerHTML +=
+                        '<tr>' +
+                        '<td>' + tipoLabel + '</td>' +
+                        '<td class="' + cor + ' texto-negrito">R$ ' + t.valor.toFixed(2) + '</td>' +
+                        '<td>R$ ' + t.taxa.toFixed(2) + '</td>' +
+                        '<td>' + (t.descricao || '-') + '</td>' +
+                        '<td>' + parteLabel + '</td>' +
+                        '<td>' + new Date(t.realizadaEm).toLocaleString('pt-BR') + '</td>' +
+                        '</tr>';
+                });
             });
-        }).catch(function () { mostrarMsg('msgLogin', 'Erro ao conectar.', 'danger'); });
-    }
-
-function login() {
-  var body = {
-    email: document.getElementById('email').value,
-    senha: document.getElementById('senha').value
-  };
-  fetch(BASE + '/auth/login', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body)
-  }).then(function(res) {
-    return res.json().then(function(data) {
-      if (res.ok) {
-        token = data.token;
-        document.getElementById('nomeUsuario').textContent = data.nome;
-        document.getElementById('telaLogin').classList.add('oculto');
-        document.getElementById('telaPrincipal').classList.remove('oculto');
-        carregarContas();
-      } else {
-        mostrarMsg('msgLogin', data.mensagem || 'Erro no login', 'danger');
-      }
-    });
-  }).catch(function() { mostrarMsg('msgLogin', 'Erro ao conectar.', 'danger'); });
-}
-
-function sair() {
-  token = '';
-  contaSelecionadaId = null;
-  document.getElementById('telaLogin').classList.remove('oculto');
-  document.getElementById('telaPrincipal').classList.add('oculto');
-  document.getElementById('painelOperacao').classList.add('oculto');
-}
-
-function abrirConta() {
-  fetch(BASE + '/contas', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
-    body: JSON.stringify({ tipo: document.getElementById('tipoConta').value })
-  }).then(function(res) {
-    if (res.ok) { carregarContas(); alert('Conta aberta com sucesso!'); }
-  });
-}
-
-function carregarContas() {
-  fetch(BASE + '/contas?t=' + new Date().getTime(), {
-    headers: { 'Authorization': 'Bearer ' + token }
-  }).then(function(res) { return res.json(); })
-  .then(function(contas) {
-    var div = document.getElementById('listaContas');
-    div.innerHTML = '';
-    if (contas.length === 0) {
-      div.innerHTML = '<p class="texto-discreto">Nenhuma conta. Abra uma acima.</p>';
-      return;
-    }
-    contas.forEach(function(c) {
-      var selecionada = contaSelecionadaId === c.id ? 'cartao-selecionado' : '';
-      div.innerHTML +=
-        '<div class="coluna-4">' +
-        '<div class="cartao cartao-sombra ' + selecionada + '">' +
-        '<div class="cartao-corpo">' +
-        '<p class="titulo-cartao">' + c.tipo + '</p>' +
-        '<p class="texto-pequeno texto-discreto margem-baixo-pequeno">ID: ' + c.id + '</p>' +
-        '<p class="texto-destaque texto-verde margem-baixo-medio">R$ ' + c.saldo.toFixed(2) + '</p>' +
-        '<button class="botao botao-contorno-primario botao-pequeno margem-direita-pequeno" onclick="selecionarConta(' + c.id + ', \'' + c.tipo + '\')">Selecionar</button>' +
-        '<button class="botao botao-contorno-perigo botao-pequeno" onclick="encerrarConta(' + c.id + ')">Encerrar</button>' +
-        '</div></div></div>';
-    });
-  });
-}
-
-function selecionarConta(id, tipo) {
-  contaSelecionadaId = id;
-  document.getElementById('contaAtual').textContent = id;
-  document.getElementById('tipoContaAtual').textContent = tipo;
-  document.getElementById('painelOperacao').classList.remove('oculto');
-  document.getElementById('msgRetorno').classList.add('oculto');
-  document.getElementById('tipoOp').value = 'Deposito';
-  toggleCampoDestino();
-  carregarContas();
-  carregarExtrato(id);
-}
-
-function encerrarConta(id) {
-  if (!confirm('Deseja encerrar esta conta? O saldo restante sera sacado automaticamente.')) return;
-  fetch(BASE + '/contas/' + id, {
-    method: 'DELETE',
-    headers: { 'Authorization': 'Bearer ' + token }
-  }).then(function(res) {
-    return res.json().then(function(data) {
-      alert(data.mensagem);
-      if (res.ok) {
-        if (contaSelecionadaId === id) {
-          contaSelecionadaId = null;
-          document.getElementById('painelOperacao').classList.add('oculto');
         }
-        carregarContas();
-      }
-    });
-  });
-}
 
-function realizarOperacao() {
-  if (!contaSelecionadaId) { alert('Selecione uma conta!'); return; }
-  var destVal = document.getElementById('contaDest').value;
-  var dto = {
-    tipo: document.getElementById('tipoOp').value,
-    valor: parseFloat(document.getElementById('valor').value),
-    descricao: document.getElementById('descricao').value,
-    contaDestinoId: destVal && destVal.trim() !== '' ? parseInt(destVal) : null
-  };
-  fetch(BASE + '/contas/' + contaSelecionadaId + '/transacoes', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
-    body: JSON.stringify(dto)
-  }).then(function(res) {
-    return res.json().then(function(data) {
-      mostrarMsg('msgRetorno', data.mensagem, res.ok ? 'success' : 'danger');
-      if (res.ok) {
-        document.getElementById('valor').value = '';
-        document.getElementById('contaDest').value = '';
-        document.getElementById('descricao').value = '';
-        carregarContas();
-        carregarExtrato(contaSelecionadaId);
-      }
-    });
-  }).catch(function() { mostrarMsg('msgRetorno', 'Erro ao conectar.', 'danger'); });
-}
+        function abrirModalExcluir() {
+            document.getElementById('emailExcluir').value = '';
+            document.getElementById('senhaExcluir').value = '';
+            document.getElementById('msgExcluir').classList.add('oculto');
+            document.getElementById('modalExcluir').classList.add('ativo');
+        }
+        function fecharModalExcluir() {
+            document.getElementById('modalExcluir').classList.remove('ativo');
+        }
 
-function carregarExtrato(contaId) {
-  fetch(BASE + '/contas/' + contaId + '/transacoes?t=' + new Date().getTime(), {
-    headers: { 'Authorization': 'Bearer ' + token }
-  }).then(function(res) {
-    if (!res.ok) return null;
-    return res.json();
-  }).then(function(dados) {
-    if (!dados) return;
-    var tbody = document.getElementById('extrato');
-    tbody.innerHTML = '';
-    if (dados.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="6" class="texto-discreto" style="text-align:center;padding:16px">Nenhuma transacao.</td></tr>';
-      return;
-    }
-    dados.forEach(function(t) {
-      var cor, tipoLabel, parteLabel;
-      if (t.tipo === 'Deposito') {
-        cor = 'texto-verde'; tipoLabel = 'Deposito'; parteLabel = '-';
-      } else if (t.tipo === 'Saque') {
-        cor = 'texto-vermelho'; tipoLabel = 'Saque'; parteLabel = '-';
-      } else if (t.nomeDestinatario && t.nomeDestinatario !== '') {
-        cor = 'texto-vermelho'; tipoLabel = 'Transf. Enviada'; parteLabel = 'Para: ' + t.nomeDestinatario;
-      } else {
-        cor = 'texto-verde'; tipoLabel = 'Transf. Recebida'; parteLabel = 'De: ' + (t.nomeRemetente || '-');
-      }
-      tbody.innerHTML +=
-        '<tr>' +
-        '<td>' + tipoLabel + '</td>' +
-        '<td class="' + cor + ' texto-negrito">R$ ' + t.valor.toFixed(2) + '</td>' +
-        '<td>R$ ' + t.taxa.toFixed(2) + '</td>' +
-        '<td>' + (t.descricao || '-') + '</td>' +
-        '<td>' + parteLabel + '</td>' +
-        '<td>' + new Date(t.realizadaEm).toLocaleString('pt-BR') + '</td>' +
-        '</tr>';
-    });
-  });
-}
+        function abrirModalEditar() {
+            document.getElementById('altCpf').value = '';
+            document.getElementById('altEmail').value = '';
+            document.getElementById('altSenha').value = '';
 
-function abrirModalExcluir() {
-  document.getElementById('emailExcluir').value = '';
-  document.getElementById('senhaExcluir').value = '';
-  document.getElementById('msgExcluir').classList.add('oculto');
-  document.getElementById('modalExcluir').classList.add('ativo');
-}
+            document.getElementById('msgEditar').classList.add('oculto');
+            
 
-function fecharModalExcluir() {
-  document.getElementById('modalExcluir').classList.remove('ativo');
-}
+            document.getElementById('modalEditar').classList.add('ativo');
+            document.getElementById('formAlterarSenha').classList.add('ativo')
+        }
+        function fecharModalEditar() {
+            document.getElementById('modalEditar').classList.remove('ativo');
+        }
 
-function excluirConta() {
-  var email = document.getElementById('emailExcluir').value;
-  var senha = document.getElementById('senhaExcluir').value;
-  if (!email) { mostrarMsg('msgExcluir', 'Digite seu e-mail.', 'warning'); return; }
-  if (!senha) { mostrarMsg('msgExcluir', 'Digite sua senha.', 'warning'); return; }
-  fetch(BASE + '/auth/excluir-conta', {
-    method: 'DELETE',
-    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
-    body: JSON.stringify({ email: email, senha: senha })
-  }).then(function(res) {
-    return res.json().then(function(data) {
-      if (res.ok) {
-        fecharModalExcluir();
-        alert(data.mensagem);
-        sair();
-      } else {
-        mostrarMsg('msgExcluir', data.mensagem, 'danger');
-      }
-    });
-  }).catch(function() { mostrarMsg('msgExcluir', 'Erro ao conectar.', 'danger'); });
-}
-</script>
+
+    
+
+        function excluirConta() {
+            var email = document.getElementById('emailExcluir').value;
+            var senha = document.getElementById('senhaExcluir').value;
+            if (!email) { mostrarMsg('msgExcluir', 'Digite seu e-mail.', 'warning'); return; }
+            if (!senha) { mostrarMsg('msgExcluir', 'Digite sua senha.', 'warning'); return; }
+            fetch(BASE + '/auth/excluir-conta', {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+                body: JSON.stringify({ email: email, senha: senha })
+            }).then(function (res) {
+                return res.json().then(function (data) {
+                    if (res.ok) {
+                        fecharModalExcluir();
+                        alert(data.mensagem);
+                        sair();
+                    } else {
+                        mostrarMsg('msgExcluir', data.mensagem, 'danger');
+                    }
+                });
+            }).catch(function () { mostrarMsg('msgExcluir', 'Erro ao conectar.', 'danger'); });
+        }
+    </script>
 </body>
 </html>
