@@ -31,7 +31,7 @@ public class AuthController : ControllerBase
 
         var usuario = new Usuario
         {
-            Nome = dto.Nome,
+            Nome = dto.Nome.ToUpper(),
             Email = dto.Email,
             SenhaHash = BCrypt.Net.BCrypt.HashPassword(dto.Senha)
         };

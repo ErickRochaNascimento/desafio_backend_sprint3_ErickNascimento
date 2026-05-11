@@ -370,3 +370,15 @@ body {
   gap: 8px;
   border-top: 1px solid #dee2e6;
 }
+
+body {
+    width: 100vw;
+    background-color: #ededed;
+}
+
+#extrato-th-inicial {
+    border-top-left-radius: 8px;
+}
+#extrato-th-final {
+    border-top-right-radius: 8px;
+}

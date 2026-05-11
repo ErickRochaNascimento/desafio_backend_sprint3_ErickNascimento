@@ -1,0 +1,102 @@
+<svg width="1440" height="900" viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="fundoGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0a1628"/>
+      <stop offset="100%" stop-color="#0d2d5e"/>
+    </linearGradient>
+    <linearGradient id="circuloGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1a4a8a" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#0d6efd" stop-opacity="0.1"/>
+    </linearGradient>
+    <linearGradient id="linhaGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#0d6efd" stop-opacity="0"/>
+      <stop offset="50%" stop-color="#0d6efd" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#0d6efd" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1440" height="900" fill="url(#fundoGrad)"/>
+
+  <circle cx="1200" cy="150" r="340" fill="url(#circuloGrad)" stroke="#1a5fbf" stroke-width="0.8" opacity="0.5"/>
+  <circle cx="1200" cy="150" r="240" fill="none" stroke="#1a5fbf" stroke-width="0.8" opacity="0.4"/>
+  <circle cx="1200" cy="150" r="140" fill="none" stroke="#0d6efd" stroke-width="0.8" opacity="0.5"/>
+  <circle cx="1200" cy="150" r="60"  fill="none" stroke="#0d6efd" stroke-width="0.8" opacity="0.4"/>
+
+  <circle cx="180" cy="720" r="280" fill="url(#circuloGrad)" stroke="#1a5fbf" stroke-width="0.8" opacity="0.4"/>
+  <circle cx="180" cy="720" r="180" fill="none" stroke="#1a5fbf" stroke-width="0.8" opacity="0.3"/>
+  <circle cx="180" cy="720" r="90"  fill="none" stroke="#0d6efd" stroke-width="0.8" opacity="0.3"/>
+
+  <circle cx="720" cy="450" r="500" fill="none" stroke="#1a5fbf" stroke-width="0.4" opacity="0.15"/>
+  <circle cx="720" cy="450" r="380" fill="none" stroke="#1a5fbf" stroke-width="0.4" opacity="0.12"/>
+
+  <line x1="0" y1="300" x2="1440" y2="300" stroke="url(#linhaGrad)" stroke-width="0.8"/>
+  <line x1="0" y1="600" x2="1440" y2="600" stroke="url(#linhaGrad)" stroke-width="0.8"/>
+  <line x1="0" y1="150" x2="1440" y2="150" stroke="url(#linhaGrad)" stroke-width="0.4" opacity="0.4"/>
+  <line x1="0" y1="750" x2="1440" y2="750" stroke="url(#linhaGrad)" stroke-width="0.4" opacity="0.4"/>
+
+  <g opacity="0.2">
+    <circle cx="200" cy="80"  r="3" fill="#0d6efd"/>
+    <circle cx="320" cy="80"  r="3" fill="#0d6efd"/>
+    <circle cx="440" cy="80"  r="3" fill="#0d6efd"/>
+    <circle cx="560" cy="80"  r="3" fill="#0d6efd"/>
+    <circle cx="680" cy="80"  r="3" fill="#0d6efd"/>
+    <circle cx="200" cy="200" r="3" fill="#0d6efd"/>
+    <circle cx="320" cy="200" r="3" fill="#0d6efd"/>
+    <circle cx="440" cy="200" r="3" fill="#0d6efd"/>
+    <circle cx="560" cy="200" r="3" fill="#0d6efd"/>
+    <circle cx="680" cy="200" r="3" fill="#0d6efd"/>
+    <circle cx="200" cy="320" r="3" fill="#0d6efd"/>
+    <circle cx="320" cy="320" r="3" fill="#0d6efd"/>
+    <circle cx="800" cy="380" r="3" fill="#0d6efd"/>
+    <circle cx="920" cy="380" r="3" fill="#0d6efd"/>
+    <circle cx="1040" cy="380" r="3" fill="#0d6efd"/>
+    <circle cx="800" cy="500" r="3" fill="#0d6efd"/>
+    <circle cx="920" cy="500" r="3" fill="#0d6efd"/>
+    <circle cx="1040" cy="500" r="3" fill="#0d6efd"/>
+    <circle cx="320" cy="680" r="3" fill="#0d6efd"/>
+    <circle cx="440" cy="680" r="3" fill="#0d6efd"/>
+    <circle cx="560" cy="680" r="3" fill="#0d6efd"/>
+    <circle cx="320" cy="800" r="3" fill="#0d6efd"/>
+    <circle cx="440" cy="800" r="3" fill="#0d6efd"/>
+    <circle cx="560" cy="800" r="3" fill="#0d6efd"/>
+    <circle cx="680" cy="800" r="3" fill="#0d6efd"/>
+    <circle cx="800" cy="800" r="3" fill="#0d6efd"/>
+  </g>
+
+  <g opacity="0.13">
+    <rect x="60" y="340" width="420" height="240" rx="20" fill="#1a5fbf"/>
+    <rect x="60" y="340" width="420" height="240" rx="20" fill="none" stroke="#4d8fdb" stroke-width="1.5"/>
+    <rect x="100" y="390" width="70" height="55" rx="6" fill="#f0b429" opacity="0.8"/>
+    <line x1="100" y1="510" x2="340" y2="510" stroke="#4d8fdb" stroke-width="2"/>
+    <line x1="100" y1="542" x2="240" y2="542" stroke="#4d8fdb" stroke-width="2"/>
+    <circle cx="430" cy="415" r="30" fill="none" stroke="#4d8fdb" stroke-width="2" opacity="0.6"/>
+    <circle cx="455" cy="415" r="30" fill="none" stroke="#f0b429" stroke-width="2" opacity="0.5"/>
+  </g>
+
+  <g opacity="0.1">
+    <rect x="980" y="500" width="420" height="240" rx="20" fill="#1a5fbf"/>
+    <rect x="980" y="500" width="420" height="240" rx="20" fill="none" stroke="#4d8fdb" stroke-width="1.5"/>
+    <rect x="1020" y="550" width="70" height="55" rx="6" fill="#f0b429" opacity="0.8"/>
+    <line x1="1020" y1="670" x2="1260" y2="670" stroke="#4d8fdb" stroke-width="2"/>
+    <line x1="1020" y1="702" x2="1160" y2="702" stroke="#4d8fdb" stroke-width="2"/>
+    <circle cx="1350" cy="575" r="30" fill="none" stroke="#4d8fdb" stroke-width="2" opacity="0.6"/>
+    <circle cx="1375" cy="575" r="30" fill="none" stroke="#f0b429" stroke-width="2" opacity="0.5"/>
+  </g>
+
+  <g opacity="0.15" transform="translate(820, 100)">
+    <rect x="0"   y="180" width="44" height="90"  rx="5" fill="#0d6efd"/>
+    <rect x="60"  y="120" width="44" height="150" rx="5" fill="#0d6efd"/>
+    <rect x="120" y="70"  width="44" height="200" rx="5" fill="#4d8fdb"/>
+    <rect x="180" y="130" width="44" height="140" rx="5" fill="#0d6efd"/>
+    <rect x="240" y="50"  width="44" height="220" rx="5" fill="#4d8fdb"/>
+    <rect x="300" y="100" width="44" height="170" rx="5" fill="#0d6efd"/>
+    <line x1="-10" y1="272" x2="360" y2="272" stroke="#4d8fdb" stroke-width="1.5"/>
+  </g>
+
+  <path d="M 200 400 Q 500 320 800 420 Q 1100 520 1400 400" fill="none" stroke="#0d6efd" stroke-width="1" opacity="0.2" stroke-dasharray="8,6"/>
+  <path d="M 0 600 Q 360 520 720 600 Q 1080 680 1440 600" fill="none" stroke="#1a5fbf" stroke-width="0.8" opacity="0.15" stroke-dasharray="6,8"/>
+
+  <text x="1100" y="820" font-size="200" font-weight="700" fill="#0d6efd" opacity="0.04" font-family="Arial">$</text>
+  <text x="40"   y="260" font-size="140" font-weight="700" fill="#0d6efd" opacity="0.04" font-family="Arial">$</text>
+  <text x="620"  y="880" font-size="120" font-weight="700" fill="#0d6efd" opacity="0.04" font-family="Arial">R$</text>
+</svg>
