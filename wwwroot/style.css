@@ -463,7 +463,6 @@ body {
         padding: 10px 12px;
         text-align: left;
         border: 1px solid var(--cor-borda);
-        color: var(--cor-texto);
     }
 
 .tabela-cabecalho th {
