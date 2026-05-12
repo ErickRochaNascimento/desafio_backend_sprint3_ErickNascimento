@@ -345,8 +345,15 @@ body {
         transform: scale(0.97);
     }
 
+
+
 .botao-largura-total {
     width: 100%;
+}
+
+.botao-pequeno {
+    padding: 5px 10px;
+    font-size: 13px;
 }
 
 .botao-primario {
@@ -410,12 +417,7 @@ body {
         opacity: 1;
     }
 
-.botao-pequeno {
-    background-color: var(--cor-primaria);
-    color: #ffffff;
-    padding: 5px 10px;
-    font-size: 13px;
-}
+
 
 /* ==========================================
    ALERTAS
