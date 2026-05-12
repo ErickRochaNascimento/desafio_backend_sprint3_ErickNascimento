@@ -214,25 +214,39 @@
         }
 
         function toggleRegistro() {
-            var f = document.getElementById('formRegistro');
+            var fRegistro = document.getElementById('formRegistro');
             var fLogin = document.getElementById('formLogin');
             var msgLogin = document.getElementById('msgLogin');
             var msgRegistro = document.getElementById('msgRegistro');
 
-            if (f.classList.contains('oculto')) {
-                f.classList.remove('oculto');
+            if (fRegistro.classList.contains('oculto')) {
+                fRegistro.classList.remove('oculto');
                 fLogin.classList.add('oculto');
                 msgLogin.classList.add('oculto');
                 msgRegistro.classList.remove('oculto');
             }
-            else { f.classList.add('oculto'); fLogin.classList.remove('oculto'); }
+            else {
+                fRegistro.classList.add('oculto');
+                fLogin.classList.remove('oculto');
+                msgRegistro.classList.add('oculto');
+                msgLogin.classList.remove('oculto');
+
+            }
         }
 
         function toggleLogin() {
-            var f = document.getElementById('formRegistro');
+            var fRegistro = document.getElementById('formRegistro');
             var fLogin = document.getElementById('formLogin');
-            if (fLogin.classList.contains('oculto')) { fLogin.classList.remove('oculto'); f.classList.add('oculto'); }
-            else { f.classList.add('oculto'); fLogin.classList.remove('oculto'); }
+            if (fLogin.classList.contains('oculto')) {
+                fLogin.classList.remove('oculto');
+                fRegistro.classList.add('oculto');
+            }
+            else {
+                fRegistro.classList.add('oculto');
+                fLogin.classList.remove('oculto');
+
+
+            }
         }
 
         function registrar() {
