@@ -32,6 +32,9 @@ public class AuthController : ControllerBase
         if (await _context.Usuarios.AnyAsync(u => u.Cpf == dto.Cpf))
             return BadRequest(new { mensagem = "CPF já cadastrado." });
 
+        if (dto.Cpf.Length != 11 || !dto.Cpf.All(char.IsDigit))
+            return BadRequest(new { mensagem = "CPF invalido." });
+
         var usuario = new Usuario
         {
             Nome = dto.Nome,
@@ -124,14 +127,40 @@ public class AuthController : ControllerBase
     public async Task<IActionResult> AlterarSenha([FromBody] AlterarSenhaDTO dto)
     {
         var usuario = await _context.Usuarios
-            .FirstOrDefaultAsync(u => u.Cpf == dto.Cpf && u.Email == dto.Email);
+            .FirstOrDefaultAsync(u => u.Email == dto.Email);
 
         if (usuario == null)
-            return NotFound(new { mensagem = "CPF ou e-mail incorretos." });
+            return NotFound(new { mensagem = "Usuário não encontrado." });
+
+        if (!BCrypt.Net.BCrypt.Verify(dto.SenhaAtual, usuario.SenhaHash))
+            return Unauthorized(new { mensagem = "Senha atual incorreta." });
 
         usuario.SenhaHash = BCrypt.Net.BCrypt.HashPassword(dto.NovaSenha);
         await _context.SaveChangesAsync();
 
         return Ok(new { mensagem = "Senha alterada com sucesso!" });
+    }
+
+    [HttpPut("alterar-email")]
+    [Microsoft.AspNetCore.Authorization.Authorize] 
+    public async Task<IActionResult> AlterarEmail([FromBody] AlterarEmailDTO dto)
+    {
+        var usuarioId = int.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)!.Value);
+        var usuario = await _context.Usuarios.FindAsync(usuarioId);
+
+        if (usuario == null || usuario.Email != dto.EmailAtual)
+            return Unauthorized(new { mensagem = "E-mail atual incorreto ou usuário não encontrado." });
+
+        if (!BCrypt.Net.BCrypt.Verify(dto.SenhaAtual, usuario.SenhaHash))
+            return Unauthorized(new { mensagem = "Senha incorreta. Não foi possível alterar o e-mail." });
+
+        
+        if (await _context.Usuarios.AnyAsync(u => u.Email == dto.NovoEmail))
+            return BadRequest(new { mensagem = "Este novo e-mail já está cadastrado em outra conta." });
+
+        usuario.Email = dto.NovoEmail;
+        await _context.SaveChangesAsync();
+
+        return Ok(new { mensagem = "E-mail atualizado com sucesso!" });
     }
 }

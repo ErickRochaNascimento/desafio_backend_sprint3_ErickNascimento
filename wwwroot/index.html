@@ -59,7 +59,7 @@
             </h4>
             <h4 class="titulo-pagina">Usuario: <span id="nomeUsuario" class="texto-azul"></span></h4>
             <div class="linha-flex">
-                <button class="botao-pequeno" onclick="abrirModalEditar()">Editar Usuário</button>
+                <button class="botao botao-pequeno" onclick="abrirModalEditar()">Editar Usuário</button>
                 <button class="botao botao-contorno-perigo botao-pequeno" onclick="sair()">Sair</button>
                 <button class="botao botao-perigo botao-pequeno" onclick="abrirModalExcluir()">Apagar Usuário</button>
             </div>
@@ -168,23 +168,36 @@
         <div class="caixa-modal">
             <div class="cabecalho-modal">
                 <h5>
-                    ⚠ Editar Usuario do <img src="./imagens/dotnet.png" style="width:32px;vertical-align:middle;margin-right:6px">
-                    <span style="vertical-align:middle">Bank</span>
+                    <img src="./imagens/dotnet.png" style="width:32px;vertical-align:middle;margin-right:6px">
+                    Configurações de Perfil
                 </h5>
                 <button class="fechar-modal" onclick="fecharModalEditar()">✕</button>
             </div>
             <div class="corpo-modal">
-                <div id="formAlterarSenha" class="espacamento-topo-pequeno">
-                    <p class="margem-baixo-pequeno" style="color:#e0e0f0;font-size:14px">Informe seu CPF e e-mail para redefinir a senha:</p>
-                    <input id="altCpf" class="campo-texto campo-margem-baixo" placeholder="CPF (somente números)" maxlength="11">
-                    <input id="altEmail" class="campo-email campo-margem-baixo" placeholder="E-mail cadastrado">
-                    <input id="altSenha" class="campo-senha campo-margem-baixo" type="password" placeholder="Nova senha (min. 6 caracteres)">
-                    <div id="msgEditar" class="oculto"></div>
+                <div class="linha-flex-entre margem-baixo-medio">
+                    <button class="botao botao-pequeno" onclick="mostrarAba('abaSenha')">Alterar Senha</button>
+                    <button class="botao botao-pequeno" onclick="mostrarAba('abaEmail')">Alterar E-mail</button>
                 </div>
-            </div>
-            <div class="rodape-modal">
-                <button class="botao botao-secundario" onclick="fecharModalEditar()">Cancelar</button>
-                <button class="botao botao-primario botao-largura-total" onclick="alterarSenha()">Alterar Senha</button>
+
+                <div id="abaSenha">
+                    <p class="texto-discreto margem-baixo-pequeno">Para sua segurança, confirme sua senha atual:</p>
+                    <input id="altEmailSenha" class="campo-email campo-margem-baixo" placeholder="Seu e-mail">
+                    <input id="altSenhaAtual" class="campo-senha campo-margem-baixo" type="password" placeholder="Senha atual">
+                    <hr class="divisor">
+                    <input id="altNovaSenha" class="campo-senha campo-margem-baixo" type="password" placeholder="Nova senha (min. 6 caracteres)">
+                    <button class="botao botao-primario botao-largura-total" onclick="alterarSenha()">Confirmar Nova Senha</button>
+                </div>
+
+                <div id="abaEmail" class="oculto">
+                    <p class="texto-discreto margem-baixo-pequeno">Confirme sua senha para alterar o e-mail:</p>
+                    <input id="altEmailAtual" class="campo-email campo-margem-baixo" placeholder="E-mail atual">
+                    <input id="altSenhaParaEmail" class="campo-senha campo-margem-baixo" type="password" placeholder="Sua senha">
+                    <hr class="divisor">
+                    <input id="altNovoEmail" class="campo-email campo-margem-baixo" placeholder="Novo e-mail">
+                    <button class="botao botao-sucesso botao-largura-total" onclick="alterarEmail()">Confirmar Novo E-mail</button>
+                </div>
+
+                <div id="msgEditar" class="oculto espacamento-topo-pequeno"></div>
             </div>
         </div>
     </div>
@@ -268,13 +281,19 @@
             }).catch(function () { mostrarMsg('msgRegistro', 'Erro ao conectar.', 'danger'); });
         }
 
+        function mostrarAba(abaId) {
+            document.getElementById('abaSenha').classList.add('oculto');
+            document.getElementById('abaEmail').classList.add('oculto');
+            document.getElementById(abaId).classList.remove('oculto');
+            document.getElementById('msgEditar').classList.add('oculto');
+        }
 
         function alterarSenha() {
-            var cpf = document.getElementById('altCpf').value;
-            var email = document.getElementById('altEmail').value;
-            var senha = document.getElementById('altSenha').value;
+            var email = document.getElementById('altEmailSenha').value;
+            var senhaAtual = document.getElementById('altSenhaAtual').value;
+            var novaSenha = document.getElementById('altNovaSenha').value;
 
-            if (!cpf || !email || !senha) {
+            if (!email || !senhaAtual || !novaSenha) {
                 mostrarMsg('msgEditar', 'Preencha todos os campos.', 'warning');
                 return;
             }
@@ -282,16 +301,55 @@
             fetch(BASE + '/auth/alterar-senha', {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ cpf: cpf, email: email, novaSenha: senha })
+                body: JSON.stringify({
+                    email: email,
+                    senhaAtual: senhaAtual,
+                    novaSenha: novaSenha
+                })
             }).then(function (res) {
                 return res.json().then(function (data) {
                     mostrarMsg('msgEditar', data.mensagem, res.ok ? 'success' : 'danger');
                     if (res.ok) {
-                        fecharModalEditar();
+                        setTimeout(fecharModalEditar, 2000);
                     }
                 });
             }).catch(function () { mostrarMsg('msgEditar', 'Erro ao conectar.', 'danger'); });
         }
+
+        function alterarEmail() {
+            var emailAtual = document.getElementById('altEmailAtual').value;
+            var senhaAtual = document.getElementById('altSenhaParaEmail').value;
+            var novoEmail = document.getElementById('altNovoEmail').value;
+
+            if (!emailAtual || !senhaAtual || !novoEmail) {
+                mostrarMsg('msgEditar', 'Preencha todos os campos.', 'warning');
+                return;
+            }
+
+            fetch(BASE + '/auth/alterar-email', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + token 
+                },
+                body: JSON.stringify({
+                    emailAtual: emailAtual,
+                    senhaAtual: senhaAtual,
+                    novoEmail: novoEmail
+                })
+            }).then(function (res) {
+                return res.json().then(function (data) {
+                    mostrarMsg('msgEditar', data.mensagem, res.ok ? 'success' : 'danger');
+                    if (res.ok) {
+                        setTimeout(function () {
+                            alert('E-mail alterado! Por favor, faça login novamente.');
+                            sair();
+                        }, 2000);
+                    }
+                });
+            }).catch(function () { mostrarMsg('msgEditar', 'Erro ao conectar.', 'danger'); });
+        }
+
 
         function login() {
             var body = {
@@ -469,13 +527,14 @@
         }
 
         function abrirModalEditar() {
-            document.getElementById('altCpf').value = '';
-            document.getElementById('altEmail').value = '';
-            document.getElementById('altSenha').value = '';
-
+            document.getElementById('altEmailSenha').value = '';
+            document.getElementById('altSenhaAtual').value = '';
+            document.getElementById('altNovaSenha').value = '';
+            document.getElementById('altEmailAtual').value = '';
+            document.getElementById('altSenhaParaEmail').value = '';
+            document.getElementById('altNovoEmail').value = '';
             document.getElementById('msgEditar').classList.add('oculto');
-
-
+            mostrarAba('abaSenha'); 
             document.getElementById('modalEditar').classList.add('ativo');
         }
         function fecharModalEditar() {

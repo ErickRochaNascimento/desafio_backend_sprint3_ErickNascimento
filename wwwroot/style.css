@@ -411,6 +411,8 @@ body {
     }
 
 .botao-pequeno {
+    background-color: var(--cor-primaria);
+    color: #ffffff;
     padding: 5px 10px;
     font-size: 13px;
 }

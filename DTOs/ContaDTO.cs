@@ -27,10 +27,18 @@ public class RegistroDTO
 
 public class AlterarSenhaDTO
 {
-    [Required] public string Cpf { get; set; } = string.Empty;
     [Required] public string Email { get; set; } = string.Empty;
+    [Required] public string SenhaAtual { get; set; } = string.Empty;
     [Required][MinLength(6)] public string NovaSenha { get; set; } = string.Empty;
 }
+
+public class AlterarEmailDTO
+{
+    [Required] public string EmailAtual { get; set; } = string.Empty;
+    [Required] public string SenhaAtual { get; set; } = string.Empty;
+    [Required][EmailAddress] public string NovoEmail { get; set; } = string.Empty;
+}
+
 
 public class TransacaoDTO
 {
