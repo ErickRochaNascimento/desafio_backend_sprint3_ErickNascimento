@@ -26,6 +26,7 @@
                         <button class="botao botao-primario botao-largura-total margem-baixo-pequeno" onclick="login()">Entrar</button>
                         <button class="botao botao-contorno-secundario botao-largura-total" onclick="toggleRegistro()">Criar conta</button>
                     </div>
+                    <div id="msgLogin" class="oculto"></div>
 
                     <div id="formRegistro" class="oculto espacamento-topo-pequeno">
                         <input id="regNome" class="campo-texto campo-margem-baixo" placeholder="Nome completo">
@@ -37,9 +38,9 @@
                         <button class="botao botao-primario botao-largura-total margem-baixo-pequeno" onclick="toggleLogin()">Acessar Conta</button>
 
                     </div>
+                    <div id="msgRegistro" class="oculto"></div>
 
 
-                    <div id="msgLogin" class="oculto"></div>
                 </div>
             </div>
         </div>
@@ -215,7 +216,15 @@
         function toggleRegistro() {
             var f = document.getElementById('formRegistro');
             var fLogin = document.getElementById('formLogin');
-            if (f.classList.contains('oculto')) { f.classList.remove('oculto'); fLogin.classList.add('oculto'); }
+            var msgLogin = document.getElementById('msgLogin');
+            var msgRegistro = document.getElementById('msgRegistro');
+
+            if (f.classList.contains('oculto')) {
+                f.classList.remove('oculto');
+                fLogin.classList.add('oculto');
+                msgLogin.classList.add('oculto');
+                msgRegistro.classList.remove('oculto');
+            }
             else { f.classList.add('oculto'); fLogin.classList.remove('oculto'); }
         }
 
@@ -240,9 +249,9 @@
                 body: JSON.stringify(body)
             }).then(function (res) {
                 return res.json().then(function (data) {
-                    mostrarMsg('msgLogin', data.mensagem, res.ok ? 'success' : 'danger');
+                    mostrarMsg('msgRegistro', data.mensagem, res.ok ? 'success' : 'danger');
                 });
-            }).catch(function () { mostrarMsg('msgLogin', 'Erro ao conectar.', 'danger'); });
+            }).catch(function () { mostrarMsg('msgRegistro', 'Erro ao conectar.', 'danger'); });
         }
 
 
