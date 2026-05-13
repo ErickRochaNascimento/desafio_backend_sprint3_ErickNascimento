@@ -100,9 +100,9 @@
                         <span>Minhas Contas</span>
                     </div>
 
-                    <div class="nav-item" onclick="mostrarAbaPrincipal('abaExtrato')">
-                        <span class="icone">📊</span>
-                        <span>Extrato</span>
+                    <div class="nav-item" onclick="abrirModalEditar()">
+                        <span class="icone"></span>
+                        <span>Edição Usuario</span>
                     </div>
                     <div class="nav-item oculto" id="navAdmin" onclick="abrirPainelAdmin()">
                         <span class="icone">⚙️</span>
@@ -298,6 +298,7 @@
                         <label class="rotulo">Senha</label>
                         <input id="altSenhaParaEmail" class="campo-senha" type="password" placeholder="Sua senha">
                     </div>
+                    <hr class="divisor">
                     <div style="margin-bottom: 16px;">
                         <label class="rotulo">Novo E-mail</label>
                         <input id="altNovoEmail" class="campo-email" placeholder="Novo e-mail">
@@ -507,6 +508,8 @@
             }
         }
 
+        
+
         // ── CONTAS ──
         function carregarContas() {
             fetch(BASE + '/contas', {
@@ -514,24 +517,21 @@
             }).then(res => res.json()).then(contas => {
                 const grid = document.getElementById('listaContasGrid');
                 grid.innerHTML = contas.map(c => `
-                        <div class="stat-card" style="cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--roxo)'" onmouseout="this.style.borderColor='var(--borda)'">
-                            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 12px;">
-                                <div>
-                                    <p class="stat-label">${c.tipo}</p>
-                                    <p class="stat-valor" style="font-size: 24px;">R$ ${c.saldo.toFixed(2)}</p>
+                            <div class="stat-card" style="cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--roxo)'" onmouseout="this.style.borderColor='var(--borda)'">
+                                <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 12px;">
+                                    <div>
+                                        <p class="stat-label">${c.tipo}</p>
+                                        <p class="stat-valor" style="font-size: 24px;">R$ ${c.saldo.toFixed(2)}</p>
+                                    </div>
+                                   
                                 </div>
-                                <div style="text-align: right;">
-                                    <p class="texto-discreto" style="font-size: 11px;">Conta</p>
-                                    <p class="stat-label">${c.numeroConta}</p>
+                                <div style="display: flex; gap: 8px;">
+                                    <button class="btn btn-sm btn-primario" style="flex: 1;" onclick="selecionarContaOperacao(${c.id})">Operar</button>
+                                    <button class="btn btn-sm btn-primario" onclick="abrirExtratoModal(${c.id}, '${c.tipo}')">Extrato</button>
+                                    <button class="btn btn-sm btn-perigo" onclick="encerrarConta(${c.id})">Encerrar</button>
                                 </div>
                             </div>
-                            <div style="display: flex; gap: 8px;">
-                                <button class="btn btn-sm btn-primario" style="flex: 1;" onclick="selecionarContaOperacao(${c.id})">Operar</button>
-                                <button class="btn btn-sm btn-primario" onclick="abrirExtratoModal(${c.id}, '${c.tipo}')">Extrato</button>
-                                <button class="btn btn-sm btn-perigo" onclick="encerrarConta(${c.id})">Encerrar</button>
-                            </div>
-                        </div>
-                    `).join('');
+                        `).join('');
             });
         }
 
@@ -583,7 +583,7 @@
                     contas.forEach(c => {
                         const option = document.createElement('option');
                         option.value = c.id;
-                        option.textContent = `ID ${c.id} - ${c.tipo} (R$ ${c.saldo.toFixed(2)})`;
+                        option.textContent = `${c.tipo}`;
                         select.appendChild(option);
                     });
                 }).catch(err => {
@@ -665,15 +665,15 @@
                     return;
                 }
                 tbody.innerHTML = transacoes.map(t => `
-                                    <tr>
-                                        <td>${t.tipo}</td>
-                                        <td class="texto-verde texto-negrito">R$ ${t.valor.toFixed(2)}</td>
-                                        <td>R$ ${t.taxa.toFixed(2)}</td>
-                                        <td>${t.descricao || '-'}</td>
-                                        <td>${t.nomeDestinatario || t.nomeRemetente || '-'}</td>
-                                        <td>${formatarData(t.realizadaEm)}</td>
-                                    </tr>
-                                `).join('');
+                                        <tr>
+                                            <td>${t.tipo}</td>
+                                            <td class="texto-negrito">R$ ${t.valor.toFixed(2)}</td>
+                                            <td>R$ ${t.taxa.toFixed(2)}</td>
+                                            <td>${t.descricao || '-'}</td>
+                                            <td>${t.nomeDestinatario || t.nomeRemetente || '-'}</td>
+                                            <td>${formatarData(t.realizadaEm)}</td>
+                                        </tr>
+                                    `).join('');
             });
         }
 
@@ -696,9 +696,12 @@
                 mostrarMsg('msgEditar', data.mensagem, data.mensagem.includes('sucesso') ? 'success' : 'danger');
                 if (data.mensagem.includes('sucesso')) {
                     setTimeout(() => fecharModal('modalEditar'), 2000);
-                }
-            }).catch(() => mostrarMsg('msgEditar', 'Erro ao conectar.', 'danger'));
+                    alert('E-mail alterado! Por favor, faça login novamente.');
+                    sair();
+                    fecharModal('modalEditar');
         }
+                }).catch (() => mostrarMsg('msgEditar', 'Erro ao conectar.', 'danger'));
+            }
 
         function alterarEmail() {
             const emailAtual = document.getElementById('altEmailAtual').value;
@@ -777,15 +780,15 @@
                     tbody.innerHTML = '<tr><td colspan="6" class="texto-discreto" style="text-align: center; padding: 20px;">Nenhuma transação.</td></tr>';
                 } else {
                     tbody.innerHTML = transacoes.map(t => `
-                        <tr>
-                            <td>${t.tipo}</td>
-                            <td class="texto-verde texto-negrito">R$ ${t.valor.toFixed(2)}</td>
-                            <td>R$ ${t.taxa.toFixed(2)}</td>
-                            <td>${t.descricao || '-'}</td>
-                            <td>${t.nomeDestinatario || t.nomeRemetente || '-'}</td>
-                            <td>${formatarData(t.realizadaEm)}</td>
-                        </tr>
-                    `).join('');
+                            <tr>
+                                <td>${t.tipo}</td>
+                                <td class="texto-verde texto-negrito">R$ ${t.valor.toFixed(2)}</td>
+                                <td>R$ ${t.taxa.toFixed(2)}</td>
+                                <td>${t.descricao || '-'}</td>
+                                <td>${t.nomeDestinatario || t.nomeRemetente || '-'}</td>
+                                <td>${formatarData(t.realizadaEm)}</td>
+                            </tr>
+                        `).join('');
                 }
             }).catch(() => {
                 document.getElementById('extratoModalTabela').innerHTML = '<tr><td colspan="6" class="texto-discreto" style="text-align: center; padding: 20px;">Erro ao carregar extrato.</td></tr>';

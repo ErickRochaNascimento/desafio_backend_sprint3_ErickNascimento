@@ -128,3 +128,7 @@ function limparSessao() {
     token = '';
     sessionStorage.clear();
 }
+
+function voltar() {
+    window.location.href = 'index.html';
+}

@@ -90,7 +90,7 @@ namespace BancoDigital.Services
 
                 default:
                     return (false, "Operação inválida.", null);
-            }
+                              }
 
             // Deposito e Saque — sem remetente/destinatário
             var transacao = new Transacao

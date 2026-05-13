@@ -921,6 +921,7 @@ body {
     background: rgba(255,255,255,0.05);
     color: var(--texto-dim);
     border: 1px solid var(--borda);
+    margin: 3px 0;
 }
 
     .btn-cinza:hover {
