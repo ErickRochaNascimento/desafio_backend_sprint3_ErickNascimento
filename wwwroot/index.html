@@ -627,9 +627,9 @@
         }
 
         function abrirPainelAdmin() {
-            document.getElementById('telaPrincipal').classList.add('oculto');
-            document.getElementById('painelAdmin').classList.remove('oculto');
-            carregarUsuariosAdmin();
+            sessionStorage.setItem('adminToken', token);
+            sessionStorage.setItem('adminNome', document.getElementById('nomeUsuario').textContent);
+            window.location.href = 'admin.html';
         }
 
         function carregarUsuariosAdmin() {
