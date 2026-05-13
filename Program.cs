@@ -1,4 +1,5 @@
 using BancoDigital.Data;
+using BancoDigital.Models;
 using BancoDigital.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;

@@ -37,7 +37,7 @@ public class AuthController : ControllerBase
 
         var novoPerfil = "cliente";
 
-        if (perfil == "admin" && User.Identity.IsAuthenticated && User.IsInRole("admin"))
+        if (User.Identity.IsAuthenticated && User.IsInRole("admin"))
         {
             novoPerfil = "admin";
         }
