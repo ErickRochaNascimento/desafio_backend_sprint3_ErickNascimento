@@ -99,10 +99,7 @@
                         <span class="icone">💳</span>
                         <span>Minhas Contas</span>
                     </div>
-                    <div class="nav-item" onclick="mostrarAbaPrincipal('abaOperacoes')">
-                        <span class="icone">💰</span>
-                        <span>Operações</span>
-                    </div>
+
                     <div class="nav-item" onclick="mostrarAbaPrincipal('abaExtrato')">
                         <span class="icone">📊</span>
                         <span>Extrato</span>
@@ -341,6 +338,32 @@
         </div>
     </div>
 
+    <div class="fundo-modal" id="modalExtrato">
+        <div class="caixa-modal" style="max-width: 800px;">
+            <div class="cabecalho-modal">
+                <h5>Extrato - Conta <span id="extratoContaId"></span> (<span id="extratoContaTipo"></span>)</h5>
+                <button class="fechar-modal" onclick="fecharModal('modalExtrato')">✕</button>
+            </div>
+            <div class="corpo-modal">
+                <div style="overflow-x: auto;">
+                    <table class="tabela">
+                        <thead>
+                            <tr>
+                                <th>Tipo</th>
+                                <th>Valor</th>
+                                <th>Taxa</th>
+                                <th>Descrição</th>
+                                <th>Remetente/Destinatário</th>
+                                <th>Data</th>
+                            </tr>
+                        </thead>
+                        <tbody id="extratoModalTabela"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         var contaSelecionadaId = null;
         var contaAtualSaldo = 0;
@@ -357,8 +380,9 @@
             document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('ativo'));
             event.target.closest('.nav-item').classList.add('ativo');
 
-            if (abaId === 'abaExtrato') carregarExtrato();
-            if (abaId === 'abaOperacoes') carregarContasOperacao();
+            if (abaId === 'abaOperacoes') {
+                carregarContasOperacao();
+            }
         }
 
         function mostrarAbaModal(abaId) {
@@ -503,12 +527,14 @@
                             </div>
                             <div style="display: flex; gap: 8px;">
                                 <button class="btn btn-sm btn-primario" style="flex: 1;" onclick="selecionarContaOperacao(${c.id})">Operar</button>
+                                <button class="btn btn-sm btn-primario" onclick="abrirExtratoModal(${c.id}, '${c.tipo}')">Extrato</button>
                                 <button class="btn btn-sm btn-perigo" onclick="encerrarConta(${c.id})">Encerrar</button>
                             </div>
                         </div>
                     `).join('');
             });
         }
+
 
         function abrirConta() {
             fetch(BASE + '/contas', {
@@ -519,6 +545,8 @@
                 if (res.ok) {
                     carregarContas();
                     alert('Conta aberta com sucesso!');
+                } else {
+                    alert('Não poder mais de 1 conta do mesmo tipo.');
                 }
             });
         }
@@ -535,20 +563,35 @@
         }
 
         function selecionarContaOperacao(id) {
-            document.getElementById('contaOperacao').value = id;
-            carregarSaldoConta();
-            mostrarAbaPrincipal('abaOperacoes');
+            carregarContasOperacao();
+
+            setTimeout(() => {
+                document.getElementById('contaOperacao').value = id;
+                carregarSaldoConta();
+                mostrarAbaPrincipal('abaOperacoes');
+            }, 100);
         }
 
         function carregarContasOperacao() {
             fetch(BASE + '/contas', {
                 headers: { 'Authorization': 'Bearer ' + token }
-            }).then(res => res.json()).then(contas => {
-                const select = document.getElementById('contaOperacao');
-                select.innerHTML = '<option value="">-- Selecione uma conta --</option>' +
-                    contas.map(c => `<option value="${c.id}">ID ${c.id} - ${c.tipo} (R$ ${c.saldo.toFixed(2)})</option>`).join('');
-            });
+            }).then(res => res.json())
+                .then(contas => {
+                    const select = document.getElementById('contaOperacao');
+                    select.innerHTML = '<option value="">-- Selecione uma conta --</option>';
+
+                    contas.forEach(c => {
+                        const option = document.createElement('option');
+                        option.value = c.id;
+                        option.textContent = `ID ${c.id} - ${c.tipo} (R$ ${c.saldo.toFixed(2)})`;
+                        select.appendChild(option);
+                    });
+                }).catch(err => {
+                    console.error('Erro ao carregar contas:', err);
+                    alert('Erro ao carregar contas');
+                });
         }
+
 
         function carregarSaldoConta() {
             const contaId = document.getElementById('contaOperacao').value;
@@ -622,15 +665,15 @@
                     return;
                 }
                 tbody.innerHTML = transacoes.map(t => `
-                        <tr>
-                            <td>${t.tipo}</td>
-                            <td class="texto-verde texto-negrito">R$ ${t.valor.toFixed(2)}</td>
-                            <td>R$ ${t.taxa.toFixed(2)}</td>
-                            <td>${t.descricao || '-'}</td>
-                            <td>${t.nomeDestinatario || t.nomeRemetente || '-'}</td>
-                            <td>${formatarData(t.realizadaEm)}</td>
-                        </tr>
-                    `).join('');
+                                    <tr>
+                                        <td>${t.tipo}</td>
+                                        <td class="texto-verde texto-negrito">R$ ${t.valor.toFixed(2)}</td>
+                                        <td>R$ ${t.taxa.toFixed(2)}</td>
+                                        <td>${t.descricao || '-'}</td>
+                                        <td>${t.nomeDestinatario || t.nomeRemetente || '-'}</td>
+                                        <td>${formatarData(t.realizadaEm)}</td>
+                                    </tr>
+                                `).join('');
             });
         }
 
@@ -721,6 +764,43 @@
                 carregarContas();
             }
         });
+
+        function abrirExtratoModal(contaId, contaTipo) {
+            document.getElementById('extratoContaId').textContent = contaId;
+            document.getElementById('extratoContaTipo').textContent = contaTipo;
+
+            fetch(BASE + '/contas/' + contaId + '/transacoes', {
+                headers: { 'Authorization': 'Bearer ' + token }
+            }).then(res => res.json()).then(transacoes => {
+                const tbody = document.getElementById('extratoModalTabela');
+                if (transacoes.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" class="texto-discreto" style="text-align: center; padding: 20px;">Nenhuma transação.</td></tr>';
+                } else {
+                    tbody.innerHTML = transacoes.map(t => `
+                        <tr>
+                            <td>${t.tipo}</td>
+                            <td class="texto-verde texto-negrito">R$ ${t.valor.toFixed(2)}</td>
+                            <td>R$ ${t.taxa.toFixed(2)}</td>
+                            <td>${t.descricao || '-'}</td>
+                            <td>${t.nomeDestinatario || t.nomeRemetente || '-'}</td>
+                            <td>${formatarData(t.realizadaEm)}</td>
+                        </tr>
+                    `).join('');
+                }
+            }).catch(() => {
+                document.getElementById('extratoModalTabela').innerHTML = '<tr><td colspan="6" class="texto-discreto" style="text-align: center; padding: 20px;">Erro ao carregar extrato.</td></tr>';
+            });
+
+            abrirModal('modalExtrato');
+        }
+
+        function abrirModal(idModal) {
+            document.getElementById(idModal).classList.add('ativo');
+        }
+
+
+
     </script>
+
 </body>
 </html>
