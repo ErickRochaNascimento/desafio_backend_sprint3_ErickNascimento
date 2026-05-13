@@ -232,18 +232,18 @@
             const usuarios = res.data;
             const tbody = document.getElementById('listaUsuariosAdmin');
             tbody.innerHTML = usuarios.map(u => `
-                        <tr>
-                            <td>${u.id}</td>
-                            <td>${u.nome}</td>
-                            <td>${u.email}</td>
-                            <td>${u.cpf}</td>
-                            <td><span class="badge" style="background: ${u.perfil === 'admin' ? '#512BD4' : '#198754'}">${u.perfil}</span></td>
-                            <td>${u.qtdContas}</td>
-                            <td>
-                                <button class="btn btn-sm btn-primario" onclick="verDetalhesUsuario(${u.id})">Ver Contas</button>
-                            </td>
-                        </tr>
-                    `).join('');
+                                <tr>
+                                    <td>${u.id}</td>
+                                    <td>${u.nome}</td>
+                                    <td>${u.email}</td>
+                                    <td>${u.cpf}</td>
+                                    <td><span class="badge" style="background: ${u.perfil === 'admin' ? '#512BD4' : '#198754'}">${u.perfil}</span></td>
+                                    <td>${u.qtdContas}</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-primario" onclick="verDetalhesUsuario(${u.id})">Ver Contas</button>
+                                    </td>
+                                </tr>
+                            `).join('');
         }
 
         function filtrarUsuarios() {
@@ -282,22 +282,21 @@
                                     </thead>
                                     <tbody>
                                         ${c.extrato.map(t => {
-                let corValor = 'texto-negrito';
-                if (t.tipo === 'Saque') {
-                    corValor = 'texto-negrito texto-vermelho';
-                } else if (t.tipo === 'Deposito') {
-                    corValor = 'texto-negrito texto-verde';
-                } else if (t.tipo === 'Transferencia') {
-                    corValor = 'texto-negrito texto-vermelho';
-                }
-                return `
+                                            let corValor = 'texto-negrito';
+                                            const ehSaque = t.tipo === 'Saque';
+                                            const ehDeposito = t.tipo === 'Deposito';
+                                            const ehTransferencia = t.tipo === 'Transferencia';
+                                            const negativo = ehSaque || ehTransferencia;
+                                            if (negativo) corValor = 'texto-negrito texto-vermelho';
+                                            else if (ehDeposito) corValor = 'texto-negrito texto-verde';
+                                            return `
                                                 <tr>
                                                     <td>${t.tipo}</td>
-                                                    <td class="${corValor}">${formatarMoeda(t.valor)}</td>
+                                                    <td class="${corValor}">${formatarValorExtrato(t.valor, negativo)}</td>
                                                     <td>${formatarData(t.data)}</td>
                                                 </tr>
                                             `;
-            }).join('')}
+                                        }).join('')}
                                     </tbody>
                                 </table>
                             </div>
@@ -372,24 +371,22 @@
             const transacoes = res.data;
             const tbody = document.getElementById('extratoGeralAdmin');
             tbody.innerHTML = transacoes.map(t => {
-                let corValor = 'texto-negrito';
-                if (t.tipo === 'Saque') {
-                    corValor = 'texto-negrito texto-vermelho';
-                } else if (t.tipo === 'Deposito') {
-                    corValor = 'texto-negrito texto-verde';
-                } else if (t.tipo === 'Transferencia') {
-                    corValor = 'texto-negrito texto-vermelho';
-                }
+                const ehSaque = t.tipo === 'Saque';
+                const ehDeposito = t.tipo === 'Deposito';
+                const ehTransferencia = t.tipo === 'Transferencia';
+                const negativo = ehSaque || ehTransferencia;
+                let corValor = negativo ? 'texto-negrito texto-vermelho' : 'texto-negrito texto-verde';
+                const valorFormatado = formatarValorExtrato(t.valor, negativo);
                 return `
-                        <tr>
-                            <td>${t.tipo}</td>
-                            <td class="${corValor}">${formatarMoeda(t.valor)}</td>
-                            <td>${formatarMoeda(t.taxa || 0)}</td>
-                            <td>${t.usuario}</td>
-                            <td>${t.descricao || '-'}</td>
-                            <td>${formatarData(t.data)}</td>
-                        </tr>
-                    `;
+                    <tr>
+                        <td>${t.tipo}</td>
+                        <td class="${corValor}">${valorFormatado}</td>
+                        <td>${formatarMoeda(t.taxa || 0)}</td>
+                        <td>${t.usuario}</td>
+                        <td>${t.descricao || '-'}</td>
+                        <td>${formatarData(t.data)}</td>
+                    </tr>
+                `;
             }).join('');
         }
 

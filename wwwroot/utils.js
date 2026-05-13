@@ -50,18 +50,26 @@ function mostrarMsg(id, texto, tipo) {
     el.textContent = texto;
     el.classList.remove('oculto');
 
-    // Forçar cores conforme solicitado
+    // Cores claras/contraste para sucesso e erro
     if (tipo === 'success') {
-        el.style.color = '#75d8a4'; // Verde
+        el.style.color = '#0f5132';
+        el.style.backgroundColor = 'rgba(25,135,84,0.12)';
         el.style.borderColor = '#198754';
-    } else {
-        el.style.color = '#f5a0a7'; // Vermelho
+    } else if (tipo === 'danger' || tipo === 'warning') {
+        el.style.color = '#842029';
+        el.style.backgroundColor = 'rgba(220,53,69,0.08)';
         el.style.borderColor = '#dc3545';
+    } else {
+        el.style.color = '';
+        el.style.backgroundColor = '';
+        el.style.borderColor = '';
     }
+}
 
-    // Garantir cores específicas conforme solicitado (ajustado para tema escuro)
-    if (tipo === 'success') el.style.color = '#75d8a4'; // Verde claro para sucesso no tema escuro
-    if (tipo === 'danger' || tipo === 'warning') el.style.color = '#f5a0a7'; // Vermelho claro para erro no tema escuro
+function formatarValorExtrato(valor, negativo) {
+    // retorna string já com "R$" e com "-" se negativo (usa formatarMoeda existente)
+    const absoluto = formatarMoeda(Math.abs(valor));
+    return (negativo ? '- ' : '') + absoluto;
 }
 
 function limparMsg(id) {

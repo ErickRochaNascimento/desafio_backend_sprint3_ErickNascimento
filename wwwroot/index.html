@@ -616,6 +616,7 @@
                 document.getElementById('saldoValor').textContent = 'R$ ' + conta.saldo.toFixed(2);
                 document.getElementById('saldoContaOperacao').classList.remove('oculto');
                 contaAtualSaldo = conta.saldo;
+                carregarContas();
             });
         }
 
@@ -678,28 +679,29 @@
                     return;
                 }
                 tbody.innerHTML = transacoes.map(t => {
+                    const ehSaque = t.tipo === 'Saque';
+                    const ehDeposito = t.tipo === 'Deposito';
+                    const ehTransferencia = t.tipo === 'Transferencia';
+                    // Para transferência: se existe nomeDestinatario significa que a operação saiu desta conta (enviada)
+                    const transferenciaEnviada = ehTransferencia && !!t.nomeDestinatario;
+                    const negativo = ehSaque || transferenciaEnviada;
+
                     let corValor = 'texto-negrito';
-                    if (t.tipo === 'Saque') {
-                        corValor = 'texto-negrito texto-vermelho';
-                    } else if (t.tipo === 'Deposito') {
-                        corValor = 'texto-negrito texto-verde';
-                    } else if (t.tipo === 'Transferencia') {
-                        if (t.nomeDestinatario) {
-                            corValor = 'texto-negrito texto-vermelho';
-                        } else {
-                            corValor = 'texto-negrito texto-verde';
-                        }
-                    }
+                    if (negativo) corValor = 'texto-negrito texto-vermelho';
+                    else if (ehDeposito || (ehTransferencia && !transferenciaEnviada)) corValor = 'texto-negrito texto-verde';
+
+                    const valorFormatado = formatarValorExtrato(t.valor, negativo);
+
                     return `
-                            <tr>
-                                <td>${t.tipo}</td>
-                                <td class="${corValor}">R$ ${t.valor.toFixed(2)}</td>
-                                <td>R$ ${t.taxa.toFixed(2)}</td>
-                                <td>${t.descricao || '-'}</td>
-                                <td>${t.nomeDestinatario || t.nomeRemetente || '-'}</td>
-                                <td>${formatarData(t.realizadaEm)}</td>
-                            </tr>
-                        `;
+                <tr>
+                    <td>${t.tipo}</td>
+                    <td class="${corValor}">${valorFormatado}</td>
+                    <td>R$ ${t.taxa.toFixed(2)}</td>
+                    <td>${t.descricao || '-'}</td>
+                    <td>${t.nomeDestinatario || t.nomeRemetente || '-'}</td>
+                    <td>${formatarData(t.realizadaEm)}</td>
+                </tr>
+            `;
                 }).join('');
             });
         }
@@ -722,10 +724,13 @@
             }).then(res => res.json()).then(data => {
                 mostrarMsg('msgEditar', data.mensagem, data.mensagem.includes('sucesso') ? 'success' : 'danger');
                 if (data.mensagem.includes('sucesso')) {
-                    setTimeout(() => fecharModal('modalEditar'), 2000);
-                    alert('E-mail alterado! Por favor, faça login novamente.');
-                    sair();
-                    fecharModal('modalEditar');
+                    // Notifica painel admin sobre a alteração
+                    notificarAlteracaoAdmin();
+                    setTimeout(() => {
+                        fecharModal('modalEditar');
+                        alert('Senha alterada! Por favor, faça login novamente.');
+                        sair();
+                    }, 1500);
                 }
             }).catch(() => mostrarMsg('msgEditar', 'Erro ao conectar.', 'danger'));
         }
@@ -817,28 +822,28 @@
                     tbody.innerHTML = '<tr><td colspan="6" class="texto-discreto" style="text-align: center; padding: 20px;">Nenhuma transacao.</td></tr>';
                 } else {
                     tbody.innerHTML = transacoes.map(t => {
+                        const ehSaque = t.tipo === 'Saque';
+                        const ehDeposito = t.tipo === 'Deposito';
+                        const ehTransferencia = t.tipo === 'Transferencia';
+                        const transferenciaEnviada = ehTransferencia && !!t.nomeDestinatario;
+                        const negativo = ehSaque || transferenciaEnviada;
+
                         let corValor = 'texto-negrito';
-                        if (t.tipo === 'Saque') {
-                            corValor = 'texto-negrito texto-vermelho';
-                        } else if (t.tipo === 'Deposito') {
-                            corValor = 'texto-negrito texto-verde';
-                        } else if (t.tipo === 'Transferencia') {
-                            if (t.nomeDestinatario) {
-                                corValor = 'texto-negrito texto-vermelho';
-                            } else {
-                                corValor = 'texto-negrito texto-verde';
-                            }
-                        }
+                        if (negativo) corValor = 'texto-negrito texto-vermelho';
+                        else if (ehDeposito || (ehTransferencia && !transferenciaEnviada)) corValor = 'texto-negrito texto-verde';
+
+                        const valorFormatado = formatarValorExtrato(t.valor, negativo);
+
                         return `
-                                <tr>
-                                    <td>${t.tipo}</td>
-                                    <td class="${corValor}">R$ ${t.valor.toFixed(2)}</td>
-                                    <td>R$ ${t.taxa.toFixed(2)}</td>
-                                    <td>${t.descricao || '-'}</td>
-                                    <td>${t.nomeDestinatario || t.nomeRemetente || '-'}</td>
-                                    <td>${formatarData(t.realizadaEm)}</td>
-                                </tr>
-                            `;
+                    <tr>
+                        <td>${t.tipo}</td>
+                        <td class="${corValor}">${valorFormatado}</td>
+                        <td>R$ ${t.taxa.toFixed(2)}</td>
+                        <td>${t.descricao || '-'}</td>
+                        <td>${t.nomeDestinatario || t.nomeRemetente || '-'}</td>
+                        <td>${formatarData(t.realizadaEm)}</td>
+                    </tr>
+                `;
                     }).join('');
                 }
             }).catch(() => {
