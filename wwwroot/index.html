@@ -6,6 +6,7 @@
     <title>.NET Bank</title>
     <link rel="stylesheet" href="style.css">
     <link rel="icon" href="./imagens/dotnet.png" type="image/x-icon">
+    <script src="utils.js"></script>
 </head>
 <body>
 
@@ -59,7 +60,7 @@
 
             </h4>
             <h4 class="titulo-pagina">Usuario: <span id="nomeUsuario" class="texto-azul"></span></h4>
-            <button id="btnAdmin" class="botao-pequeno oculto" onclick="abrirPainelAdmin()">Painel Admin</button>
+            <button id="btnAdmin" class="botao botao-primario botao-pequeno oculto" onclick="abrirPainelAdmin()">Painel Admin</button>
 
             <div class="linha-flex">
                 <button class="botao botao-primario botao-pequeno" onclick="abrirModalEditar()">Editar Usuário</button>
@@ -206,9 +207,8 @@
     </div>
 
     <script>
-        var BASE = 'https://localhost:7200/api';
-        var token = '';
         var contaSelecionadaId = null;
+
 
         function toggleCampoDestino() {
             var tipo = document.getElementById('tipoOp').value;
@@ -219,14 +219,6 @@
                 campo.classList.add('oculto');
                 document.getElementById('contaDest').value = '';
             }
-        }
-
-        function mostrarMsg(id, texto, tipo) {
-            var mapa = { success: 'alerta-sucesso', danger: 'alerta-erro', warning: 'alerta-aviso' };
-            var el = document.getElementById(id);
-            el.className = 'alerta ' + (mapa[tipo] || 'alerta-info');
-            el.textContent = texto;
-            el.classList.remove('oculto');
         }
 
         function toggleRegistro() {
@@ -627,10 +619,10 @@
         }
 
         function abrirPainelAdmin() {
-            sessionStorage.setItem('adminToken', token);
-            sessionStorage.setItem('adminNome', document.getElementById('nomeUsuario').textContent);
+            salvarToken(token, document.getElementById('nomeUsuario').textContent);
             window.location.href = 'admin.html';
         }
+
 
         function carregarUsuariosAdmin() {
             fetch(BASE + '/admin/usuarios', {
@@ -638,16 +630,16 @@
             }).then(res => res.json()).then(usuarios => {
                 const tbody = document.getElementById('listaUsuariosAdmin');
                 tbody.innerHTML = usuarios.map(u => `
-            <tr>
-                <td>${u.id}</td>
-                <td>${u.nome}</td>
-                <td>${u.email}</td>
-                <td><span class="emblema">${u.perfil}</span></td>
-                <td>
-                    <button class="botao-pequeno" onclick="verDetalhesUsuario(${u.id})">Ver Contas</button>
-                </td>
-            </tr>
-        `).join('');
+                <tr>
+                    <td>${u.id}</td>
+                    <td>${u.nome}</td>
+                    <td>${u.email}</td>
+                    <td><span class="emblema">${u.perfil}</span></td>
+                    <td>
+                        <button class="botao-pequeno" onclick="verDetalhesUsuario(${u.id})">Ver Contas</button>
+                    </td>
+                </tr>
+            `).join('');
             });
         }
     </script>

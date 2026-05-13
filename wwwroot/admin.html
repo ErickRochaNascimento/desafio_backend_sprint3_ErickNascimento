@@ -1,421 +1,373 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>.NET Bank — Admin Portal</title>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>.NET Bank - Painel Admin</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="./imagens/dotnet.png" type="image/x-icon">
 </head>
 <body>
 
-<div class="layout">
-
-  <!-- ══ SIDEBAR ══ -->
-  <aside class="sidebar">
-    <div class="sidebar-marca">
-      <img src="./imagens/dotnet.png" alt=".NET" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/e/ee/.NET_Core_Logo.svg'">
-      <div>
-        <h2><span>Bank</span></h2>
-        <p>Admin Portal</p>
-      </div>
-    </div>
-
-    <nav class="sidebar-nav">
-      <div class="nav-item ativo" onclick="irPara('dashboard')" id="nav-dashboard">
-        <span class="icone">⊞</span>
-        <span>Dashboard</span>
-      </div>
-      <div class="nav-item" onclick="irPara('usuarios')" id="nav-usuarios">
-        <span class="icone">👥</span>
-        <span>Usuários</span>
-      </div>
-      <div class="nav-item" onclick="irPara('extrato')" id="nav-extrato">
-        <span class="icone">📊</span>
-        <span>Extrato Geral</span>
-      </div>
-      <div class="nav-item" onclick="irPara('criar-admin')" id="nav-criar-admin">
-        <span class="icone">🛡</span>
-        <span>Criar Admin</span>
-      </div>
-    </nav>
-
-    <div class="sidebar-rodape">
-      <div class="admin-info">
-        <div class="admin-avatar" id="adminAvatar">A</div>
-        <div>
-          <div class="admin-nome" id="adminNome">Admin</div>
-          <div class="admin-cargo">Administrator</div>
-        </div>
-      </div>
-      <button class="btn btn-cinza btn-sm btn-largura" onclick="voltarBanco()">← Voltar ao Banco</button>
-    </div>
-  </aside>
-
-  <!-- ══ CONTEÚDO ══ -->
-  <main class="conteudo">
-
-    <!-- DASHBOARD -->
-    <div id="paginaDashboard">
-      <div class="pagina-header">
-        <div>
-          <div class="pagina-titulo">Dashboard</div>
-          <div class="pagina-subtitulo">Visão geral do sistema</div>
-        </div>
-      </div>
-      <div class="stats-grid" id="statsGrid">
-        <div class="loading"><div class="spinner"></div>Carregando...</div>
-      </div>
-      <div class="painel">
-        <div class="painel-header">
-          <div class="painel-titulo">Últimas Transações</div>
-          <button class="btn btn-outline btn-sm" onclick="irPara('extrato')">Ver todas →</button>
-        </div>
-        <div id="dashExtrato"><div class="loading"><div class="spinner"></div>Carregando...</div></div>
-      </div>
-    </div>
-
-    <!-- USUÁRIOS -->
-    <div id="paginaUsuarios" class="oculto">
-      <div class="pagina-header">
-        <div>
-          <div class="pagina-titulo">Usuários</div>
-          <div class="pagina-subtitulo">Todos os usuários do sistema</div>
-        </div>
-        <input class="busca-input" placeholder="🔍 Buscar nome ou e-mail..." oninput="filtrarUsuarios(this.value)">
-      </div>
-      <div class="painel">
-        <div id="tabelaUsuarios"><div class="loading"><div class="spinner"></div>Carregando...</div></div>
-      </div>
-    </div>
-
-    <!-- EXTRATO GERAL -->
-    <div id="paginaExtrato" class="oculto">
-      <div class="pagina-header">
-        <div>
-          <div class="pagina-titulo">Extrato Geral</div>
-          <div class="pagina-subtitulo">Últimas 50 transações do banco</div>
-        </div>
-        <button class="btn btn-outline btn-sm" onclick="carregarExtratoGeral()">↺ Atualizar</button>
-      </div>
-      <div class="painel">
-        <div id="tabelaExtrato"><div class="loading"><div class="spinner"></div>Carregando...</div></div>
-      </div>
-    </div>
-
-    <!-- CRIAR ADMIN -->
-    <div id="paginaCriarAdmin" class="oculto">
-      <div class="pagina-header">
-        <div>
-          <div class="pagina-titulo">Criar Administrador</div>
-          <div class="pagina-subtitulo">Novo acesso administrativo</div>
-        </div>
-      </div>
-      <div class="painel" style="max-width:600px">
-        <div class="painel-header"><div class="painel-titulo">🛡 Dados do novo admin</div></div>
-        <div style="padding:24px">
-          <div class="form-grid">
-            <div class="campo-grupo">
-              <label>Nome completo</label>
-              <input id="adNome" type="text" placeholder="Nome do administrador">
+    <!-- LAYOUT PRINCIPAL -->
+    <div class="layout">
+        <!-- SIDEBAR -->
+        <div class="sidebar">
+            <div class="sidebar-marca">
+                <img src="./imagens/dotnet.png" alt="Logo">
+                <div>
+                    <h2>Net<span>Bank</span></h2>
+                    <p>Admin</p>
+                </div>
             </div>
-            <div class="campo-grupo">
-              <label>E-mail</label>
-              <input id="adEmail" type="email" placeholder="email@banco.com">
+
+            <nav class="sidebar-nav">
+                <div class="nav-item ativo" onclick="mostrarAba('abaUsuarios')">
+                    <span class="icone">👥</span>
+                    <span>Usuários</span>
+                </div>
+                <div class="nav-item" onclick="mostrarAba('abaCriarAdmin')">
+                    <span class="icone">➕</span>
+                    <span>Novo Admin</span>
+                </div>
+                <div class="nav-item" onclick="mostrarAba('abaExtrato')">
+                    <span class="icone">📊</span>
+                    <span>Extrato Geral</span>
+                </div>
+            </nav>
+
+            <div class="sidebar-rodape">
+                <div class="admin-info">
+                    <div class="admin-avatar" id="adminAvatar">A</div>
+                    <div>
+                        <div class="admin-nome" id="adminNome">Admin</div>
+                        <div class="admin-cargo">Administrador</div>
+                    </div>
+                </div>
+                <button class="btn btn-cinza btn-largura" onclick="fazerLogout()">Sair</button>
             </div>
-            <div class="campo-grupo">
-              <label>CPF (somente números)</label>
-              <input id="adCpf" type="text" placeholder="00000000000" maxlength="11">
-            </div>
-            <div class="campo-grupo">
-              <label>Data de Nascimento</label>
-              <input id="adNasc" type="date">
-            </div>
-            <div class="campo-grupo form-full">
-              <label>Senha</label>
-              <input id="adSenha" type="password" placeholder="Mínimo 6 caracteres">
-            </div>
-          </div>
-          <button class="btn btn-primario btn-largura" style="margin-top:20px" onclick="criarAdmin()">🛡 Criar Administrador</button>
-          <div id="msgCriarAdmin" class="oculto"></div>
         </div>
-      </div>
+
+        <!-- CONTEÚDO -->
+        <div class="conteudo">
+
+            <!-- ABA: USUÁRIOS -->
+            <div id="abaUsuarios">
+                <div class="pagina-header">
+                    <div>
+                        <h1 class="pagina-titulo">Usuários</h1>
+                        <p class="pagina-subtitulo">Gerenciamento de clientes e administradores</p>
+                    </div>
+                    <input type="text" class="busca-input" id="buscaUsuarios" placeholder="Buscar por nome ou email..." oninput="filtrarUsuarios()">
+                </div>
+
+                <div class="painel">
+                    <div class="painel-header">
+                        <h3 class="painel-titulo">Lista de Usuários</h3>
+                    </div>
+                    <div style="overflow-x: auto;">
+                        <table class="tabela">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nome</th>
+                                    <th>Email</th>
+                                    <th>CPF</th>
+                                    <th>Perfil</th>
+                                    <th>Contas</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="listaUsuariosAdmin"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ABA: CRIAR NOVO ADMIN -->
+            <div id="abaCriarAdmin" class="oculto">
+                <div class="pagina-header">
+                    <div>
+                        <h1 class="pagina-titulo">Criar Novo Administrador</h1>
+                        <p class="pagina-subtitulo">Registre um novo usuário com permissões de admin</p>
+                    </div>
+                </div>
+
+                <div class="painel" style="max-width: 600px;">
+                    <div class="painel-header">
+                        <h3 class="painel-titulo">Formulário de Registro</h3>
+                    </div>
+                    <div style="padding: 20px;">
+                        <div style="margin-bottom: 16px;">
+                            <label class="rotulo">Nome Completo</label>
+                            <input type="text" id="adminNomeInput" class="campo-texto" placeholder="Nome do novo admin">
+                        </div>
+
+                        <div style="margin-bottom: 16px;">
+                            <label class="rotulo">Email</label>
+                            <input type="email" id="adminEmailInput" class="campo-email" placeholder="email@example.com">
+                        </div>
+
+                        <div style="margin-bottom: 16px;">
+                            <label class="rotulo">CPF</label>
+                            <input type="text" id="adminCpfInput" class="campo-texto" placeholder="000.000.000-00" maxlength="14" oninput="mascaraCPF(this)">
+                            <small class="texto-discreto" style="display: block; margin-top: 4px;">CPF será validado automaticamente</small>
+                        </div>
+
+                        <div style="margin-bottom: 16px;">
+                            <label class="rotulo">Data de Nascimento</label>
+                            <input type="date" id="adminDataNascInput" class="campo-texto">
+                        </div>
+
+                        <div style="margin-bottom: 16px;">
+                            <label class="rotulo">Senha</label>
+                            <input type="password" id="adminSenhaInput" class="campo-senha" placeholder="Mínimo 6 caracteres">
+                        </div>
+
+                        <div id="msgCriarAdmin" class="oculto" style="margin-bottom: 16px;"></div>
+
+                        <button class="btn btn-primario btn-largura" onclick="criarNovoAdmin()">Criar Administrador</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ABA: EXTRATO GERAL -->
+            <div id="abaExtrato" class="oculto">
+                <div class="pagina-header">
+                    <div>
+                        <h1 class="pagina-titulo">Extrato Geral</h1>
+                        <p class="pagina-subtitulo">Últimas 50 transações do banco</p>
+                    </div>
+                </div>
+
+                <div class="painel">
+                    <div class="painel-header">
+                        <h3 class="painel-titulo">Movimentações</h3>
+                    </div>
+                    <div style="overflow-x: auto;">
+                        <table class="tabela">
+                            <thead>
+                                <tr>
+                                    <th>Tipo</th>
+                                    <th>Valor</th>
+                                    <th>Usuário</th>
+                                    <th>Descrição</th>
+                                    <th>Data</th>
+                                </tr>
+                            </thead>
+                            <tbody id="extratoGeralAdmin"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
     </div>
 
-  </main>
-</div>
+    <!-- MODAL: DETALHES DO USUÁRIO -->
+    <div class="fundo-modal" id="modalDetalhesUsuario">
+        <div class="caixa-modal" style="max-width: 700px;">
+            <div class="cabecalho-modal">
+                <h5>Detalhes do Usuário</h5>
+                <button class="fechar-modal" onclick="fecharModal('modalDetalhesUsuario')">✕</button>
+            </div>
+            <div class="corpo-modal">
+                <div style="margin-bottom: 20px;">
+                    <h4 class="titulo-cartao" id="detalhesNomeUsuario"></h4>
+                    <p class="texto-discreto" id="detalhesEmailUsuario"></p>
+                </div>
 
-<!-- MODAL DETALHES USUÁRIO -->
-<div class="modal-fundo" id="modalDetalhes">
-  <div class="modal-caixa">
-    <div class="modal-header">
-      <div class="modal-titulo">👤 Detalhes do Usuário</div>
-      <button class="fechar-modal" onclick="fecharModal()">✕</button>
+                <h5 class="titulo-secao">Contas</h5>
+                <div id="detalhesCont asUsuario" style="margin-bottom: 20px;"></div>
+
+                <div id="msgDetalhes" class="oculto"></div>
+            </div>
+        </div>
     </div>
-    <div class="modal-corpo" id="modalConteudo">
-      <div class="loading"><div class="spinner"></div>Carregando...</div>
-    </div>
-  </div>
-</div>
 
-<script>
-  var BASE = 'https://localhost:7200/api';
-  var token = '';
-  var nomeAdmin = '';
-  var todosUsuarios = [];
+    <script src="utils.js"></script>
+    <script>
+        // ── INICIALIZAÇÃO ──
+        document.addEventListener('DOMContentLoaded', function () {
+            recuperarToken();
+            if (!token) {
+                window.location.href = 'index.html';
+                return;
+            }
+            const adminNome = sessionStorage.getItem('adminNome') || 'Admin';
+            document.getElementById('adminNome').textContent = adminNome;
+            document.getElementById('adminAvatar').textContent = adminNome.charAt(0).toUpperCase();
 
-  // ── INIT: recebe token e nome do index.html via sessionStorage ──
-  function init() {
-    token = sessionStorage.getItem('adminToken') || '';
-    nomeAdmin = sessionStorage.getItem('adminNome') || 'Admin';
-
-    if (!token) {
-      alert('Acesso negado. Faça login como administrador.');
-      window.location.href = 'index.html';
-      return;
-    }
-
-    document.getElementById('adminNome').textContent = nomeAdmin;
-    document.getElementById('adminAvatar').textContent = nomeAdmin.charAt(0).toUpperCase();
-    carregarDashboard();
-  }
-
-  function voltarBanco() {
-    window.location.href = 'index.html';
-  }
-
-  // ── NAVEGAÇÃO ──
-  function irPara(pagina) {
-    var paginas = ['dashboard', 'usuarios', 'extrato', 'criar-admin'];
-    paginas.forEach(function(p) {
-      var el = document.getElementById('pagina' + cap(p));
-      if (el) el.classList.add('oculto');
-      var nav = document.getElementById('nav-' + p);
-      if (nav) nav.classList.remove('ativo');
-    });
-    document.getElementById('pagina' + cap(pagina)).classList.remove('oculto');
-    document.getElementById('nav-' + pagina).classList.add('ativo');
-
-    if (pagina === 'usuarios') carregarUsuarios();
-    if (pagina === 'extrato')  carregarExtratoGeral();
-  }
-
-  function cap(str) {
-    return str.split('-').map(function(p) {
-      return p.charAt(0).toUpperCase() + p.slice(1);
-    }).join('');
-  }
-
-  // ── DASHBOARD ──
-  function carregarDashboard() {
-    Promise.all([
-      fetch(BASE + '/admin/usuarios', { headers: { 'Authorization': 'Bearer ' + token } }).then(function(r) { return r.json(); }),
-      fetch(BASE + '/admin/extrato-geral', { headers: { 'Authorization': 'Bearer ' + token } }).then(function(r) { return r.json(); })
-    ]).then(function(res) {
-      var usuarios = Array.isArray(res[0]) ? res[0] : [];
-      var extrato  = Array.isArray(res[1]) ? res[1] : [];
-
-      var clientes = usuarios.filter(function(u) { return u.perfil === 'cliente'; }).length;
-      var admins   = usuarios.filter(function(u) { return u.perfil === 'admin'; }).length;
-      var contas   = usuarios.reduce(function(acc, u) { return acc + (u.quantidadeContas || 0); }, 0);
-
-      document.getElementById('statsGrid').innerHTML =
-        stat('👥', clientes, 'Clientes') +
-        stat('🛡', admins, 'Admins') +
-        stat('🏦', contas, 'Contas Ativas') +
-        stat('💸', extrato.length, 'Transações Recentes');
-
-      renderExtrato('dashExtrato', extrato.slice(0, 10));
-    }).catch(function(e) {
-      document.getElementById('statsGrid').innerHTML = '<p style="color:var(--vermelho);padding:20px;font-size:13px">Erro ao carregar. Verifique sua sessão.</p>';
-    });
-  }
-
-  function stat(icone, valor, label) {
-    return '<div class="stat-card"><div class="stat-icone">' + icone + '</div>' +
-      '<div class="stat-valor">' + valor + '</div>' +
-      '<div class="stat-label">' + label + '</div></div>';
-  }
-
-  // ── USUÁRIOS ──
-  function carregarUsuarios() {
-    document.getElementById('tabelaUsuarios').innerHTML = '<div class="loading"><div class="spinner"></div>Carregando...</div>';
-    fetch(BASE + '/admin/usuarios', { headers: { 'Authorization': 'Bearer ' + token } })
-    .then(function(r) { return r.json(); })
-    .then(function(u) { todosUsuarios = u; renderUsuarios(u); })
-    .catch(function() {
-      document.getElementById('tabelaUsuarios').innerHTML = '<div class="loading" style="color:var(--vermelho)">Erro ao carregar.</div>';
-    });
-  }
-
-  function filtrarUsuarios(busca) {
-    var b = busca.toLowerCase();
-    renderUsuarios(todosUsuarios.filter(function(u) {
-      return u.nome.toLowerCase().includes(b) || u.email.toLowerCase().includes(b);
-    }));
-  }
-
-  function renderUsuarios(usuarios) {
-    if (!usuarios.length) {
-      document.getElementById('tabelaUsuarios').innerHTML = '<div class="loading">Nenhum usuário encontrado.</div>';
-      return;
-    }
-    var html = '<table class="tabela"><thead><tr>' +
-      '<th>Nome</th><th>E-mail</th><th>CPF</th><th>Perfil</th><th>Contas</th><th>Ação</th>' +
-      '</tr></thead><tbody>';
-
-    usuarios.forEach(function(u) {
-      html += '<tr>' +
-        '<td><strong>' + u.nome + '</strong></td>' +
-        '<td style="font-family:var(--mono);font-size:12px;color:var(--texto-dim)">' + u.email + '</td>' +
-        '<td style="font-family:var(--mono);font-size:12px">' + (u.cpf || '—') + '</td>' +
-        '<td><span class="badge ' + (u.perfil === 'admin' ? 'badge-admin' : 'badge-cliente') + '">' + u.perfil + '</span></td>' +
-        '<td><span class="badge badge-verde">' + (u.quantidadeContas || 0) + '</span></td>' +
-        '<td><button class="btn btn-outline btn-sm" onclick="verDetalhes(' + u.id + ')">Detalhes</button></td>' +
-        '</tr>';
-    });
-
-    document.getElementById('tabelaUsuarios').innerHTML = html + '</tbody></table>';
-  }
-
-  // ── DETALHES ──
-  function verDetalhes(id) {
-    document.getElementById('modalConteudo').innerHTML = '<div class="loading"><div class="spinner"></div>Carregando...</div>';
-    document.getElementById('modalDetalhes').classList.add('ativo');
-
-    fetch(BASE + '/admin/usuario/' + id + '/detalhes', { headers: { 'Authorization': 'Bearer ' + token } })
-    .then(function(r) { return r.json(); })
-    .then(function(dados) {
-      var u = dados.usuario || dados;
-      var contas = dados.contas || [];
-
-      var html = '<div class="info-grid">' +
-        info('Nome', u.nome) + info('E-mail', u.email) +
-        info('CPF', u.cpf || '—') +
-        info('Nascimento', u.dataNascimento ? new Date(u.dataNascimento).toLocaleDateString('pt-BR') : '—') +
-        info('Perfil', u.perfil) + info('ID', '#' + u.id) +
-        '</div>';
-
-      html += '<div style="font-size:10px;font-family:var(--mono);color:var(--texto-dim);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:12px">Contas (' + contas.length + ')</div>';
-
-      if (!contas.length) {
-        html += '<p style="color:var(--texto-dim);font-size:13px">Nenhuma conta.</p>';
-      } else {
-        contas.forEach(function(c) {
-          var txs = c.transacoes || [];
-          html += '<div class="conta-card">' +
-            '<div class="conta-header">' +
-            '<div><div class="conta-tipo">' + c.tipo + '</div><div style="font-size:11px;font-family:var(--mono);color:var(--texto-dim)">ID: ' + c.id + '</div></div>' +
-            '<div class="conta-saldo">R$ ' + (c.saldo || 0).toFixed(2) + '</div>' +
-            '</div>';
-
-          if (txs.length) {
-            html += '<div><div class="extrato-mini-titulo">Últimas transações</div>';
-            txs.slice(0, 5).forEach(function(t) {
-              var pos = t.tipo === 'Deposito' || (t.tipo === 'Transferencia' && !t.nomeDestinatario);
-              html += '<div class="extrato-linha">' +
-                '<span style="color:var(--texto-dim)">' + t.tipo + '</span>' +
-                '<span class="' + (pos ? 'val-positivo' : 'val-negativo') + '">' + (pos ? '+' : '-') + 'R$ ' + (t.valor || 0).toFixed(2) + '</span>' +
-                '<span style="color:var(--texto-dim);font-size:11px">' + new Date(t.realizadaEm).toLocaleDateString('pt-BR') + '</span>' +
-                '</div>';
-            });
-            html += '</div>';
-          } else {
-            html += '<div style="font-size:12px;color:var(--texto-dim);margin-top:8px">Sem transações.</div>';
-          }
-          html += '</div>';
+            carregarUsuarios();
+            carregarExtratoGeral();
         });
-      }
 
-      document.getElementById('modalConteudo').innerHTML = html;
-    }).catch(function() {
-      document.getElementById('modalConteudo').innerHTML = '<p style="color:var(--vermelho)">Erro ao carregar detalhes.</p>';
-    });
-  }
+        // ── NAVEGAÇÃO ENTRE ABAS ──
+        function mostrarAba(abaId) {
+            document.querySelectorAll('[id^="aba"]').forEach(aba => aba.classList.add('oculto'));
+            document.getElementById(abaId).classList.remove('oculto');
 
-  function info(r, v) {
-    return '<div><div class="info-rotulo">' + r + '</div><div class="info-valor">' + v + '</div></div>';
-  }
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('ativo'));
+            event.target.closest('.nav-item').classList.add('ativo');
+        }
 
-  function fecharModal() { document.getElementById('modalDetalhes').classList.remove('ativo'); }
-  document.getElementById('modalDetalhes').addEventListener('click', function(e) { if (e.target === this) fecharModal(); });
+        // ── USUÁRIOS ──
+        async function carregarUsuarios() {
+            const res = await fazerRequisicao('/admin/usuarios');
+            if (!res.ok) {
+                mostrarMsg('msgUsuarios', 'Erro ao carregar usuários', 'danger');
+                return;
+            }
 
-  // ── EXTRATO GERAL ──
-  function carregarExtratoGeral() {
-    document.getElementById('tabelaExtrato').innerHTML = '<div class="loading"><div class="spinner"></div>Carregando...</div>';
-    fetch(BASE + '/admin/extrato-geral', { headers: { 'Authorization': 'Bearer ' + token } })
-    .then(function(r) { return r.json(); })
-    .then(function(txs) { renderExtrato('tabelaExtrato', txs); })
-    .catch(function() {
-      document.getElementById('tabelaExtrato').innerHTML = '<div class="loading" style="color:var(--vermelho)">Erro ao carregar.</div>';
-    });
-  }
+            const usuarios = res.data;
+            const tbody = document.getElementById('listaUsuariosAdmin');
+            tbody.innerHTML = usuarios.map(u => `
+                    <tr>
+                        <td>${u.id}</td>
+                        <td>${u.nome}</td>
+                        <td>${u.email}</td>
+                        <td>${u.cpf}</td>
+                        <td><span class="badge" style="background: ${u.perfil === 'admin' ? '#512BD4' : '#198754'}">${u.perfil}</span></td>
+                        <td>${u.qtdContas}</td>
+                        <td>
+                            <button class="btn btn-sm btn-primario" onclick="verDetalhesUsuario(${u.id})">Ver Contas</button>
+                        </td>
+                    </tr>
+                `).join('');
+        }
 
-  function renderExtrato(elId, txs) {
-    if (!txs || !txs.length) {
-      document.getElementById(elId).innerHTML = '<div class="loading">Nenhuma transação.</div>';
-      return;
-    }
-    var html = '<table class="tabela"><thead><tr><th>Tipo</th><th>Valor</th><th>Taxa</th><th>Conta ID</th><th>Descrição</th><th>Data</th></tr></thead><tbody>';
-    txs.forEach(function(t) {
-      var cls = t.tipo === 'Deposito' ? 'tag-deposito' : t.tipo === 'Saque' ? 'tag-saque' : 'tag-transferencia';
-      var pos = t.tipo === 'Deposito';
-      html += '<tr>' +
-        '<td><span class="extrato-tag ' + cls + '">' + t.tipo + '</span></td>' +
-        '<td style="font-family:var(--mono)" class="' + (pos ? 'val-positivo' : 'val-negativo') + '">R$ ' + (t.valor || 0).toFixed(2) + '</td>' +
-        '<td style="font-family:var(--mono);color:var(--texto-dim)">R$ ' + (t.taxa || 0).toFixed(2) + '</td>' +
-        '<td style="font-family:var(--mono)">#' + t.contaId + '</td>' +
-        '<td style="color:var(--texto-dim);font-size:12px">' + (t.descricao || '—') + '</td>' +
-        '<td style="font-family:var(--mono);font-size:12px;color:var(--texto-dim)">' + new Date(t.realizadaEm).toLocaleString('pt-BR') + '</td>' +
-        '</tr>';
-    });
-    document.getElementById(elId).innerHTML = html + '</tbody></table>';
-  }
+        function filtrarUsuarios() {
+            const termo = document.getElementById('buscaUsuarios').value.toLowerCase();
+            const linhas = document.querySelectorAll('#listaUsuariosAdmin tr');
+            linhas.forEach(linha => {
+                const texto = linha.textContent.toLowerCase();
+                linha.style.display = texto.includes(termo) ? '' : 'none';
+            });
+        }
 
-  // ── CRIAR ADMIN ──
-  function criarAdmin() {
-    var body = {
-      nome: document.getElementById('adNome').value,
-      email: document.getElementById('adEmail').value,
-      cpf: document.getElementById('adCpf').value,
-      dataNascimento: document.getElementById('adNasc').value,
-      senha: document.getElementById('adSenha').value
-    };
+        async function verDetalhesUsuario(usuarioId) {
+            const res = await fazerRequisicao(`/admin/usuario/${usuarioId}/detalhes`);
+            if (!res.ok) {
+                mostrarMsg('msgDetalhes', 'Erro ao carregar detalhes', 'danger');
+                return;
+            }
 
-    if (!body.nome || !body.email || !body.cpf || !body.dataNascimento || !body.senha) {
-      mostrarMsg('msgCriarAdmin', 'Preencha todos os campos.', 'erro'); return;
-    }
-    if (body.cpf.length !== 11) {
-      mostrarMsg('msgCriarAdmin', 'CPF deve ter 11 dígitos.', 'erro'); return;
-    }
+            const usuario = res.data;
+            document.getElementById('detalhesNomeUsuario').textContent = usuario.nome;
+            document.getElementById('detalhesEmailUsuario').textContent = usuario.email;
 
-    fetch(BASE + '/admin/criar-admin', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
-      body: JSON.stringify(body)
-    }).then(function(r) { return r.json().then(function(d) { return { ok: r.ok, data: d }; }); })
-    .then(function(res) {
-      mostrarMsg('msgCriarAdmin', res.data.mensagem, res.ok ? 'sucesso' : 'erro');
-      if (res.ok) {
-        document.getElementById('adNome').value = '';
-        document.getElementById('adEmail').value = '';
-        document.getElementById('adCpf').value = '';
-        document.getElementById('adNasc').value = '';
-        document.getElementById('adSenha').value = '';
-      }
-    }).catch(function() { mostrarMsg('msgCriarAdmin', 'Erro ao conectar.', 'erro'); });
-  }
+            const contas = usuario.contas.map(c => `
+                    <div class="cartao" style="margin-bottom: 12px;">
+                        <div class="cartao-corpo">
+                            <p class="titulo-cartao">${c.tipo} - ${c.numeroConta}</p>
+                            <p class="texto-pequeno texto-discreto">Saldo: ${formatarMoeda(c.saldo)}</p>
+                            <h6 class="titulo-secao" style="margin-top: 12px; margin-bottom: 8px;">Extrato (últimas 10)</h6>
+                            <table class="tabela" style="font-size: 12px;">
+                                <thead>
+                                    <tr>
+                                        <th>Tipo</th>
+                                        <th>Valor</th>
+                                        <th>Data</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${c.extrato.map(t => `
+                                        <tr>
+                                            <td>${t.tipo}</td>
+                                            <td>${formatarMoeda(t.valor)}</td>
+                                            <td>${formatarData(t.data)}</td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                `).join('');
 
-  // ── HELPERS ──
-  function mostrarMsg(id, texto, tipo) {
-    var el = document.getElementById(id);
-    el.className = tipo === 'erro' ? 'msg-erro' : 'msg-sucesso';
-    el.textContent = texto;
-    el.classList.remove('oculto');
-    setTimeout(function() { el.classList.add('oculto'); }, 5000);
-  }
+            document.getElementById('detalhesContasUsuario').innerHTML = contas;
+            abrirModal('modalDetalhesUsuario');
+        }
 
-  init();
-</script>
+        // ── CRIAR NOVO ADMIN ──
+        async function criarNovoAdmin() {
+            const nome = document.getElementById('adminNomeInput').value;
+            const email = document.getElementById('adminEmailInput').value;
+            const cpfOriginal = document.getElementById('adminCpfInput').value;
+            const dataNasc = document.getElementById('adminDataNascInput').value;
+            const senha = document.getElementById('adminSenhaInput').value;
+
+            // Validações
+            if (!validarCampos([
+                { value: nome },
+                { value: email },
+                { value: cpfOriginal },
+                { value: dataNasc },
+                { value: senha }
+            ])) {
+                mostrarMsg('msgCriarAdmin', 'Preencha todos os campos.', 'warning');
+                return;
+            }
+
+            if (!validarCPF(cpfOriginal)) {
+                mostrarMsg('msgCriarAdmin', 'CPF inválido! Verifique os números digitados.', 'danger');
+                return;
+            }
+
+            if (senha.length < 6) {
+                mostrarMsg('msgCriarAdmin', 'Senha deve ter no mínimo 6 caracteres.', 'warning');
+                return;
+            }
+
+            const cpfLimpo = cpfOriginal.replace(/\D/g, "");
+
+            const res = await fazerRequisicao('/admin/criar-admin', 'POST', {
+                nome: nome,
+                email: email,
+                cpf: cpfLimpo,
+                dataNascimento: dataNasc,
+                senha: senha
+            });
+
+            if (res.ok) {
+                mostrarMsg('msgCriarAdmin', res.data.mensagem, 'success');
+                setTimeout(() => {
+                    limparModal('abaCriarAdmin');
+                    document.getElementById('adminNomeInput').value = '';
+                    document.getElementById('adminEmailInput').value = '';
+                    document.getElementById('adminCpfInput').value = '';
+                    document.getElementById('adminDataNascInput').value = '';
+                    document.getElementById('adminSenhaInput').value = '';
+                }, 2000);
+            } else {
+                mostrarMsg('msgCriarAdmin', res.data.mensagem || 'Erro ao criar admin', 'danger');
+            }
+        }
+
+        // ── EXTRATO GERAL ──
+        async function carregarExtratoGeral() {
+            const res = await fazerRequisicao('/admin/extrato-geral');
+            if (!res.ok) return;
+
+            const transacoes = res.data;
+            const tbody = document.getElementById('extratoGeralAdmin');
+            tbody.innerHTML = transacoes.map(t => `
+                    <tr>
+                        <td>${t.tipo}</td>
+                        <td>${formatarMoeda(t.valor)}</td>
+                        <td>${t.usuario}</td>
+                        <td>${t.descricao || '-'}</td>
+                        <td>${formatarData(t.data)}</td>
+                    </tr>
+                `).join('');
+        }
+
+        // ── LOGOUT ──
+        function fazerLogout() {
+            if (confirm('Deseja sair do painel admin?')) {
+                limparSessao();
+                window.location.href = 'index.html';
+            }
+        }
+    </script>
 </body>
 </html>
