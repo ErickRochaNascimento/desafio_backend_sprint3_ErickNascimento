@@ -35,12 +35,21 @@ public class AuthController : ControllerBase
         if (dto.Cpf.Length != 11 || !dto.Cpf.All(char.IsDigit))
             return BadRequest(new { mensagem = "CPF invalido." });
 
+        var novoPerfil = "cliente";
+
+        if (perfil == "admin" && User.Identity.IsAuthenticated && User.IsInRole("admin"))
+        {
+            novoPerfil = "admin";
+        }
+
+
         var usuario = new Usuario
         {
             Nome = dto.Nome,
             Email = dto.Email,
             Cpf = dto.Cpf,
             DataNascimento = dto.DataNascimento,
+            Perfil = novoPerfil,
             SenhaHash = BCrypt.Net.BCrypt.HashPassword(dto.Senha)
         };
 

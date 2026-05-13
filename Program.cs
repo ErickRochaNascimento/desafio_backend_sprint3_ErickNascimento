@@ -80,4 +80,25 @@ app.UseStaticFiles();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<AppDbContetext>();
+    if (!context.Usuarios.Any(u => u.Perfil == "admin"))
+    {
+        var admin = new Usuario
+        {
+            Nome = "Administrador Inicial",
+            Email = "admin@bank.com",
+            Cpf = "00000000000",
+            SenhaHash = BCrypt.Net.BCrypt.HashPassword("admin123"),
+            Perfil = "admin",
+            DataNascimento = DateTime.Now
+        };
+        context.Usuarios.Add(admin);
+        context.SaveChanges();
+    }
+}
+
+
 app.Run();
