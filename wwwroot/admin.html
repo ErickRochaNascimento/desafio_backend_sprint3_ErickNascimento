@@ -263,7 +263,7 @@
                         <div class="cartao-corpo">
                             <p class="titulo-cartao">${c.tipo} - ${c.numeroConta}</p>
                             <p class="texto-pequeno texto-discreto">Saldo: ${formatarMoeda(c.saldo)}</p>
-                            <h6 class="titulo-secao" style="margin-top: 12px; margin-bottom: 8px;">Extrato (últimas 10)</h6>
+                            <h6 class="titulo-secao" style="margin-top: 12px; margin-bottom: 8px;">Extrato (ultimas 10)</h6>
                             <table class="tabela" style="font-size: 12px;">
                                 <thead>
                                     <tr>
@@ -273,13 +273,23 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    ${c.extrato.map(t => `
-                                        <tr>
-                                            <td>${t.tipo}</td>
-                                            <td>${formatarMoeda(t.valor)}</td>
-                                            <td>${formatarData(t.data)}</td>
-                                        </tr>
-                                    `).join('')}
+                                    ${c.extrato.map(t => {
+                                        let corValor = 'texto-negrito';
+                                        if (t.tipo === 'Saque') {
+                                            corValor = 'texto-negrito texto-vermelho';
+                                        } else if (t.tipo === 'Deposito') {
+                                            corValor = 'texto-negrito texto-verde';
+                                        } else if (t.tipo === 'Transferencia') {
+                                            corValor = 'texto-negrito texto-vermelho';
+                                        }
+                                        return `
+                                            <tr>
+                                                <td>${t.tipo}</td>
+                                                <td class="${corValor}">${formatarMoeda(t.valor)}</td>
+                                                <td>${formatarData(t.data)}</td>
+                                            </tr>
+                                        `;
+                                    }).join('')}
                                 </tbody>
                             </table>
                         </div>
@@ -339,11 +349,11 @@
                     document.getElementById('adminCpfInput').value = '';
                     document.getElementById('adminDataNascInput').value = '';
                     document.getElementById('adminSenhaInput').value = '';
+                    atualizarPainelAdmin();
                 }, 2000);
             } else {
                 mostrarMsg('msgCriarAdmin', res.data.mensagem || 'Erro ao criar admin', 'danger');
             }
-        }
 
         // ── EXTRATO GERAL ──
         async function carregarExtratoGeral() {
@@ -352,15 +362,31 @@
 
             const transacoes = res.data;
             const tbody = document.getElementById('extratoGeralAdmin');
-            tbody.innerHTML = transacoes.map(t => `
+            tbody.innerHTML = transacoes.map(t => {
+                let corValor = 'texto-negrito';
+                if (t.tipo === 'Saque') {
+                    corValor = 'texto-negrito texto-vermelho';
+                } else if (t.tipo === 'Deposito') {
+                    corValor = 'texto-negrito texto-verde';
+                } else if (t.tipo === 'Transferencia') {
+                    corValor = 'texto-negrito texto-vermelho';
+                }
+                return `
                     <tr>
                         <td>${t.tipo}</td>
-                        <td>${formatarMoeda(t.valor)}</td>
+                        <td class="${corValor}">${formatarMoeda(t.valor)}</td>
                         <td>${t.usuario}</td>
                         <td>${t.descricao || '-'}</td>
                         <td>${formatarData(t.data)}</td>
                     </tr>
-                `).join('');
+                `;
+            }).join('');
+        }
+
+        // ── ATUALIZAR PAINEL ──
+        function atualizarPainelAdmin() {
+            carregarUsuarios();
+            carregarExtratoGeral();
         }
 
         // ── LOGOUT ──

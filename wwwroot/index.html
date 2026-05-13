@@ -152,6 +152,7 @@
                                 <button class="btn btn-primario" onclick="abrirConta()">Abrir Conta</button>
                             </div>
                         </div>
+                        <div id="msgAberturaContas" class="oculto" style="padding: 20px; padding-top: 0;"></div>
                     </div>
 
                     <!-- Lista de Contas -->
@@ -541,14 +542,14 @@
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
                 body: JSON.stringify({ tipo: document.getElementById('tipoConta').value })
-            }).then(res => {
-                if (res.ok) {
+            }).then(res => res.json()).then(data => {
+                if (data.mensagem && data.mensagem.includes('sucesso')) {
+                    mostrarMsg('msgAberturaContas', 'Conta aberta com sucesso!', 'success');
                     carregarContas();
-                    alert('Conta aberta com sucesso!');
                 } else {
-                    alert('Não poder mais de 1 conta do mesmo tipo.');
+                    mostrarMsg('msgAberturaContas', data.mensagem || 'Não pode mais de 1 conta do mesmo tipo.', 'danger');
                 }
-            });
+            }).catch(() => mostrarMsg('msgAberturaContas', 'Erro ao conectar.', 'danger'));
         }
 
         function encerrarConta(id) {
@@ -557,9 +558,13 @@
                 method: 'DELETE',
                 headers: { 'Authorization': 'Bearer ' + token }
             }).then(res => res.json()).then(data => {
-                alert(data.mensagem);
+                if (data.mensagem && data.mensagem.includes('sucesso')) {
+                    mostrarMsg('msgEncerrarConta', data.mensagem, 'success');
+                } else {
+                    mostrarMsg('msgEncerrarConta', data.mensagem || 'Erro ao encerrar conta.', 'danger');
+                }
                 carregarContas();
-            });
+            }).catch(() => mostrarMsg('msgEncerrarConta', 'Erro ao conectar.', 'danger'));
         }
 
         function selecionarContaOperacao(id) {
@@ -638,8 +643,9 @@
                 headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
                 body: JSON.stringify(dto)
             }).then(res => res.json()).then(data => {
-                mostrarMsg('msgRetorno', data.mensagem, data.mensagem.includes('sucesso') ? 'success' : 'danger');
-                if (data.mensagem.includes('sucesso')) {
+                const ehSucesso = data.mensagem.includes('sucesso');
+                mostrarMsg('msgRetorno', data.mensagem, ehSucesso ? 'success' : 'danger');
+                if (ehSucesso) {
                     document.getElementById('valor').value = '';
                     document.getElementById('contaDest').value = '';
                     document.getElementById('descricao').value = '';
@@ -664,16 +670,30 @@
                     tbody.innerHTML = '<tr><td colspan="6" class="texto-discreto" style="text-align: center; padding: 20px;">Nenhuma transação.</td></tr>';
                     return;
                 }
-                tbody.innerHTML = transacoes.map(t => `
-                                        <tr>
-                                            <td>${t.tipo}</td>
-                                            <td class="texto-negrito">R$ ${t.valor.toFixed(2)}</td>
-                                            <td>R$ ${t.taxa.toFixed(2)}</td>
-                                            <td>${t.descricao || '-'}</td>
-                                            <td>${t.nomeDestinatario || t.nomeRemetente || '-'}</td>
-                                            <td>${formatarData(t.realizadaEm)}</td>
-                                        </tr>
-                                    `).join('');
+                tbody.innerHTML = transacoes.map(t => {
+                    let corValor = 'texto-negrito';
+                    if (t.tipo === 'Saque') {
+                        corValor = 'texto-negrito texto-vermelho';
+                    } else if (t.tipo === 'Deposito') {
+                        corValor = 'texto-negrito texto-verde';
+                    } else if (t.tipo === 'Transferencia') {
+                        if (t.nomeDestinatario) {
+                            corValor = 'texto-negrito texto-vermelho';
+                        } else if (t.nomeRemetente) {
+                            corValor = 'texto-negrito texto-verde';
+                        }
+                    }
+                    return `
+                        <tr>
+                            <td>${t.tipo}</td>
+                            <td class="${corValor}">R$ ${t.valor.toFixed(2)}</td>
+                            <td>R$ ${t.taxa.toFixed(2)}</td>
+                            <td>${t.descricao || '-'}</td>
+                            <td>${t.nomeDestinatario || t.nomeRemetente || '-'}</td>
+                            <td>${formatarData(t.realizadaEm)}</td>
+                        </tr>
+                    `;
+                }).join('');
             });
         }
 
@@ -777,18 +797,32 @@
             }).then(res => res.json()).then(transacoes => {
                 const tbody = document.getElementById('extratoModalTabela');
                 if (transacoes.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="6" class="texto-discreto" style="text-align: center; padding: 20px;">Nenhuma transação.</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="6" class="texto-discreto" style="text-align: center; padding: 20px;">Nenhuma transacao.</td></tr>';
                 } else {
-                    tbody.innerHTML = transacoes.map(t => `
+                    tbody.innerHTML = transacoes.map(t => {
+                        let corValor = 'texto-negrito';
+                        if (t.tipo === 'Saque') {
+                            corValor = 'texto-negrito texto-vermelho';
+                        } else if (t.tipo === 'Deposito') {
+                            corValor = 'texto-negrito texto-verde';
+                        } else if (t.tipo === 'Transferencia') {
+                            if (t.nomeDestinatario) {
+                                corValor = 'texto-negrito texto-vermelho';
+                            } else if (t.nomeRemetente) {
+                                corValor = 'texto-negrito texto-verde';
+                            }
+                        }
+                        return `
                             <tr>
                                 <td>${t.tipo}</td>
-                                <td class="texto-verde texto-negrito">R$ ${t.valor.toFixed(2)}</td>
+                                <td class="${corValor}">R$ ${t.valor.toFixed(2)}</td>
                                 <td>R$ ${t.taxa.toFixed(2)}</td>
                                 <td>${t.descricao || '-'}</td>
                                 <td>${t.nomeDestinatario || t.nomeRemetente || '-'}</td>
                                 <td>${formatarData(t.realizadaEm)}</td>
                             </tr>
-                        `).join('');
+                        `;
+                    }).join('');
                 }
             }).catch(() => {
                 document.getElementById('extratoModalTabela').innerHTML = '<tr><td colspan="6" class="texto-discreto" style="text-align: center; padding: 20px;">Erro ao carregar extrato.</td></tr>';
