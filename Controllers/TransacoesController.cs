@@ -31,8 +31,12 @@ public class TransacoesController : ControllerBase
         var (sucesso, mensagem, transacao) =
             await _service.RealizarOperacao(contaId, dto, GetUsuarioId());
 
-        if (!sucesso) return BadRequest(new { mensagem });
-        return Ok(new {sucesso, mensagem, transacao });
+        if (!sucesso) 
+        {
+            return BadRequest(new { mensagem });
+        }
+        
+        return Ok(new { sucesso, mensagem, transacao });
     }
 
     [HttpGet]
