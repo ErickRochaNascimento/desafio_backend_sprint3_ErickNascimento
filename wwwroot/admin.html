@@ -67,6 +67,7 @@
                     <div class="painel-header">
                         <h3 class="painel-titulo">Lista de Usuários</h3>
                     </div>
+                    <div id="msgUsuarios" class="oculto" style="padding: 20px;"></div>
                     <div style="overflow-x: auto;">
                         <table class="tabela">
                             <thead>
@@ -152,6 +153,7 @@
                                 <tr>
                                     <th>Tipo</th>
                                     <th>Valor</th>
+                                    <th>Taxa</th>
                                     <th>Usuário</th>
                                     <th>Descrição</th>
                                     <th>Data</th>
@@ -179,10 +181,9 @@
                     <p class="texto-discreto" id="detalhesEmailUsuario"></p>
                 </div>
 
+                <div id="msgDetalhes" class="oculto" style="margin-bottom: 16px;"></div>
                 <h5 class="titulo-secao">Contas</h5>
-                <div id="detalhesCont asUsuario" style="margin-bottom: 20px;"></div>
-
-                <div id="msgDetalhes" class="oculto"></div>
+                <div id="detalhesContasUsuario" style="margin-bottom: 20px;"></div>
             </div>
         </div>
     </div>
@@ -202,6 +203,13 @@
 
             carregarUsuarios();
             carregarExtratoGeral();
+
+            // Escutar alterações vindas de outras abas (como o dashboard do usuário)
+            window.addEventListener('storage', (e) => {
+                if (e.key === 'ultimaAlteracao') {
+                    atualizarPainelAdmin();
+                }
+            });
         });
 
         // ── NAVEGAÇÃO ENTRE ABAS ──
@@ -224,18 +232,18 @@
             const usuarios = res.data;
             const tbody = document.getElementById('listaUsuariosAdmin');
             tbody.innerHTML = usuarios.map(u => `
-                    <tr>
-                        <td>${u.id}</td>
-                        <td>${u.nome}</td>
-                        <td>${u.email}</td>
-                        <td>${u.cpf}</td>
-                        <td><span class="badge" style="background: ${u.perfil === 'admin' ? '#512BD4' : '#198754'}">${u.perfil}</span></td>
-                        <td>${u.qtdContas}</td>
-                        <td>
-                            <button class="btn btn-sm btn-primario" onclick="verDetalhesUsuario(${u.id})">Ver Contas</button>
-                        </td>
-                    </tr>
-                `).join('');
+                        <tr>
+                            <td>${u.id}</td>
+                            <td>${u.nome}</td>
+                            <td>${u.email}</td>
+                            <td>${u.cpf}</td>
+                            <td><span class="badge" style="background: ${u.perfil === 'admin' ? '#512BD4' : '#198754'}">${u.perfil}</span></td>
+                            <td>${u.qtdContas}</td>
+                            <td>
+                                <button class="btn btn-sm btn-primario" onclick="verDetalhesUsuario(${u.id})">Ver Contas</button>
+                            </td>
+                        </tr>
+                    `).join('');
         }
 
         function filtrarUsuarios() {
@@ -259,42 +267,42 @@
             document.getElementById('detalhesEmailUsuario').textContent = usuario.email;
 
             const contas = usuario.contas.map(c => `
-                    <div class="cartao" style="margin-bottom: 12px;">
-                        <div class="cartao-corpo">
-                            <p class="titulo-cartao">${c.tipo} - ${c.numeroConta}</p>
-                            <p class="texto-pequeno texto-discreto">Saldo: ${formatarMoeda(c.saldo)}</p>
-                            <h6 class="titulo-secao" style="margin-top: 12px; margin-bottom: 8px;">Extrato (ultimas 10)</h6>
-                            <table class="tabela" style="font-size: 12px;">
-                                <thead>
-                                    <tr>
-                                        <th>Tipo</th>
-                                        <th>Valor</th>
-                                        <th>Data</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    ${c.extrato.map(t => {
-                                        let corValor = 'texto-negrito';
-                                        if (t.tipo === 'Saque') {
-                                            corValor = 'texto-negrito texto-vermelho';
-                                        } else if (t.tipo === 'Deposito') {
-                                            corValor = 'texto-negrito texto-verde';
-                                        } else if (t.tipo === 'Transferencia') {
-                                            corValor = 'texto-negrito texto-vermelho';
-                                        }
-                                        return `
-                                            <tr>
-                                                <td>${t.tipo}</td>
-                                                <td class="${corValor}">${formatarMoeda(t.valor)}</td>
-                                                <td>${formatarData(t.data)}</td>
-                                            </tr>
-                                        `;
-                                    }).join('')}
-                                </tbody>
-                            </table>
+                        <div class="cartao" style="margin-bottom: 12px;">
+                            <div class="cartao-corpo">
+                                <p class="titulo-cartao">${c.tipo} - ${c.numeroConta}</p>
+                                <p class="texto-pequeno texto-discreto">Saldo: <span class="texto-verde">${formatarMoeda(c.saldo)}</span></p>
+                                <h6 class="titulo-secao" style="margin-top: 12px; margin-bottom: 8px;">Extrato (ultimas 10)</h6>
+                                <table class="tabela" style="font-size: 12px;">
+                                    <thead>
+                                        <tr>
+                                            <th>Tipo</th>
+                                            <th>Valor</th>
+                                            <th>Data</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        ${c.extrato.map(t => {
+                let corValor = 'texto-negrito';
+                if (t.tipo === 'Saque') {
+                    corValor = 'texto-negrito texto-vermelho';
+                } else if (t.tipo === 'Deposito') {
+                    corValor = 'texto-negrito texto-verde';
+                } else if (t.tipo === 'Transferencia') {
+                    corValor = 'texto-negrito texto-vermelho';
+                }
+                return `
+                                                <tr>
+                                                    <td>${t.tipo}</td>
+                                                    <td class="${corValor}">${formatarMoeda(t.valor)}</td>
+                                                    <td>${formatarData(t.data)}</td>
+                                                </tr>
+                                            `;
+            }).join('')}
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
-                    </div>
-                `).join('');
+                    `).join('');
 
             document.getElementById('detalhesContasUsuario').innerHTML = contas;
             abrirModal('modalDetalhesUsuario');
@@ -354,6 +362,7 @@
             } else {
                 mostrarMsg('msgCriarAdmin', res.data.mensagem || 'Erro ao criar admin', 'danger');
             }
+        }
 
         // ── EXTRATO GERAL ──
         async function carregarExtratoGeral() {
@@ -372,14 +381,15 @@
                     corValor = 'texto-negrito texto-vermelho';
                 }
                 return `
-                    <tr>
-                        <td>${t.tipo}</td>
-                        <td class="${corValor}">${formatarMoeda(t.valor)}</td>
-                        <td>${t.usuario}</td>
-                        <td>${t.descricao || '-'}</td>
-                        <td>${formatarData(t.data)}</td>
-                    </tr>
-                `;
+                        <tr>
+                            <td>${t.tipo}</td>
+                            <td class="${corValor}">${formatarMoeda(t.valor)}</td>
+                            <td>${formatarMoeda(t.taxa || 0)}</td>
+                            <td>${t.usuario}</td>
+                            <td>${t.descricao || '-'}</td>
+                            <td>${formatarData(t.data)}</td>
+                        </tr>
+                    `;
             }).join('');
         }
 

@@ -160,6 +160,7 @@
                         <div class="painel-header">
                             <h3 class="painel-titulo">Suas Contas</h3>
                         </div>
+                        <div id="msgEncerrarConta" class="oculto" style="padding: 20px;"></div>
                         <div id="listaContasGrid" style="padding: 20px; display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px;"></div>
                     </div>
                 </div>
@@ -187,7 +188,7 @@
 
                             <div id="saldoContaOperacao" class="oculto" style="padding: 16px; background: rgba(81,43,212,0.1); border-radius: 8px; margin-bottom: 20px; border-left: 4px solid var(--roxo);">
                                 <p class="texto-discreto" style="margin-bottom: 4px;">Saldo Disponível</p>
-                                <p class="stat-valor" id="saldoValor">R$ 0,00</p>
+                                <p class="stat-valor texto-verde" id="saldoValor">R$ 0,00</p>
                             </div>
 
                             <div style="margin-bottom: 16px;">
@@ -487,6 +488,7 @@
             }).then(res => res.json()).then(data => {
                 mostrarMsg('msgRegistro', data.mensagem, data.mensagem.includes('sucesso') ? 'success' : 'danger');
                 if (data.mensagem.includes('sucesso')) {
+                    notificarAlteracaoAdmin();
                     setTimeout(() => {
                         document.getElementById('regNome').value = '';
                         document.getElementById('regEmail').value = '';
@@ -509,7 +511,7 @@
             }
         }
 
-        
+
 
         // ── CONTAS ──
         function carregarContas() {
@@ -518,21 +520,21 @@
             }).then(res => res.json()).then(contas => {
                 const grid = document.getElementById('listaContasGrid');
                 grid.innerHTML = contas.map(c => `
-                            <div class="stat-card" style="cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--roxo)'" onmouseout="this.style.borderColor='var(--borda)'">
-                                <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 12px;">
-                                    <div>
-                                        <p class="stat-label">${c.tipo}</p>
-                                        <p class="stat-valor" style="font-size: 24px;">R$ ${c.saldo.toFixed(2)}</p>
+                                <div class="stat-card" style="cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--roxo)'" onmouseout="this.style.borderColor='var(--borda)'">
+                                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 12px;">
+                                        <div>
+                                            <p class="stat-label">${c.tipo}</p>
+                                            <p class="stat-valor texto-verde" style="font-size: 24px;">R$ ${c.saldo.toFixed(2)}</p>
+                                        </div>
+
                                     </div>
-                                   
+                                    <div style="display: flex; gap: 8px;">
+                                        <button class="btn btn-sm btn-primario" style="flex: 1;" onclick="selecionarContaOperacao(${c.id})">Operar</button>
+                                        <button class="btn btn-sm btn-primario" onclick="abrirExtratoModal(${c.id}, '${c.tipo}')">Extrato</button>
+                                        <button class="btn btn-sm btn-perigo" onclick="encerrarConta(${c.id})">Encerrar</button>
+                                    </div>
                                 </div>
-                                <div style="display: flex; gap: 8px;">
-                                    <button class="btn btn-sm btn-primario" style="flex: 1;" onclick="selecionarContaOperacao(${c.id})">Operar</button>
-                                    <button class="btn btn-sm btn-primario" onclick="abrirExtratoModal(${c.id}, '${c.tipo}')">Extrato</button>
-                                    <button class="btn btn-sm btn-perigo" onclick="encerrarConta(${c.id})">Encerrar</button>
-                                </div>
-                            </div>
-                        `).join('');
+                            `).join('');
             });
         }
 
@@ -546,6 +548,7 @@
                 if (data.mensagem && data.mensagem.includes('sucesso')) {
                     mostrarMsg('msgAberturaContas', 'Conta aberta com sucesso!', 'success');
                     carregarContas();
+                    notificarAlteracaoAdmin();
                 } else {
                     mostrarMsg('msgAberturaContas', data.mensagem || 'Não pode mais de 1 conta do mesmo tipo.', 'danger');
                 }
@@ -560,10 +563,12 @@
             }).then(res => res.json()).then(data => {
                 if (data.mensagem && data.mensagem.includes('sucesso')) {
                     mostrarMsg('msgEncerrarConta', data.mensagem, 'success');
+                    notificarAlteracaoAdmin();
                 } else {
                     mostrarMsg('msgEncerrarConta', data.mensagem || 'Erro ao encerrar conta.', 'danger');
                 }
                 carregarContas();
+                carregarSaldoConta();
             }).catch(() => mostrarMsg('msgEncerrarConta', 'Erro ao conectar.', 'danger'));
         }
 
@@ -643,14 +648,16 @@
                 headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
                 body: JSON.stringify(dto)
             }).then(res => res.json()).then(data => {
-                const ehSucesso = data.mensagem.includes('sucesso');
-                mostrarMsg('msgRetorno', data.mensagem, ehSucesso ? 'success' : 'danger');
+                const ehSucesso = data.mensagem && data.mensagem.includes('sucesso');
+                mostrarMsg('msgRetorno', data.mensagem || 'Erro na operação.', ehSucesso ? 'success' : 'danger');
                 if (ehSucesso) {
                     document.getElementById('valor').value = '';
                     document.getElementById('contaDest').value = '';
                     document.getElementById('descricao').value = '';
                     carregarContas();
                     carregarSaldoConta();
+                    carregarExtrato();
+                    notificarAlteracaoAdmin();
                 }
             }).catch(() => mostrarMsg('msgRetorno', 'Erro ao conectar.', 'danger'));
         }
@@ -679,20 +686,20 @@
                     } else if (t.tipo === 'Transferencia') {
                         if (t.nomeDestinatario) {
                             corValor = 'texto-negrito texto-vermelho';
-                        } else if (t.nomeRemetente) {
+                        } else {
                             corValor = 'texto-negrito texto-verde';
                         }
                     }
                     return `
-                        <tr>
-                            <td>${t.tipo}</td>
-                            <td class="${corValor}">R$ ${t.valor.toFixed(2)}</td>
-                            <td>R$ ${t.taxa.toFixed(2)}</td>
-                            <td>${t.descricao || '-'}</td>
-                            <td>${t.nomeDestinatario || t.nomeRemetente || '-'}</td>
-                            <td>${formatarData(t.realizadaEm)}</td>
-                        </tr>
-                    `;
+                            <tr>
+                                <td>${t.tipo}</td>
+                                <td class="${corValor}">R$ ${t.valor.toFixed(2)}</td>
+                                <td>R$ ${t.taxa.toFixed(2)}</td>
+                                <td>${t.descricao || '-'}</td>
+                                <td>${t.nomeDestinatario || t.nomeRemetente || '-'}</td>
+                                <td>${formatarData(t.realizadaEm)}</td>
+                            </tr>
+                        `;
                 }).join('');
             });
         }
@@ -719,9 +726,9 @@
                     alert('E-mail alterado! Por favor, faça login novamente.');
                     sair();
                     fecharModal('modalEditar');
+                }
+            }).catch(() => mostrarMsg('msgEditar', 'Erro ao conectar.', 'danger'));
         }
-                }).catch (() => mostrarMsg('msgEditar', 'Erro ao conectar.', 'danger'));
-            }
 
         function alterarEmail() {
             const emailAtual = document.getElementById('altEmailAtual').value;
@@ -740,6 +747,7 @@
             }).then(res => res.json()).then(data => {
                 mostrarMsg('msgEditar', data.mensagem, data.mensagem.includes('sucesso') ? 'success' : 'danger');
                 if (data.mensagem.includes('sucesso')) {
+                    notificarAlteracaoAdmin();
                     setTimeout(() => {
                         alert('E-mail alterado! Por favor, faça login novamente.');
                         sair();
@@ -765,6 +773,7 @@
                 body: JSON.stringify({ email, senha })
             }).then(res => res.json()).then(data => {
                 if (data.mensagem.includes('sucesso')) {
+                    notificarAlteracaoAdmin();
                     alert(data.mensagem);
                     sair();
                 } else {
@@ -774,14 +783,22 @@
         }
 
         function abrirPainelAdmin() {
-            salvarToken(token, document.getElementById('nomeUsuario').textContent);
+            sessionStorage.setItem('adminNome', document.getElementById('nomeUsuario').textContent);
             window.location.href = 'admin.html';
+        }
+
+        // Função para notificar o painel admin se ele estiver aberto em outra aba (opcional, mas boa prática)
+        function notificarAlteracaoAdmin() {
+            localStorage.setItem('ultimaAlteracao', Date.now());
         }
 
         // ── INICIALIZAÇÃO ──
         document.addEventListener('DOMContentLoaded', function () {
             recuperarToken();
             if (token) {
+                const nome = sessionStorage.getItem('adminNome') || 'Usuário';
+                document.getElementById('nomeUsuario').textContent = nome;
+                document.getElementById('usuarioAvatar').textContent = nome.charAt(0).toUpperCase();
                 document.getElementById('telaLogin').classList.add('oculto');
                 document.getElementById('telaPrincipal').classList.remove('oculto');
                 carregarContas();
@@ -808,20 +825,20 @@
                         } else if (t.tipo === 'Transferencia') {
                             if (t.nomeDestinatario) {
                                 corValor = 'texto-negrito texto-vermelho';
-                            } else if (t.nomeRemetente) {
+                            } else {
                                 corValor = 'texto-negrito texto-verde';
                             }
                         }
                         return `
-                            <tr>
-                                <td>${t.tipo}</td>
-                                <td class="${corValor}">R$ ${t.valor.toFixed(2)}</td>
-                                <td>R$ ${t.taxa.toFixed(2)}</td>
-                                <td>${t.descricao || '-'}</td>
-                                <td>${t.nomeDestinatario || t.nomeRemetente || '-'}</td>
-                                <td>${formatarData(t.realizadaEm)}</td>
-                            </tr>
-                        `;
+                                <tr>
+                                    <td>${t.tipo}</td>
+                                    <td class="${corValor}">R$ ${t.valor.toFixed(2)}</td>
+                                    <td>R$ ${t.taxa.toFixed(2)}</td>
+                                    <td>${t.descricao || '-'}</td>
+                                    <td>${t.nomeDestinatario || t.nomeRemetente || '-'}</td>
+                                    <td>${formatarData(t.realizadaEm)}</td>
+                                </tr>
+                            `;
                     }).join('');
                 }
             }).catch(() => {
