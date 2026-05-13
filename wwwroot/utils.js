@@ -58,6 +58,10 @@ function mostrarMsg(id, texto, tipo) {
         el.style.color = '#f5a0a7'; // Vermelho
         el.style.borderColor = '#dc3545';
     }
+
+    // Garantir cores específicas conforme solicitado (ajustado para tema escuro)
+    if (tipo === 'success') el.style.color = '#75d8a4'; // Verde claro para sucesso no tema escuro
+    if (tipo === 'danger' || tipo === 'warning') el.style.color = '#f5a0a7'; // Vermelho claro para erro no tema escuro
 }
 
 function limparMsg(id) {
