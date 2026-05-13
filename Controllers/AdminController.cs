@@ -12,7 +12,7 @@ namespace BancoDigital.Controllers
     public class AdminController : ControllerBase
     {
         private readonly AppDbContext _context;
-        public AdminController(AppDbContetext context)
+        public AdminController(AppDbContext context)
         {
             _context = context;
         }

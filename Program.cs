@@ -83,7 +83,7 @@ app.MapControllers();
 
 using (var scope = app.Services.CreateScope())
 {
-    var context = scope.ServiceProvider.GetRequiredService<AppDbContetext>();
+    var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     if (!context.Usuarios.Any(u => u.Perfil == "admin"))
     {
         var admin = new Usuario
