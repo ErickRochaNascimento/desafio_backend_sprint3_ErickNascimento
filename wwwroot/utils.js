@@ -45,9 +45,19 @@ function validarCPF(cpf) {
 function mostrarMsg(id, texto, tipo) {
     var mapa = { success: 'alerta-sucesso', danger: 'alerta-erro', warning: 'alerta-aviso' };
     var el = document.getElementById(id);
+    if (!el) return;
     el.className = 'alerta ' + (mapa[tipo] || 'alerta-info');
     el.textContent = texto;
     el.classList.remove('oculto');
+
+    // Forçar cores conforme solicitado
+    if (tipo === 'success') {
+        el.style.color = '#75d8a4'; // Verde
+        el.style.borderColor = '#198754';
+    } else {
+        el.style.color = '#f5a0a7'; // Vermelho
+        el.style.borderColor = '#dc3545';
+    }
 }
 
 function limparMsg(id) {
