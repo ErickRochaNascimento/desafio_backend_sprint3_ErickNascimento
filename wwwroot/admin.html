@@ -207,7 +207,8 @@
             // Escutar alterações vindas de outras abas (como o dashboard do usuário)
             window.addEventListener('storage', (e) => {
                 if (e.key === 'ultimaAlteracao') {
-                    atualizarPainelAdmin();
+                    carregarUsuarios();
+                    carregarExtratoGeral();
                 }
             });
         });

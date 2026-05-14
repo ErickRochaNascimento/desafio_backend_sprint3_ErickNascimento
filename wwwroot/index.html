@@ -680,28 +680,27 @@
                 }
                 tbody.innerHTML = transacoes.map(t => {
                     const ehSaque = t.tipo === 'Saque';
-                    const ehDeposito = t.tipo === 'Deposito';
                     const ehTransferencia = t.tipo === 'Transferencia';
-                    // Para transferência: se existe nomeDestinatario significa que a operação saiu desta conta (enviada)
+                    const ehDeposito = t.tipo === 'Deposito';
+
+                    // Transferência enviada tem nomeDestinatario preenchido na sua conta
                     const transferenciaEnviada = ehTransferencia && !!t.nomeDestinatario;
                     const negativo = ehSaque || transferenciaEnviada;
 
-                    let corValor = 'texto-negrito';
-                    if (negativo) corValor = 'texto-negrito texto-vermelho';
-                    else if (ehDeposito || (ehTransferencia && !transferenciaEnviada)) corValor = 'texto-negrito texto-verde';
-
-                    const valorFormatado = formatarValorExtrato(t.valor, negativo);
+                    let corValor = negativo ? 'texto-negrito texto-vermelho' : 'texto-negrito texto-verde';
+                    const sinal = negativo ? '-' : '';
+                    const valorFormatado = sinal + formatarMoeda(t.valor);
 
                     return `
-                <tr>
-                    <td>${t.tipo}</td>
-                    <td class="${corValor}">${valorFormatado}</td>
-                    <td>R$ ${t.taxa.toFixed(2)}</td>
-                    <td>${t.descricao || '-'}</td>
-                    <td>${t.nomeDestinatario || t.nomeRemetente || '-'}</td>
-                    <td>${formatarData(t.realizadaEm)}</td>
-                </tr>
-            `;
+        <tr>
+            <td>${t.tipo}</td>
+            <td class="${corValor}">${valorFormatado}</td>
+            <td>R$ ${t.taxa.toFixed(2)}</td>
+            <td>${t.descricao || '-'}</td>
+            <td>${t.nomeDestinatario || t.nomeRemetente || '-'}</td>
+            <td>${formatarData(t.realizadaEm)}</td>
+        </tr>
+    `;
                 }).join('');
             });
         }

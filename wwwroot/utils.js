@@ -43,26 +43,23 @@ function validarCPF(cpf) {
 
 // ── MENSAGENS ──
 function mostrarMsg(id, texto, tipo) {
-    var mapa = { success: 'alerta-sucesso', danger: 'alerta-erro', warning: 'alerta-aviso' };
     var el = document.getElementById(id);
     if (!el) return;
-    el.className = 'alerta ' + (mapa[tipo] || 'alerta-info');
+
+    // Define as classes base
+    el.className = 'alerta';
     el.textContent = texto;
     el.classList.remove('oculto');
 
-    // Cores claras/contraste para sucesso e erro
+    // Aplica cores específicas conforme o tipo
     if (tipo === 'success') {
-        el.style.color = '#0f5132';
-        el.style.backgroundColor = 'rgba(25,135,84,0.12)';
-        el.style.borderColor = '#198754';
+        el.style.color = '#ffffff';
+        el.style.backgroundColor = 'var(--cor-verde)'; // Verde para sucesso
+        el.style.borderColor = 'var(--cor-verde)';
     } else if (tipo === 'danger' || tipo === 'warning') {
-        el.style.color = '#842029';
-        el.style.backgroundColor = 'rgba(220,53,69,0.08)';
-        el.style.borderColor = '#dc3545';
-    } else {
-        el.style.color = '';
-        el.style.backgroundColor = '';
-        el.style.borderColor = '';
+        el.style.color = '#ffffff';
+        el.style.backgroundColor = 'var(--cor-vermelho)'; // Vermelho para erro ou aviso
+        el.style.borderColor = 'var(--cor-vermelho)';
     }
 }
 
