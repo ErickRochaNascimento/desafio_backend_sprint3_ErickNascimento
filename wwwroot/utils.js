@@ -2,7 +2,7 @@
 // UTILS.JS - Funções Compartilhadas
 // ==========================================
 
-let BASE = 'https://localhost:7200/api';
+let BASE = window.location.origin + '/api';
 let token = '';
 
 // ── VALIDAÇÃO E MÁSCARA ──
