@@ -1298,6 +1298,21 @@ body {
     display: none !important;
 }
 
+.scroll-extrato {
+    max-height: 60vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-color: #1A1434;
+}
+
+    .scroll-extrato thead th {
+        position: sticky;
+        top: 0;
+        z-index: 1;
+        background-color: #1A1434;
+    }
+
+
 @media (max-width: 768px) {
     .sidebar {
         width: 56px;
@@ -1316,3 +1331,4 @@ body {
         grid-template-columns: 1fr;
     }
 }
+
