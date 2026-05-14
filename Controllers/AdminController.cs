@@ -58,8 +58,10 @@ namespace BancoDigital.Controllers
                             t.Id,
                             t.Tipo,
                             t.Valor,
-                            Data = t.RealizadaEm, // Mapeado para 'Data' no JSON de saída
-                            t.Descricao
+                            Data = t.RealizadaEm,
+                            t.Descricao,
+                            t.NomeDestinatario, // ADICIONADO AQUI
+                            t.NomeRemetente     // ADICIONADO AQUI
                         })
                     })
                 })
@@ -109,10 +111,13 @@ namespace BancoDigital.Controllers
                     t.Valor,
                     Data = t.RealizadaEm,
                     t.Descricao,
+                    t.NomeDestinatario, // ADICIONADO AQUI
+                    t.NomeRemetente,    // ADICIONADO AQUI
                     Usuario = t.Conta.Usuario.Nome
                 })
                 .ToListAsync();
             return Ok(transacoes);
         }
+2. Atualizar o wwwroot/index.html(Lógica
     }
 }

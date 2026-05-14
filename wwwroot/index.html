@@ -507,10 +507,9 @@
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
                 body: JSON.stringify({ tipo: document.getElementById('tipoConta').value })
-            }).then(r => r.json()).then(data => {
-                const ok = data.mensagem && data.mensagem.includes('sucesso');
-                mostrarMsg('msgAberturaContas', ok ? 'Conta aberta com sucesso!' : (data.mensagem || 'Erro ao abrir conta.'), ok ? 'success' : 'danger');
-                if (ok) { carregarContas(); notificarAlteracaoAdmin(); }
+            }).then(r => r.json().then(data => ({ ok: r.ok, data }))).then(res => {
+                mostrarMsg('msgAberturaContas', res.ok ? 'Conta aberta com sucesso!' : (res.data.mensagem || 'Erro ao abrir conta.'), res.ok ? 'success' : 'danger');
+                if (res.ok) { carregarContas(); notificarAlteracaoAdmin(); }
             }).catch(() => mostrarMsg('msgAberturaContas', 'Erro ao conectar.', 'danger'));
         }
 
@@ -519,12 +518,9 @@
             fetch(BASE + '/contas/' + id, {
                 method: 'DELETE',
                 headers: { 'Authorization': 'Bearer ' + token }
-            }).then(r => r.json()).then(data => {
-                const ok = data.mensagem && data.mensagem.includes('sucesso');
-                mostrarMsg('msgEncerrarConta', data.mensagem || 'Erro ao encerrar.', ok ? 'success' : 'danger');
-                if (ok) notificarAlteracaoAdmin();
-                carregarContas();
-                carregarSaldoConta();
+            }).then(r => r.json().then(data => ({ ok: r.ok, data }))).then(res => {
+                mostrarMsg('msgEncerrarConta', res.data.mensagem || 'Erro ao encerrar.', res.ok ? 'success' : 'danger');
+                if (res.ok) { notificarAlteracaoAdmin(); carregarContas(); carregarSaldoConta(); }
             }).catch(() => mostrarMsg('msgEncerrarConta', 'Erro ao conectar.', 'danger'));
         }
 
@@ -605,21 +601,16 @@
                 headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
                 body: JSON.stringify(dto)
             }).then(r => r.json()).then(data => {
-                const ok = data.mensagem && data.mensagem.includes('sucesso');
+                const ok = data.sucesso; // Agora usa o boolean retornado pela API invés de procurar "sucesso" no texto
                 mostrarMsg('msgRetorno', data.mensagem || 'Erro na operação.', ok ? 'success' : 'danger');
+
                 if (ok) {
                     document.getElementById('valor').value = '';
                     document.getElementById('contaDest').value = '';
                     document.getElementById('descricao').value = '';
-                    // Atualiza saldo imediatamente no painel de operação
-                    fetch(BASE + '/contas/' + contaId + '?_=' + Date.now(), {
-                        headers: { 'Authorization': 'Bearer ' + token, 'Cache-Control': 'no-cache' }
-                    }).then(r => r.json()).then(conta => {
-                        document.getElementById('saldoValor').textContent = 'R$ ' + conta.saldo.toFixed(2);
-                        document.getElementById('saldoContaOperacao').classList.remove('oculto');
-                        contaAtualSaldo = conta.saldo;
-                    });
-                    // Atualiza cards de Minhas Contas
+
+                    // Dispara as atualizações de interface e painel automaticamente!
+                    carregarSaldoConta();
                     carregarContas();
                     carregarExtrato();
                     notificarAlteracaoAdmin();

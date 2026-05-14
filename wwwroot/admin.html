@@ -247,15 +247,16 @@
                                 <thead><tr><th>Tipo</th><th>Valor</th><th>Data</th></tr></thead>
                                 <tbody>
                                     ${c.extrato.map(t => {
-                const negativo = t.tipo === 'Saque' || t.tipo === 'Transferencia';
-                const cor = negativo ? 'val-negativo' : 'val-positivo';
-                const sinal = negativo ? '- ' : '+ ';
-                return `<tr>
+                                        const enviada = t.tipo === 'Transferencia' && !!t.nomeDestinatario;
+                                        const negativo = t.tipo === 'Saque' || enviada;
+                                        const cor = negativo ? 'val-negativo' : 'val-positivo';
+                                        const sinal = negativo ? '- ' : '+ ';
+                                        return `<tr>
                                             <td>${t.tipo}</td>
                                             <td class="${cor}">${sinal}${formatarMoeda(Math.abs(t.valor))}</td>
                                             <td>${formatarData(t.data)}</td>
                                         </tr>`;
-            }).join('')}
+                                    }).join('')}
                                 </tbody>
                             </table>
                         </div>
@@ -298,7 +299,8 @@
             if (!res.ok) return;
 
             document.getElementById('extratoGeralAdmin').innerHTML = res.data.map(t => {
-                const negativo = t.tipo === 'Saque' || t.tipo === 'Transferencia';
+                const enviada = t.tipo === 'Transferencia' && !!t.nomeDestinatario;
+                const negativo = t.tipo === 'Saque' || enviada;
                 const cor = negativo ? 'val-negativo' : 'val-positivo';
                 const sinal = negativo ? '- ' : '+ ';
                 return `<tr>
