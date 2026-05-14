@@ -9,9 +9,7 @@
 </head>
 <body>
 
-    <!-- LAYOUT PRINCIPAL -->
     <div class="layout">
-        <!-- SIDEBAR -->
         <div class="sidebar">
             <div class="sidebar-marca">
                 <img src="./imagens/dotnet.png" alt="Logo">
@@ -22,15 +20,15 @@
             </div>
 
             <nav class="sidebar-nav">
-                <div class="nav-item ativo" onclick="mostrarAba('abaUsuarios')">
+                <div class="nav-item ativo" onclick="mostrarAba('abaUsuarios', this)">
                     <span class="icone">👥</span>
                     <span>Usuários</span>
                 </div>
-                <div class="nav-item" onclick="mostrarAba('abaCriarAdmin')">
+                <div class="nav-item" onclick="mostrarAba('abaCriarAdmin', this)">
                     <span class="icone">➕</span>
                     <span>Novo Admin</span>
                 </div>
-                <div class="nav-item" onclick="mostrarAba('abaExtrato')">
+                <div class="nav-item" onclick="mostrarAba('abaExtrato', this)">
                     <span class="icone">📊</span>
                     <span>Extrato Geral</span>
                 </div>
@@ -45,12 +43,10 @@
                     </div>
                 </div>
                 <button class="btn btn-cinza btn-largura" onclick="voltar()">Voltar</button>
-
                 <button class="btn btn-cinza btn-largura" onclick="fazerLogout()">Sair</button>
             </div>
         </div>
 
-        <!-- CONTEÚDO -->
         <div class="conteudo">
 
             <!-- ABA: USUÁRIOS -->
@@ -62,12 +58,11 @@
                     </div>
                     <input type="text" class="busca-input" id="buscaUsuarios" placeholder="Buscar por nome ou email..." oninput="filtrarUsuarios()">
                 </div>
-
                 <div class="painel">
                     <div class="painel-header">
                         <h3 class="painel-titulo">Lista de Usuários</h3>
                     </div>
-                    <div id="msgUsuarios" class="oculto" style="padding: 20px;"></div>
+                    <div id="msgUsuarios" style="display:none; padding:20px;"></div>
                     <div style="overflow-x: auto;">
                         <table class="tabela">
                             <thead>
@@ -95,7 +90,6 @@
                         <p class="pagina-subtitulo">Registre um novo usuário com permissões de admin</p>
                     </div>
                 </div>
-
                 <div class="painel" style="max-width: 600px;">
                     <div class="painel-header">
                         <h3 class="painel-titulo">Formulário de Registro</h3>
@@ -105,30 +99,24 @@
                             <label class="rotulo">Nome Completo</label>
                             <input type="text" id="adminNomeInput" class="campo-texto" placeholder="Nome do novo admin">
                         </div>
-
                         <div style="margin-bottom: 16px;">
                             <label class="rotulo">Email</label>
                             <input type="email" id="adminEmailInput" class="campo-email" placeholder="email@example.com">
                         </div>
-
                         <div style="margin-bottom: 16px;">
                             <label class="rotulo">CPF</label>
                             <input type="text" id="adminCpfInput" class="campo-texto" placeholder="000.000.000-00" maxlength="14" oninput="mascaraCPF(this)">
-                            <small class="texto-discreto" style="display: block; margin-top: 4px;">CPF será validado automaticamente</small>
+                            <small class="texto-discreto" style="display:block;margin-top:4px;">CPF será validado automaticamente</small>
                         </div>
-
                         <div style="margin-bottom: 16px;">
                             <label class="rotulo">Data de Nascimento</label>
                             <input type="date" id="adminDataNascInput" class="campo-texto">
                         </div>
-
                         <div style="margin-bottom: 16px;">
                             <label class="rotulo">Senha</label>
                             <input type="password" id="adminSenhaInput" class="campo-senha" placeholder="Mínimo 6 caracteres">
                         </div>
-
-                        <div id="msgCriarAdmin" class="oculto" style="margin-bottom: 16px;"></div>
-
+                        <div id="msgCriarAdmin" style="display:none; margin-bottom:16px;"></div>
                         <button class="btn btn-primario btn-largura" onclick="criarNovoAdmin()">Criar Administrador</button>
                     </div>
                 </div>
@@ -142,7 +130,6 @@
                         <p class="pagina-subtitulo">Últimas 50 transações do banco</p>
                     </div>
                 </div>
-
                 <div class="painel">
                     <div class="painel-header">
                         <h3 class="painel-titulo">Movimentações</h3>
@@ -180,8 +167,7 @@
                     <h4 class="titulo-cartao" id="detalhesNomeUsuario"></h4>
                     <p class="texto-discreto" id="detalhesEmailUsuario"></p>
                 </div>
-
-                <div id="msgDetalhes" class="oculto" style="margin-bottom: 16px;"></div>
+                <div id="msgDetalhes" style="display:none; margin-bottom:16px;"></div>
                 <h5 class="titulo-secao">Contas</h5>
                 <div id="detalhesContasUsuario" style="margin-bottom: 20px;"></div>
             </div>
@@ -193,10 +179,8 @@
         // ── INICIALIZAÇÃO ──
         document.addEventListener('DOMContentLoaded', function () {
             recuperarToken();
-            if (!token) {
-                window.location.href = 'index.html';
-                return;
-            }
+            if (!token) { window.location.href = 'index.html'; return; }
+
             const adminNome = sessionStorage.getItem('adminNome') || 'Admin';
             document.getElementById('adminNome').textContent = adminNome;
             document.getElementById('adminAvatar').textContent = adminNome.charAt(0).toUpperCase();
@@ -204,109 +188,79 @@
             carregarUsuarios();
             carregarExtratoGeral();
 
-            // Atualiza ao receber evento de outra aba
+            // Atualiza quando outra aba notifica
             window.addEventListener('storage', (e) => {
-                if (e.key === 'ultimaAlteracao') {
-                    carregarUsuarios();
-                    carregarExtratoGeral();
-                }
+                if (e.key === 'ultimaAlteracao') atualizarPainelAdmin();
             });
 
-            // Polling automático a cada 5 segundos
-            setInterval(() => {
-                carregarUsuarios();
-                carregarExtratoGeral();
-            }, 5000);
+            // Polling a cada 5s para capturar qualquer alteração
+            setInterval(atualizarPainelAdmin, 5000);
         });
 
-        // ── NAVEGAÇÃO ENTRE ABAS ──
-        function mostrarAba(abaId) {
+        // ── NAVEGAÇÃO ──
+        function mostrarAba(abaId, navItemEl) {
             document.querySelectorAll('[id^="aba"]').forEach(aba => aba.classList.add('oculto'));
             document.getElementById(abaId).classList.remove('oculto');
-
             document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('ativo'));
-            event.target.closest('.nav-item').classList.add('ativo');
+            if (navItemEl) navItemEl.classList.add('ativo');
         }
 
         // ── USUÁRIOS ──
         async function carregarUsuarios() {
             const res = await fazerRequisicao('/admin/usuarios');
-            if (!res.ok) {
-                mostrarMsg('msgUsuarios', 'Erro ao carregar usuários', 'danger');
-                return;
-            }
+            if (!res.ok) { mostrarMsg('msgUsuarios', 'Erro ao carregar usuários', 'danger'); return; }
 
-            const usuarios = res.data;
-            const tbody = document.getElementById('listaUsuariosAdmin');
-            tbody.innerHTML = usuarios.map(u => `
-                                <tr>
-                                    <td>${u.id}</td>
-                                    <td>${u.nome}</td>
-                                    <td>${u.email}</td>
-                                    <td>${u.cpf}</td>
-                                    <td><span class="badge" style="background: ${u.perfil === 'admin' ? '#512BD4' : '#198754'}">${u.perfil}</span></td>
-                                    <td>${u.qtdContas}</td>
-                                    <td>
-                                        <button class="btn btn-sm btn-primario" onclick="verDetalhesUsuario(${u.id})">Ver Contas</button>
-                                    </td>
-                                </tr>
-                            `).join('');
+            document.getElementById('listaUsuariosAdmin').innerHTML = res.data.map(u => `
+                    <tr>
+                        <td>${u.id}</td>
+                        <td>${u.nome}</td>
+                        <td>${u.email}</td>
+                        <td>${u.cpf}</td>
+                        <td><span class="badge" style="background:${u.perfil === 'admin' ? '#512BD4' : '#198754'}">${u.perfil}</span></td>
+                        <td>${u.qtdContas}</td>
+                        <td><button class="btn btn-sm btn-primario" onclick="verDetalhesUsuario(${u.id})">Ver Contas</button></td>
+                    </tr>`).join('');
         }
 
         function filtrarUsuarios() {
             const termo = document.getElementById('buscaUsuarios').value.toLowerCase();
-            const linhas = document.querySelectorAll('#listaUsuariosAdmin tr');
-            linhas.forEach(linha => {
-                const texto = linha.textContent.toLowerCase();
-                linha.style.display = texto.includes(termo) ? '' : 'none';
+            document.querySelectorAll('#listaUsuariosAdmin tr').forEach(linha => {
+                linha.style.display = linha.textContent.toLowerCase().includes(termo) ? '' : 'none';
             });
         }
 
         async function verDetalhesUsuario(usuarioId) {
             const res = await fazerRequisicao(`/admin/usuario/${usuarioId}/detalhes`);
-            if (!res.ok) {
-                mostrarMsg('msgDetalhes', 'Erro ao carregar detalhes', 'danger');
-                return;
-            }
+            if (!res.ok) { mostrarMsg('msgDetalhes', 'Erro ao carregar detalhes', 'danger'); return; }
 
             const usuario = res.data;
             document.getElementById('detalhesNomeUsuario').textContent = usuario.nome;
             document.getElementById('detalhesEmailUsuario').textContent = usuario.email;
 
-            const contas = usuario.contas.map(c => `
-                        <div class="cartao" style="margin-bottom: 12px;">
-                            <div class="cartao-corpo">
-                                <p class="titulo-cartao">${c.tipo} - ${c.numeroConta}</p>
-                                <p class="texto-pequeno texto-discreto">Saldo: <span class="texto-verde">${formatarMoeda(c.saldo)}</span></p>
-                                <h6 class="titulo-secao" style="margin-top: 12px; margin-bottom: 8px;">Extrato (ultimas 10)</h6>
-                                <table class="tabela" style="font-size: 12px;">
-                                    <thead>
-                                        <tr>
-                                            <th>Tipo</th>
-                                            <th>Valor</th>
-                                            <th>Data</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        ${c.extrato.map(t => {
-                                            const negativo = t.tipo === 'Saque' || t.tipo === 'Transferencia';
-                                            const corValor = negativo ? 'val-negativo' : 'val-positivo';
-                                            const sinal = negativo ? '- ' : '+ ';
-                                            return `
-        <tr>
-            <td>${t.tipo}</td>
-            <td class="${corValor}">${sinal}${formatarMoeda(Math.abs(t.valor))}</td>
-            <td>${formatarData(t.data)}</td>
-        </tr>
-    `;
-                                        }).join('')}
-                                    </tbody>
-                                </table>
-                            </div>
+            document.getElementById('detalhesContasUsuario').innerHTML = usuario.contas.map(c => `
+                    <div class="cartao" style="margin-bottom:12px;">
+                        <div class="cartao-corpo">
+                            <p class="titulo-cartao">${c.tipo} - ${c.numeroConta}</p>
+                            <p class="texto-pequeno texto-discreto">Saldo: <span class="texto-verde">${formatarMoeda(c.saldo)}</span></p>
+                            <h6 class="titulo-secao" style="margin-top:12px;margin-bottom:8px;">Extrato (últimas 10)</h6>
+                            <table class="tabela" style="font-size:12px;">
+                                <thead><tr><th>Tipo</th><th>Valor</th><th>Data</th></tr></thead>
+                                <tbody>
+                                    ${c.extrato.map(t => {
+                const negativo = t.tipo === 'Saque' || t.tipo === 'Transferencia';
+                const cor = negativo ? 'val-negativo' : 'val-positivo';
+                const sinal = negativo ? '- ' : '+ ';
+                return `<tr>
+                                            <td>${t.tipo}</td>
+                                            <td class="${cor}">${sinal}${formatarMoeda(Math.abs(t.valor))}</td>
+                                            <td>${formatarData(t.data)}</td>
+                                        </tr>`;
+            }).join('')}
+                                </tbody>
+                            </table>
                         </div>
-                    `).join('');
+                    </div>`).join('');
 
-            document.getElementById('detalhesContasUsuario').innerHTML = contas;
             abrirModal('modalDetalhesUsuario');
         }
 
@@ -318,51 +272,23 @@
             const dataNasc = document.getElementById('adminDataNascInput').value;
             const senha = document.getElementById('adminSenhaInput').value;
 
-            // Validações
-            if (!validarCampos([
-                { value: nome },
-                { value: email },
-                { value: cpfOriginal },
-                { value: dataNasc },
-                { value: senha }
-            ])) {
-                mostrarMsg('msgCriarAdmin', 'Preencha todos os campos.', 'warning');
-                return;
+            if (!validarCampos([{ value: nome }, { value: email }, { value: cpfOriginal }, { value: dataNasc }, { value: senha }])) {
+                mostrarMsg('msgCriarAdmin', 'Preencha todos os campos.', 'danger'); return;
             }
-
-            if (!validarCPF(cpfOriginal)) {
-                mostrarMsg('msgCriarAdmin', 'CPF inválido! Verifique os números digitados.', 'danger');
-                return;
-            }
-
-            if (senha.length < 6) {
-                mostrarMsg('msgCriarAdmin', 'Senha deve ter no mínimo 6 caracteres.', 'warning');
-                return;
-            }
-
-            const cpfLimpo = cpfOriginal.replace(/\D/g, "");
+            if (!validarCPF(cpfOriginal)) { mostrarMsg('msgCriarAdmin', 'CPF inválido!', 'danger'); return; }
+            if (senha.length < 6) { mostrarMsg('msgCriarAdmin', 'Senha deve ter no mínimo 6 caracteres.', 'danger'); return; }
 
             const res = await fazerRequisicao('/admin/criar-admin', 'POST', {
-                nome: nome,
-                email: email,
-                cpf: cpfLimpo,
-                dataNascimento: dataNasc,
-                senha: senha
+                nome, email, cpf: cpfOriginal.replace(/\D/g, ""), dataNascimento: dataNasc, senha
             });
 
+            mostrarMsg('msgCriarAdmin', res.data.mensagem || (res.ok ? 'Criado!' : 'Erro.'), res.ok ? 'success' : 'danger');
             if (res.ok) {
-                mostrarMsg('msgCriarAdmin', res.data.mensagem, 'success');
                 setTimeout(() => {
-                    limparModal('abaCriarAdmin');
-                    document.getElementById('adminNomeInput').value = '';
-                    document.getElementById('adminEmailInput').value = '';
-                    document.getElementById('adminCpfInput').value = '';
-                    document.getElementById('adminDataNascInput').value = '';
-                    document.getElementById('adminSenhaInput').value = '';
+                    ['adminNomeInput', 'adminEmailInput', 'adminCpfInput', 'adminDataNascInput', 'adminSenhaInput']
+                        .forEach(id => document.getElementById(id).value = '');
                     atualizarPainelAdmin();
                 }, 2000);
-            } else {
-                mostrarMsg('msgCriarAdmin', res.data.mensagem || 'Erro ao criar admin', 'danger');
             }
         }
 
@@ -371,25 +297,19 @@
             const res = await fazerRequisicao('/admin/extrato-geral');
             if (!res.ok) return;
 
-            const transacoes = res.data;
-            const tbody = document.getElementById('extratoGeralAdmin');
-            tbody.innerHTML = transacoes.map(t => {
+            document.getElementById('extratoGeralAdmin').innerHTML = res.data.map(t => {
                 const negativo = t.tipo === 'Saque' || t.tipo === 'Transferencia';
-                const corValor = negativo ? 'val-negativo' : 'val-positivo';
+                const cor = negativo ? 'val-negativo' : 'val-positivo';
                 const sinal = negativo ? '- ' : '+ ';
-                const valorFormatado = sinal + formatarMoeda(Math.abs(t.valor));
-                return `
-                    <tr>
-            <td>${t.tipo}</td>
-            <td class="${corValor}">${valorFormatado}</td>
-            <td>${formatarMoeda(t.taxa || 0)}</td>
-            <td>${t.usuario}</td>
-            <td>${t.descricao || '-'}</td>
-            <td>${formatarData(t.data)}</td>
-        </tr>
-                `;
-
-            })
+                return `<tr>
+                        <td>${t.tipo}</td>
+                        <td class="${cor}">${sinal}${formatarMoeda(Math.abs(t.valor))}</td>
+                        <td>${formatarMoeda(t.taxa || 0)}</td>
+                        <td>${t.usuario}</td>
+                        <td>${t.descricao || '-'}</td>
+                        <td>${formatarData(t.data)}</td>
+                    </tr>`;
+            }).join('');
         }
 
         // ── ATUALIZAR PAINEL ──
@@ -400,10 +320,7 @@
 
         // ── LOGOUT ──
         function fazerLogout() {
-            if (confirm('Deseja sair do painel admin?')) {
-                limparSessao();
-                window.location.href = 'index.html';
-            }
+            if (confirm('Deseja sair do painel admin?')) { limparSessao(); window.location.href = 'index.html'; }
         }
     </script>
 </body>

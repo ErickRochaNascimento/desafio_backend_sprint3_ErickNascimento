@@ -38,7 +38,7 @@
                     <button class="btn btn-primario btn-largura" onclick="login()">Entrar</button>
                     <button class="btn btn-outline btn-largura" style="margin-top: 12px;" onclick="toggleRegistro()">Criar Conta</button>
 
-                    <div id="msgLogin" class="oculto" style="margin-top: 16px;"></div>
+                    <div id="msgLogin" style="display:none;"></div>
                 </div>
 
                 <!-- FORMULÁRIO REGISTRO -->
@@ -50,23 +50,19 @@
                         <label class="rotulo">Nome Completo</label>
                         <input id="regNome" class="campo-texto" placeholder="Seu nome">
                     </div>
-
                     <div style="margin-bottom: 16px;">
                         <label class="rotulo">E-mail</label>
                         <input id="regEmail" class="campo-email" placeholder="seu@email.com">
                     </div>
-
                     <div style="margin-bottom: 16px;">
                         <label class="rotulo">CPF</label>
                         <input id="regCpf" class="campo-texto" placeholder="000.000.000-00" maxlength="14" oninput="mascaraCPF(this)">
                         <small class="texto-discreto" style="display: block; margin-top: 4px;">Será validado automaticamente</small>
                     </div>
-
                     <div style="margin-bottom: 16px;">
                         <label class="rotulo">Data de Nascimento</label>
                         <input id="regNasc" class="campo-texto" type="date">
                     </div>
-
                     <div style="margin-bottom: 24px;">
                         <label class="rotulo">Senha</label>
                         <input id="regSenha" class="campo-senha" type="password" placeholder="Mínimo 6 caracteres">
@@ -75,13 +71,13 @@
                     <button class="btn btn-primario btn-largura" onclick="registrar()">Registrar</button>
                     <button class="btn btn-outline btn-largura" style="margin-top: 12px;" onclick="toggleLogin()">Voltar ao Login</button>
 
-                    <div id="msgRegistro" class="oculto" style="margin-top: 16px;"></div>
+                    <div id="msgRegistro" style="display:none;"></div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- TELA PRINCIPAL (Usuário Logado) -->
+    <!-- TELA PRINCIPAL -->
     <div id="telaPrincipal" class="oculto">
         <div class="layout">
             <!-- SIDEBAR -->
@@ -99,7 +95,6 @@
                         <span class="icone">💳</span>
                         <span>Minhas Contas</span>
                     </div>
-
                     <div class="nav-item" onclick="abrirModalEditar()">
                         <span class="icone"></span>
                         <span>Edição Usuario</span>
@@ -134,7 +129,6 @@
                         </div>
                     </div>
 
-                    <!-- Card Abrir Nova Conta -->
                     <div class="painel" style="margin-bottom: 24px;">
                         <div class="painel-header">
                             <h3 class="painel-titulo">Abrir Nova Conta</h3>
@@ -152,15 +146,14 @@
                                 <button class="btn btn-primario" onclick="abrirConta()">Abrir Conta</button>
                             </div>
                         </div>
-                        <div id="msgAberturaContas" class="oculto" style="padding: 20px; padding-top: 0;"></div>
+                        <div id="msgAberturaContas" style="display:none; padding: 0 20px 20px;"></div>
                     </div>
 
-                    <!-- Lista de Contas -->
                     <div class="painel">
                         <div class="painel-header">
                             <h3 class="painel-titulo">Suas Contas</h3>
                         </div>
-                        <div id="msgEncerrarConta" class="oculto" style="padding: 20px;"></div>
+                        <div id="msgEncerrarConta" style="display:none; padding: 20px;"></div>
                         <div id="listaContasGrid" style="padding: 20px; display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px;"></div>
                     </div>
                 </div>
@@ -217,7 +210,7 @@
 
                             <button class="btn btn-primario btn-largura" onclick="realizarOperacao()">Confirmar Operação</button>
 
-                            <div id="msgRetorno" class="oculto" style="margin-top: 16px;"></div>
+                            <div id="msgRetorno" style="display:none;"></div>
                         </div>
                     </div>
                 </div>
@@ -230,7 +223,6 @@
                             <p class="pagina-subtitulo">Histórico de transações</p>
                         </div>
                     </div>
-
                     <div class="painel">
                         <div class="painel-header">
                             <h3 class="painel-titulo">Últimas Movimentações</h3>
@@ -270,7 +262,6 @@
                     <button class="btn btn-sm btn-primario" onclick="mostrarAbaModal('abaEmail')">Alterar E-mail</button>
                 </div>
 
-                <!-- ABA SENHA -->
                 <div id="abaSenha">
                     <p class="texto-discreto" style="margin-bottom: 16px;">Para sua segurança, confirme sua senha atual:</p>
                     <div style="margin-bottom: 16px;">
@@ -289,7 +280,6 @@
                     <button class="btn btn-primario btn-largura" onclick="alterarSenha()">Confirmar Nova Senha</button>
                 </div>
 
-                <!-- ABA EMAIL -->
                 <div id="abaEmail" class="oculto">
                     <p class="texto-discreto" style="margin-bottom: 16px;">Confirme sua senha para alterar o e-mail:</p>
                     <div style="margin-bottom: 16px;">
@@ -308,7 +298,7 @@
                     <button class="btn btn-primario btn-largura" onclick="alterarEmail()">Confirmar Novo E-mail</button>
                 </div>
 
-                <div id="msgEditar" class="oculto" style="margin-top: 16px;"></div>
+                <div id="msgEditar" style="display:none;"></div>
             </div>
         </div>
     </div>
@@ -332,7 +322,7 @@
                     <label class="rotulo">Senha</label>
                     <input id="senhaExcluir" type="password" class="campo-senha" placeholder="Sua senha">
                 </div>
-                <div id="msgExcluir" class="oculto" style="margin-bottom: 16px;"></div>
+                <div id="msgExcluir" style="display:none; margin-bottom: 16px;"></div>
                 <div style="display: flex; gap: 12px;">
                     <button class="btn btn-cinza btn-largura" onclick="fecharModal('modalExcluir')">Cancelar</button>
                     <button class="btn btn-perigo btn-largura" onclick="excluirConta()">Excluir Permanentemente</button>
@@ -341,6 +331,7 @@
         </div>
     </div>
 
+    <!-- MODAL: EXTRATO -->
     <div class="fundo-modal" id="modalExtrato">
         <div class="caixa-modal" style="max-width: 800px;">
             <div class="cabecalho-modal">
@@ -371,90 +362,78 @@
         var contaSelecionadaId = null;
         var contaAtualSaldo = 0;
 
-        // ── NAVEGAÇÃO ENTRE ABAS ──
+        // ── HELPERS EXTRATO ──
+        function renderLinhasExtrato(transacoes) {
+            return transacoes.map(t => {
+                const enviada = t.tipo === 'Transferencia' && !!t.nomeDestinatario;
+                const negativo = t.tipo === 'Saque' || enviada;
+                const cor = negativo ? 'val-negativo' : 'val-positivo';
+                const sinal = negativo ? '- ' : '+ ';
+                return `<tr>
+                        <td>${t.tipo}</td>
+                        <td class="${cor}">${sinal}${formatarMoeda(Math.abs(t.valor))}</td>
+                        <td>${formatarMoeda(t.taxa)}</td>
+                        <td>${t.descricao || '-'}</td>
+                        <td>${t.nomeDestinatario || t.nomeRemetente || '-'}</td>
+                        <td>${formatarData(t.realizadaEm)}</td>
+                    </tr>`;
+            }).join('');
+        }
+
+        // ── NAVEGAÇÃO ──
         function mostrarAbaPrincipal(abaId, navItemEl) {
             document.querySelectorAll('[id^="aba"]').forEach(aba => {
-                if (aba.id !== 'abaSenha' && aba.id !== 'abaEmail') {
-                    aba.classList.add('oculto');
-                }
+                if (aba.id !== 'abaSenha' && aba.id !== 'abaEmail') aba.classList.add('oculto');
             });
             document.getElementById(abaId).classList.remove('oculto');
-
             document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('ativo'));
             if (navItemEl) navItemEl.classList.add('ativo');
-
-            if (abaId === 'abaOperacoes') {
-                carregarContasOperacao();
-            }
+            if (abaId === 'abaOperacoes') carregarContasOperacao();
         }
 
         function mostrarAbaModal(abaId) {
             document.getElementById('abaSenha').classList.add('oculto');
             document.getElementById('abaEmail').classList.add('oculto');
             document.getElementById(abaId).classList.remove('oculto');
-            document.getElementById('msgEditar').classList.add('oculto');
+            document.getElementById('msgEditar').setAttribute('style', 'display:none;');
         }
 
-        // ── MODAL ──
-        function abrirModalEditar() {
-            limparModal('modalEditar');
-            abrirModal('modalEditar');
-        }
-
-        function abrirModalExcluir() {
-            document.getElementById('emailExcluir').value = '';
-            document.getElementById('senhaExcluir').value = '';
-            document.getElementById('msgExcluir').classList.add('oculto');
-            abrirModal('modalExcluir');
-        }
-
-        function fecharModal(idModal) {
-            document.getElementById(idModal).classList.remove('ativo');
-        }
-
+        // ── MODAIS ──
+        function abrirModalEditar() { limparModal('modalEditar'); abrirModal('modalEditar'); }
+        function abrirModal(idModal) { document.getElementById(idModal).classList.add('ativo'); }
+        function fecharModal(idModal) { document.getElementById(idModal).classList.remove('ativo'); }
         function limparModal(idModal) {
             const modal = document.getElementById(idModal);
-            const inputs = modal.querySelectorAll('input, textarea, select');
-            inputs.forEach(input => input.value = '');
-            const msgs = modal.querySelectorAll('[id*="msg"]');
-            msgs.forEach(msg => msg.classList.add('oculto'));
+            modal.querySelectorAll('input, textarea, select').forEach(i => i.value = '');
+            modal.querySelectorAll('[id*="msg"]').forEach(m => m.setAttribute('style', 'display:none;'));
         }
 
-        // ── AUTENTICAÇÃO ──
+        // ── AUTH ──
         function toggleRegistro() {
             document.getElementById('formLogin').classList.toggle('oculto');
             document.getElementById('formRegistro').classList.toggle('oculto');
-            document.getElementById('msgLogin').classList.add('oculto');
-            document.getElementById('msgRegistro').classList.add('oculto');
+            document.getElementById('msgLogin').setAttribute('style', 'display:none;');
+            document.getElementById('msgRegistro').setAttribute('style', 'display:none;');
         }
-
-        function toggleLogin() {
-            toggleRegistro();
-        }
+        function toggleLogin() { toggleRegistro(); }
 
         function login() {
             const email = document.getElementById('email').value;
             const senha = document.getElementById('senha').value;
-
-            if (!email || !senha) {
-                mostrarMsg('msgLogin', 'Preencha todos os campos.', 'warning');
-                return;
-            }
+            if (!email || !senha) { mostrarMsg('msgLogin', 'Preencha todos os campos.', 'danger'); return; }
 
             fetch(BASE + '/auth/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, senha })
-            }).then(res => res.json()).then(data => {
+            }).then(r => r.json()).then(data => {
                 if (data.token) {
                     salvarToken(data.token, data.nome);
                     document.getElementById('nomeUsuario').textContent = data.nome;
                     document.getElementById('usuarioAvatar').textContent = data.nome.charAt(0).toUpperCase();
                     document.getElementById('telaLogin').classList.add('oculto');
                     document.getElementById('telaPrincipal').classList.remove('oculto');
-                    if (data.perfil === 'admin') {
-                        document.getElementById('navAdmin').classList.remove('oculto');
-                    }
+                    if (data.perfil === 'admin') document.getElementById('navAdmin').classList.remove('oculto');
                     carregarContas();
                 } else {
                     mostrarMsg('msgLogin', data.mensagem || 'Erro no login', 'danger');
@@ -468,33 +447,21 @@
             const cpfOriginal = document.getElementById('regCpf').value;
             const nasc = document.getElementById('regNasc').value;
             const senha = document.getElementById('regSenha').value;
-
-            if (!validarCPF(cpfOriginal)) {
-                mostrarMsg('msgRegistro', 'CPF inválido!', 'danger');
-                return;
-            }
-
+            if (!validarCPF(cpfOriginal)) { mostrarMsg('msgRegistro', 'CPF inválido!', 'danger'); return; }
             if (!nome || !email || !nasc || !senha || senha.length < 6) {
-                mostrarMsg('msgRegistro', 'Preencha todos os campos corretamente.', 'warning');
-                return;
+                mostrarMsg('msgRegistro', 'Preencha todos os campos corretamente.', 'danger'); return;
             }
-
-            const cpfLimpo = cpfOriginal.replace(/\D/g, "");
-
             fetch(BASE + '/auth/registro', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ nome, email, cpf: cpfLimpo, dataNascimento: nasc, senha })
-            }).then(res => res.json()).then(data => {
-                mostrarMsg('msgRegistro', data.mensagem, data.mensagem.includes('sucesso') ? 'success' : 'danger');
-                if (data.mensagem.includes('sucesso')) {
+                body: JSON.stringify({ nome, email, cpf: cpfOriginal.replace(/\D/g, ""), dataNascimento: nasc, senha })
+            }).then(r => r.json()).then(data => {
+                const ok = data.mensagem && data.mensagem.includes('sucesso');
+                mostrarMsg('msgRegistro', data.mensagem, ok ? 'success' : 'danger');
+                if (ok) {
                     notificarAlteracaoAdmin();
                     setTimeout(() => {
-                        document.getElementById('regNome').value = '';
-                        document.getElementById('regEmail').value = '';
-                        document.getElementById('regCpf').value = '';
-                        document.getElementById('regNasc').value = '';
-                        document.getElementById('regSenha').value = '';
+                        ['regNome', 'regEmail', 'regCpf', 'regNasc', 'regSenha'].forEach(id => document.getElementById(id).value = '');
                         toggleLogin();
                     }, 2000);
                 }
@@ -511,46 +478,39 @@
             }
         }
 
-
-
         // ── CONTAS ──
         function carregarContas() {
-            fetch(BASE + '/contas', {
-                headers: { 'Authorization': 'Bearer ' + token }
-            }).then(res => res.json()).then(contas => {
-                const grid = document.getElementById('listaContasGrid');
-                grid.innerHTML = contas.map(c => `
-            <div class="stat-card" style="cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--roxo)'" onmouseout="this.style.borderColor='var(--borda)'">
-                <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 12px;">
-                    <div>
-                        <p class="stat-label">${c.tipo}</p>
-                        <p class="stat-valor texto-verde" style="font-size: 24px;">R$ ${c.saldo.toFixed(2)}</p>
-                    </div>
-                </div>
-                <div style="display: flex; gap: 8px;">
-                    <button class="btn btn-sm btn-primario" style="flex: 1;" onclick="selecionarContaOperacao(${c.id})">Operar</button>
-                    <button class="btn btn-sm btn-primario" onclick="abrirExtratoModal(${c.id}, '${c.tipo}')">Extrato</button>
-                    <button class="btn btn-sm btn-perigo" onclick="encerrarConta(${c.id})">Encerrar</button>
-                </div>
-            </div>
-        `).join('');
+            fetch(BASE + '/contas?_=' + Date.now(), {
+                headers: { 'Authorization': 'Bearer ' + token, 'Cache-Control': 'no-cache' }
+            }).then(r => r.json()).then(contas => {
+                document.getElementById('listaContasGrid').innerHTML = contas.map(c => `
+                        <div class="stat-card" style="cursor:pointer;transition:all 0.2s;"
+                             onmouseover="this.style.borderColor='var(--roxo)'"
+                             onmouseout="this.style.borderColor='var(--borda)'">
+                            <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:12px;">
+                                <div>
+                                    <p class="stat-label">${c.tipo} - ${c.id}</p>
+                                    <p class="stat-valor texto-verde" style="font-size:24px;">R$ ${c.saldo.toFixed(2)}</p>
+                                </div>
+                            </div>
+                            <div style="display:flex;gap:8px;">
+                                <button class="btn btn-sm btn-primario" style="flex:1;" onclick="selecionarContaOperacao(${c.id})">Operar</button>
+                                <button class="btn btn-sm btn-primario" onclick="abrirExtratoModal(${c.id}, '${c.tipo}')">Extrato</button>
+                                <button class="btn btn-sm btn-perigo" onclick="encerrarConta(${c.id})">Encerrar</button>
+                            </div>
+                        </div>`).join('');
             });
         }
-
 
         function abrirConta() {
             fetch(BASE + '/contas', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
                 body: JSON.stringify({ tipo: document.getElementById('tipoConta').value })
-            }).then(res => res.json()).then(data => {
-                if (data.mensagem.includes('sucesso') && data.mensagem) {
-                    mostrarMsg('msgAberturaContas', 'Conta aberta com sucesso!', 'success');
-                    carregarContas();
-                    notificarAlteracaoAdmin();
-                } else {
-                    mostrarMsg('msgAberturaContas', 'Você já possui uma conta deste tipo.', 'warning');
-                }
+            }).then(r => r.json()).then(data => {
+                const ok = data.mensagem && data.mensagem.includes('sucesso');
+                mostrarMsg('msgAberturaContas', ok ? 'Conta aberta com sucesso!' : (data.mensagem || 'Erro ao abrir conta.'), ok ? 'success' : 'danger');
+                if (ok) { carregarContas(); notificarAlteracaoAdmin(); }
             }).catch(() => mostrarMsg('msgAberturaContas', 'Erro ao conectar.', 'danger'));
         }
 
@@ -559,70 +519,67 @@
             fetch(BASE + '/contas/' + id, {
                 method: 'DELETE',
                 headers: { 'Authorization': 'Bearer ' + token }
-            }).then(res => res.json()).then(data => {
-                if (data.mensagem && data.mensagem.includes('sucesso')) {
-                    mostrarMsg('msgEncerrarConta', data.mensagem, 'success');
-                    notificarAlteracaoAdmin();
-                } else {
-                    mostrarMsg('msgEncerrarConta', data.mensagem || 'Erro ao encerrar conta.', 'danger');
-                }
+            }).then(r => r.json()).then(data => {
+                const ok = data.mensagem && data.mensagem.includes('sucesso');
+                mostrarMsg('msgEncerrarConta', data.mensagem || 'Erro ao encerrar.', ok ? 'success' : 'danger');
+                if (ok) notificarAlteracaoAdmin();
                 carregarContas();
                 carregarSaldoConta();
             }).catch(() => mostrarMsg('msgEncerrarConta', 'Erro ao conectar.', 'danger'));
         }
 
         function selecionarContaOperacao(id) {
-            carregarContasOperacao();
-            setTimeout(() => {
-                document.getElementById('contaOperacao').value = id;
-                carregarSaldoConta();
+            // Troca aba sem depender de event
+            document.querySelectorAll('[id^="aba"]').forEach(aba => {
+                if (aba.id !== 'abaSenha' && aba.id !== 'abaEmail') aba.classList.add('oculto');
+            });
+            document.getElementById('abaOperacoes').classList.remove('oculto');
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('ativo'));
 
-                // Troca aba manualmente sem depender de event
-                document.querySelectorAll('[id^="aba"]').forEach(aba => {
-                    if (aba.id !== 'abaSenha' && aba.id !== 'abaEmail') {
-                        aba.classList.add('oculto');
-                    }
+            // Carrega contas no select e já seleciona a certa
+            fetch(BASE + '/contas?_=' + Date.now(), {
+                headers: { 'Authorization': 'Bearer ' + token, 'Cache-Control': 'no-cache' }
+            }).then(r => r.json()).then(contas => {
+                const select = document.getElementById('contaOperacao');
+                select.innerHTML = '<option value="">-- Selecione uma conta --</option>';
+                contas.forEach(c => {
+                    const opt = document.createElement('option');
+                    opt.value = c.id;
+                    opt.textContent = `${c.tipo} - ${c.id}`;
+                    if (c.id === id) opt.selected = true;
+                    select.appendChild(opt);
                 });
-                document.getElementById('abaOperacoes').classList.remove('oculto');
-                document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('ativo'));
-            }, 100);
+                carregarSaldoConta();
+            });
         }
 
         function carregarContasOperacao() {
-            fetch(BASE + '/contas', {
-                headers: { 'Authorization': 'Bearer ' + token }
-            }).then(res => res.json())
-                .then(contas => {
-                    const select = document.getElementById('contaOperacao');
-                    select.innerHTML = '<option value="">-- Selecione uma conta --</option>';
-
-                    contas.forEach(c => {
-                        const option = document.createElement('option');
-                        option.value = c.id;
-                        option.textContent = `${c.tipo} - ${c.id}`;
-                        select.appendChild(option);
-                    });
-                }).catch(err => {
-                    console.error('Erro ao carregar contas:', err);
-                    alert('Erro ao carregar contas');
+            fetch(BASE + '/contas?_=' + Date.now(), {
+                headers: { 'Authorization': 'Bearer ' + token, 'Cache-Control': 'no-cache' }
+            }).then(r => r.json()).then(contas => {
+                const select = document.getElementById('contaOperacao');
+                const valorAtual = select.value;
+                select.innerHTML = '<option value="">-- Selecione uma conta --</option>';
+                contas.forEach(c => {
+                    const opt = document.createElement('option');
+                    opt.value = c.id;
+                    opt.textContent = c.tipo;
+                    if (String(c.id) === valorAtual) opt.selected = true;
+                    select.appendChild(opt);
                 });
+            });
         }
-
 
         function carregarSaldoConta() {
             const contaId = document.getElementById('contaOperacao').value;
-            if (!contaId) {
-                document.getElementById('saldoContaOperacao').classList.add('oculto');
-                return;
-            }
+            if (!contaId) { document.getElementById('saldoContaOperacao').classList.add('oculto'); return; }
 
-            fetch(BASE + '/contas/' + contaId, {
-                headers: { 'Authorization': 'Bearer ' + token }
-            }).then(res => res.json()).then(conta => {
+            fetch(BASE + '/contas/' + contaId + '?_=' + Date.now(), {
+                headers: { 'Authorization': 'Bearer ' + token, 'Cache-Control': 'no-cache' }
+            }).then(r => r.json()).then(conta => {
                 document.getElementById('saldoValor').textContent = 'R$ ' + conta.saldo.toFixed(2);
                 document.getElementById('saldoContaOperacao').classList.remove('oculto');
                 contaAtualSaldo = conta.saldo;
-                carregarContas();
             }).catch(() => { });
         }
 
@@ -633,20 +590,13 @@
 
         function realizarOperacao() {
             const contaId = document.getElementById('contaOperacao').value;
-            if (!contaId) {
-                mostrarMsg('msgRetorno', 'Selecione uma conta.', 'warning');
-                return;
-            }
+            if (!contaId) { mostrarMsg('msgRetorno', 'Selecione uma conta.', 'danger'); return; }
 
             const tipo = document.getElementById('tipoOp').value;
             const valor = parseFloat(document.getElementById('valor').value);
             const descricao = document.getElementById('descricao').value;
             const contaDest = document.getElementById('contaDest').value;
-
-            if (!valor || valor <= 0) {
-                mostrarMsg('msgRetorno', 'Digite um valor válido.', 'warning');
-                return;
-            }
+            if (!valor || valor <= 0) { mostrarMsg('msgRetorno', 'Digite um valor válido.', 'danger'); return; }
 
             const dto = { tipo, valor, descricao, contaDestinoId: tipo === 'Transferencia' && contaDest ? parseInt(contaDest) : null };
 
@@ -654,24 +604,22 @@
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
                 body: JSON.stringify(dto)
-            }).then(res => res.json()).then(data => {
-                const ehSucesso = data.mensagem && data.mensagem.includes('sucesso');
-                mostrarMsg('msgRetorno', data.mensagem || 'Erro na operação.', ehSucesso ? 'success' : 'danger');
-                if (ehSucesso) {
+            }).then(r => r.json()).then(data => {
+                const ok = data.mensagem && data.mensagem.includes('sucesso');
+                mostrarMsg('msgRetorno', data.mensagem || 'Erro na operação.', ok ? 'success' : 'danger');
+                if (ok) {
                     document.getElementById('valor').value = '';
                     document.getElementById('contaDest').value = '';
                     document.getElementById('descricao').value = '';
-
+                    // Atualiza saldo imediatamente no painel de operação
                     fetch(BASE + '/contas/' + contaId + '?_=' + Date.now(), {
                         headers: { 'Authorization': 'Bearer ' + token, 'Cache-Control': 'no-cache' }
-                    })
-                        .then(r => r.json())
-                        .then(conta => {
-                            document.getElementById('saldoValor').textContent = 'R$ ' + conta.saldo.toFixed(2);
-                            document.getElementById('saldoContaOperacao').classList.remove('oculto');
-                            contaAtualSaldo = conta.saldo;
-                        });
-
+                    }).then(r => r.json()).then(conta => {
+                        document.getElementById('saldoValor').textContent = 'R$ ' + conta.saldo.toFixed(2);
+                        document.getElementById('saldoContaOperacao').classList.remove('oculto');
+                        contaAtualSaldo = conta.saldo;
+                    });
+                    // Atualiza cards de Minhas Contas
                     carregarContas();
                     carregarExtrato();
                     notificarAlteracaoAdmin();
@@ -682,37 +630,33 @@
         function carregarExtrato() {
             const contaId = document.getElementById('contaOperacao').value;
             if (!contaId) {
-                document.getElementById('extratoTabela').innerHTML = '<tr><td colspan="6" class="texto-discreto" style="text-align: center; padding: 20px;">Selecione uma conta para ver o extrato.</td></tr>';
+                document.getElementById('extratoTabela').innerHTML = '<tr><td colspan="6" class="texto-discreto" style="text-align:center;padding:20px;">Selecione uma conta para ver o extrato.</td></tr>';
                 return;
             }
-
-            fetch(BASE + '/contas/' + contaId + '/transacoes', {
-                headers: { 'Authorization': 'Bearer ' + token }
-            }).then(res => res.json()).then(transacoes => {
+            fetch(BASE + '/contas/' + contaId + '/transacoes?_=' + Date.now(), {
+                headers: { 'Authorization': 'Bearer ' + token, 'Cache-Control': 'no-cache' }
+            }).then(r => r.json()).then(transacoes => {
                 const tbody = document.getElementById('extratoTabela');
-                if (transacoes.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="6" class="texto-discreto" style="text-align: center; padding: 20px;">Nenhuma transação.</td></tr>';
-                    return;
-                }
-                tbody.innerHTML = transacoes.map(t => {
-                    const transferenciaEnviada = t.tipo === 'Transferencia' && !!t.nomeDestinatario;
-                    const negativo = t.tipo === 'Saque' || transferenciaEnviada;
-                    const corValor = negativo ? 'val-negativo' : 'val-positivo';
-                    const sinal = negativo ? '- ' : '+ ';
-                    const valorFormatado = sinal + formatarMoeda(Math.abs(t.valor));
-
-                    return `
-                        <tr>
-                            <td>${t.tipo}</td>
-                            <td class="${corValor}">${valorFormatado}</td>
-                            <td>R$ ${t.taxa.toFixed(2)}</td>
-                            <td>${t.descricao || '-'}</td>
-                            <td>${t.nomeDestinatario || t.nomeRemetente || '-'}</td>
-                            <td>${formatarData(t.realizadaEm)}</td>
-                        </tr>
-                    `;
-                }).join('');
+                tbody.innerHTML = transacoes.length === 0
+                    ? '<tr><td colspan="6" class="texto-discreto" style="text-align:center;padding:20px;">Nenhuma transação.</td></tr>'
+                    : renderLinhasExtrato(transacoes);
             });
+        }
+
+        function abrirExtratoModal(contaId, contaTipo) {
+            document.getElementById('extratoContaId').textContent = contaId;
+            document.getElementById('extratoContaTipo').textContent = contaTipo;
+            fetch(BASE + '/contas/' + contaId + '/transacoes?_=' + Date.now(), {
+                headers: { 'Authorization': 'Bearer ' + token, 'Cache-Control': 'no-cache' }
+            }).then(r => r.json()).then(transacoes => {
+                const tbody = document.getElementById('extratoModalTabela');
+                tbody.innerHTML = transacoes.length === 0
+                    ? '<tr><td colspan="6" class="texto-discreto" style="text-align:center;padding:20px;">Nenhuma transação.</td></tr>'
+                    : renderLinhasExtrato(transacoes);
+            }).catch(() => {
+                document.getElementById('extratoModalTabela').innerHTML = '<tr><td colspan="6" style="text-align:center;padding:20px;">Erro ao carregar extrato.</td></tr>';
+            });
+            abrirModal('modalExtrato');
         }
 
         // ── PERFIL ──
@@ -720,26 +664,17 @@
             const email = document.getElementById('altEmailSenha').value;
             const senhaAtual = document.getElementById('altSenhaAtual').value;
             const novaSenha = document.getElementById('altNovaSenha').value;
-
-            if (!email || !senhaAtual || !novaSenha) {
-                mostrarMsg('msgEditar', 'Preencha todos os campos.', 'warning');
-                return;
-            }
-
+            if (!email || !senhaAtual || !novaSenha) { mostrarMsg('msgEditar', 'Preencha todos os campos.', 'danger'); return; }
             fetch(BASE + '/auth/alterar-senha', {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, senhaAtual, novaSenha })
-            }).then(res => res.json()).then(data => {
-                mostrarMsg('msgEditar', data.mensagem, data.mensagem.includes('sucesso') ? 'success' : 'danger');
-                if (data.mensagem.includes('sucesso')) {
-                    // Notifica painel admin sobre a alteração
+            }).then(r => r.json()).then(data => {
+                const ok = data.mensagem && data.mensagem.includes('sucesso');
+                mostrarMsg('msgEditar', data.mensagem, ok ? 'success' : 'danger');
+                if (ok) {
                     notificarAlteracaoAdmin();
-                    setTimeout(() => {
-                        fecharModal('modalEditar');
-                        alert('Senha alterada! Por favor, faça login novamente.');
-                        sair();
-                    }, 1500);
+                    setTimeout(() => { fecharModal('modalEditar'); alert('Senha alterada! Faça login novamente.'); sair(); }, 1500);
                 }
             }).catch(() => mostrarMsg('msgEditar', 'Erro ao conectar.', 'danger'));
         }
@@ -748,51 +683,30 @@
             const emailAtual = document.getElementById('altEmailAtual').value;
             const senhaAtual = document.getElementById('altSenhaParaEmail').value;
             const novoEmail = document.getElementById('altNovoEmail').value;
-
-            if (!emailAtual || !senhaAtual || !novoEmail) {
-                mostrarMsg('msgEditar', 'Preencha todos os campos.', 'warning');
-                return;
-            }
-
+            if (!emailAtual || !senhaAtual || !novoEmail) { mostrarMsg('msgEditar', 'Preencha todos os campos.', 'danger'); return; }
             fetch(BASE + '/auth/alterar-email', {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
                 body: JSON.stringify({ emailAtual, senhaAtual, novoEmail })
-            }).then(res => res.json()).then(data => {
-                mostrarMsg('msgEditar', data.mensagem, data.mensagem.includes('sucesso') ? 'success' : 'danger');
-                if (data.mensagem.includes('sucesso')) {
-                    notificarAlteracaoAdmin();
-                    setTimeout(() => {
-                        alert('E-mail alterado! Por favor, faça login novamente.');
-                        sair();
-                    }, 2000);
-                }
+            }).then(r => r.json()).then(data => {
+                const ok = data.mensagem && data.mensagem.includes('sucesso');
+                mostrarMsg('msgEditar', data.mensagem, ok ? 'success' : 'danger');
+                if (ok) { notificarAlteracaoAdmin(); setTimeout(() => { alert('E-mail alterado! Faça login novamente.'); sair(); }, 2000); }
             }).catch(() => mostrarMsg('msgEditar', 'Erro ao conectar.', 'danger'));
         }
 
         function excluirConta() {
             const email = document.getElementById('emailExcluir').value;
             const senha = document.getElementById('senhaExcluir').value;
-
-            if (!email || !senha) {
-                mostrarMsg('msgExcluir', 'Preencha todos os campos.', 'warning');
-                return;
-            }
-
+            if (!email || !senha) { mostrarMsg('msgExcluir', 'Preencha todos os campos.', 'danger'); return; }
             if (!confirm('Tem certeza? Esta ação é irreversível!')) return;
-
             fetch(BASE + '/auth/excluir-conta', {
                 method: 'DELETE',
                 headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
                 body: JSON.stringify({ email, senha })
-            }).then(res => res.json()).then(data => {
-                if (data.mensagem.includes('sucesso')) {
-                    notificarAlteracaoAdmin();
-                    alert(data.mensagem);
-                    sair();
-                } else {
-                    mostrarMsg('msgExcluir', data.mensagem, 'danger');
-                }
+            }).then(r => r.json()).then(data => {
+                if (data.mensagem && data.mensagem.includes('sucesso')) { notificarAlteracaoAdmin(); alert(data.mensagem); sair(); }
+                else mostrarMsg('msgExcluir', data.mensagem, 'danger');
             }).catch(() => mostrarMsg('msgExcluir', 'Erro ao conectar.', 'danger'));
         }
 
@@ -801,7 +715,6 @@
             window.location.href = 'admin.html';
         }
 
-        // Função para notificar o painel admin se ele estiver aberto em outra aba (opcional, mas boa prática)
         function notificarAlteracaoAdmin() {
             localStorage.setItem('ultimaAlteracao', Date.now());
         }
@@ -818,51 +731,6 @@
                 carregarContas();
             }
         });
-
-
-        function abrirExtratoModal(contaId, contaTipo) {
-            document.getElementById('extratoContaId').textContent = contaId;
-            document.getElementById('extratoContaTipo').textContent = contaTipo;
-
-            fetch(BASE + '/contas/' + contaId + '/transacoes', {
-                headers: { 'Authorization': 'Bearer ' + token }
-            }).then(res => res.json()).then(transacoes => {
-                const tbody = document.getElementById('extratoModalTabela');
-                if (transacoes.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="6" class="texto-discreto" style="text-align: center; padding: 20px;">Nenhuma transacao.</td></tr>';
-                } else {
-                    tbody.innerHTML = transacoes.map(t => {
-                        const transferenciaEnviada = t.tipo === 'Transferencia' && !!t.nomeDestinatario;
-                        const negativo = t.tipo === 'Saque' || transferenciaEnviada;
-                        const corValor = negativo ? 'val-negativo' : 'val-positivo';
-                        const sinal = negativo ? '- ' : '+ ';
-                        const valorFormatado = sinal + formatarMoeda(Math.abs(t.valor));
-
-                        return `
-                            <tr>
-                                <td>${t.tipo}</td>
-                                <td class="${corValor}">${valorFormatado}</td>
-                                <td>R$ ${t.taxa.toFixed(2)}</td>
-                                <td>${t.descricao || '-'}</td>
-                                <td>${t.nomeDestinatario || t.nomeRemetente || '-'}</td>
-                                <td>${formatarData(t.realizadaEm)}</td>
-                            </tr>
-                        `;
-                    }).join('');
-                }
-            }).catch(() => {
-                document.getElementById('extratoModalTabela').innerHTML = '<tr><td colspan="6" class="texto-discreto" style="text-align: center; padding: 20px;">Erro ao carregar extrato.</td></tr>';
-            });
-
-            abrirModal('modalExtrato');
-        }
-
-        function abrirModal(idModal) {
-            document.getElementById(idModal).classList.add('ativo');
-        }
-
-
-
     </script>
 
 </body>
