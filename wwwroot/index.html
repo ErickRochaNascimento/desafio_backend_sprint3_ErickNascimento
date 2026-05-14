@@ -95,7 +95,7 @@
                 </div>
 
                 <nav class="sidebar-nav">
-                    <div class="nav-item ativo" onclick="mostrarAbaPrincipal('abaContas')">
+                    <div class="nav-item ativo" onclick="mostrarAbaPrincipal('abaContas', this)">
                         <span class="icone">💳</span>
                         <span>Minhas Contas</span>
                     </div>
@@ -372,7 +372,7 @@
         var contaAtualSaldo = 0;
 
         // ── NAVEGAÇÃO ENTRE ABAS ──
-        function mostrarAbaPrincipal(abaId) {
+        function mostrarAbaPrincipal(abaId, navItemEl) {
             document.querySelectorAll('[id^="aba"]').forEach(aba => {
                 if (aba.id !== 'abaSenha' && aba.id !== 'abaEmail') {
                     aba.classList.add('oculto');
@@ -381,7 +381,7 @@
             document.getElementById(abaId).classList.remove('oculto');
 
             document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('ativo'));
-            event.target.closest('.nav-item').classList.add('ativo');
+            if (navItemEl) navItemEl.classList.add('ativo');
 
             if (abaId === 'abaOperacoes') {
                 carregarContasOperacao();
@@ -520,21 +520,20 @@
             }).then(res => res.json()).then(contas => {
                 const grid = document.getElementById('listaContasGrid');
                 grid.innerHTML = contas.map(c => `
-                                <div class="stat-card" style="cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--roxo)'" onmouseout="this.style.borderColor='var(--borda)'">
-                                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 12px;">
-                                        <div>
-                                            <p class="stat-label">${c.tipo}</p>
-                                            <p class="stat-valor texto-verde" style="font-size: 24px;">R$ ${c.saldo.toFixed(2)}</p>
-                                        </div>
-
-                                    </div>
-                                    <div style="display: flex; gap: 8px;">
-                                        <button class="btn btn-sm btn-primario" style="flex: 1;" onclick="selecionarContaOperacao(${c.id})">Operar</button>
-                                        <button class="btn btn-sm btn-primario" onclick="abrirExtratoModal(${c.id}, '${c.tipo}')">Extrato</button>
-                                        <button class="btn btn-sm btn-perigo" onclick="encerrarConta(${c.id})">Encerrar</button>
-                                    </div>
-                                </div>
-                            `).join('');
+            <div class="stat-card" style="cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--roxo)'" onmouseout="this.style.borderColor='var(--borda)'">
+                <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 12px;">
+                    <div>
+                        <p class="stat-label">${c.tipo}</p>
+                        <p class="stat-valor texto-verde" style="font-size: 24px;">R$ ${c.saldo.toFixed(2)}</p>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 8px;">
+                    <button class="btn btn-sm btn-primario" style="flex: 1;" onclick="selecionarContaOperacao(${c.id})">Operar</button>
+                    <button class="btn btn-sm btn-primario" onclick="abrirExtratoModal(${c.id}, '${c.tipo}')">Extrato</button>
+                    <button class="btn btn-sm btn-perigo" onclick="encerrarConta(${c.id})">Encerrar</button>
+                </div>
+            </div>
+        `).join('');
             });
         }
 
@@ -545,12 +544,12 @@
                 headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
                 body: JSON.stringify({ tipo: document.getElementById('tipoConta').value })
             }).then(res => res.json()).then(data => {
-                if (data.mensagem && data.mensagem.includes('sucesso')) {
+                if (data.mensagem.includes('sucesso') && data.mensagem) {
                     mostrarMsg('msgAberturaContas', 'Conta aberta com sucesso!', 'success');
                     carregarContas();
                     notificarAlteracaoAdmin();
                 } else {
-                    mostrarMsg('msgAberturaContas', data.mensagem || 'Não pode mais de 1 conta do mesmo tipo.', 'danger');
+                    mostrarMsg('msgAberturaContas', 'Você já possui uma conta deste tipo.', 'warning');
                 }
             }).catch(() => mostrarMsg('msgAberturaContas', 'Erro ao conectar.', 'danger'));
         }
@@ -574,11 +573,18 @@
 
         function selecionarContaOperacao(id) {
             carregarContasOperacao();
-
             setTimeout(() => {
                 document.getElementById('contaOperacao').value = id;
                 carregarSaldoConta();
-                mostrarAbaPrincipal('abaOperacoes');
+
+                // Troca aba manualmente sem depender de event
+                document.querySelectorAll('[id^="aba"]').forEach(aba => {
+                    if (aba.id !== 'abaSenha' && aba.id !== 'abaEmail') {
+                        aba.classList.add('oculto');
+                    }
+                });
+                document.getElementById('abaOperacoes').classList.remove('oculto');
+                document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('ativo'));
             }, 100);
         }
 
@@ -593,7 +599,7 @@
                     contas.forEach(c => {
                         const option = document.createElement('option');
                         option.value = c.id;
-                        option.textContent = `${c.tipo}`;
+                        option.textContent = `${c.tipo} - ${c.id}`;
                         select.appendChild(option);
                     });
                 }).catch(err => {
@@ -617,7 +623,7 @@
                 document.getElementById('saldoContaOperacao').classList.remove('oculto');
                 contaAtualSaldo = conta.saldo;
                 carregarContas();
-            });
+            }).catch(() => { });
         }
 
         function toggleCampoDestino() {
@@ -655,8 +661,18 @@
                     document.getElementById('valor').value = '';
                     document.getElementById('contaDest').value = '';
                     document.getElementById('descricao').value = '';
+
+                    fetch(BASE + '/contas/' + contaId + '?_=' + Date.now(), {
+                        headers: { 'Authorization': 'Bearer ' + token, 'Cache-Control': 'no-cache' }
+                    })
+                        .then(r => r.json())
+                        .then(conta => {
+                            document.getElementById('saldoValor').textContent = 'R$ ' + conta.saldo.toFixed(2);
+                            document.getElementById('saldoContaOperacao').classList.remove('oculto');
+                            contaAtualSaldo = conta.saldo;
+                        });
+
                     carregarContas();
-                    carregarSaldoConta();
                     carregarExtrato();
                     notificarAlteracaoAdmin();
                 }
@@ -679,28 +695,22 @@
                     return;
                 }
                 tbody.innerHTML = transacoes.map(t => {
-                    const ehSaque = t.tipo === 'Saque';
-                    const ehTransferencia = t.tipo === 'Transferencia';
-                    const ehDeposito = t.tipo === 'Deposito';
-
-                    // Transferência enviada tem nomeDestinatario preenchido na sua conta
-                    const transferenciaEnviada = ehTransferencia && !!t.nomeDestinatario;
-                    const negativo = ehSaque || transferenciaEnviada;
-
-                    let corValor = negativo ? 'texto-negrito texto-vermelho' : 'texto-negrito texto-verde';
-                    const sinal = negativo ? '-' : '';
-                    const valorFormatado = sinal + formatarMoeda(t.valor);
+                    const transferenciaEnviada = t.tipo === 'Transferencia' && !!t.nomeDestinatario;
+                    const negativo = t.tipo === 'Saque' || transferenciaEnviada;
+                    const corValor = negativo ? 'val-negativo' : 'val-positivo';
+                    const sinal = negativo ? '- ' : '+ ';
+                    const valorFormatado = sinal + formatarMoeda(Math.abs(t.valor));
 
                     return `
-        <tr>
-            <td>${t.tipo}</td>
-            <td class="${corValor}">${valorFormatado}</td>
-            <td>R$ ${t.taxa.toFixed(2)}</td>
-            <td>${t.descricao || '-'}</td>
-            <td>${t.nomeDestinatario || t.nomeRemetente || '-'}</td>
-            <td>${formatarData(t.realizadaEm)}</td>
-        </tr>
-    `;
+                        <tr>
+                            <td>${t.tipo}</td>
+                            <td class="${corValor}">${valorFormatado}</td>
+                            <td>R$ ${t.taxa.toFixed(2)}</td>
+                            <td>${t.descricao || '-'}</td>
+                            <td>${t.nomeDestinatario || t.nomeRemetente || '-'}</td>
+                            <td>${formatarData(t.realizadaEm)}</td>
+                        </tr>
+                    `;
                 }).join('');
             });
         }
@@ -809,6 +819,7 @@
             }
         });
 
+
         function abrirExtratoModal(contaId, contaTipo) {
             document.getElementById('extratoContaId').textContent = contaId;
             document.getElementById('extratoContaTipo').textContent = contaTipo;
@@ -821,28 +832,22 @@
                     tbody.innerHTML = '<tr><td colspan="6" class="texto-discreto" style="text-align: center; padding: 20px;">Nenhuma transacao.</td></tr>';
                 } else {
                     tbody.innerHTML = transacoes.map(t => {
-                        const ehSaque = t.tipo === 'Saque';
-                        const ehDeposito = t.tipo === 'Deposito';
-                        const ehTransferencia = t.tipo === 'Transferencia';
-                        const transferenciaEnviada = ehTransferencia && !!t.nomeDestinatario;
-                        const negativo = ehSaque || transferenciaEnviada;
-
-                        let corValor = 'texto-negrito';
-                        if (negativo) corValor = 'texto-negrito texto-vermelho';
-                        else if (ehDeposito || (ehTransferencia && !transferenciaEnviada)) corValor = 'texto-negrito texto-verde';
-
-                        const valorFormatado = formatarValorExtrato(t.valor, negativo);
+                        const transferenciaEnviada = t.tipo === 'Transferencia' && !!t.nomeDestinatario;
+                        const negativo = t.tipo === 'Saque' || transferenciaEnviada;
+                        const corValor = negativo ? 'val-negativo' : 'val-positivo';
+                        const sinal = negativo ? '- ' : '+ ';
+                        const valorFormatado = sinal + formatarMoeda(Math.abs(t.valor));
 
                         return `
-                    <tr>
-                        <td>${t.tipo}</td>
-                        <td class="${corValor}">${valorFormatado}</td>
-                        <td>R$ ${t.taxa.toFixed(2)}</td>
-                        <td>${t.descricao || '-'}</td>
-                        <td>${t.nomeDestinatario || t.nomeRemetente || '-'}</td>
-                        <td>${formatarData(t.realizadaEm)}</td>
-                    </tr>
-                `;
+                            <tr>
+                                <td>${t.tipo}</td>
+                                <td class="${corValor}">${valorFormatado}</td>
+                                <td>R$ ${t.taxa.toFixed(2)}</td>
+                                <td>${t.descricao || '-'}</td>
+                                <td>${t.nomeDestinatario || t.nomeRemetente || '-'}</td>
+                                <td>${formatarData(t.realizadaEm)}</td>
+                            </tr>
+                        `;
                     }).join('');
                 }
             }).catch(() => {

@@ -46,20 +46,23 @@ function mostrarMsg(id, texto, tipo) {
     var el = document.getElementById(id);
     if (!el) return;
 
-    // Define as classes base
-    el.className = 'alerta';
     el.textContent = texto;
-    el.classList.remove('oculto');
+    el.style.display = 'block';
+    el.style.padding = '10px 14px';
+    el.style.borderRadius = '8px';
+    el.style.fontSize = '13px';
+    el.style.marginTop = '12px';
+    el.style.border = '';
+    el.className = '';
 
-    // Aplica cores específicas conforme o tipo
     if (tipo === 'success') {
-        el.style.color = '#ffffff';
-        el.style.backgroundColor = 'var(--cor-verde)'; // Verde para sucesso
-        el.style.borderColor = 'var(--cor-verde)';
-    } else if (tipo === 'danger' || tipo === 'warning') {
-        el.style.color = '#ffffff';
-        el.style.backgroundColor = 'var(--cor-vermelho)'; // Vermelho para erro ou aviso
-        el.style.borderColor = 'var(--cor-vermelho)';
+        el.style.background = 'rgba(0,208,132,0.12)';
+        el.style.color = '#00d084';
+        el.style.border = '1px solid rgba(0,208,132,0.3)';
+    } else {
+        el.style.background = 'rgba(255,69,96,0.12)';
+        el.style.color = '#ff4560';
+        el.style.border = '1px solid rgba(255,69,96,0.3)';
     }
 }
 
@@ -76,24 +79,81 @@ function limparMsg(id) {
 }
 
 // ── REQUISIÇÕES HTTP ──
-function fazerRequisicao(endpoint, metodo = 'GET', dados = null, comToken = true) {
-    const opcoes = {
-        method: metodo,
-        headers: { 'Content-Type': 'application/json' }
-    };
-
-    if (comToken && token) {
-        opcoes.headers['Authorization'] = 'Bearer ' + token;
-    }
-
-    if (dados) {
-        opcoes.body = JSON.stringify(dados);
-    }
-
-    return fetch(BASE + endpoint, opcoes)
-        .then(res => res.json().then(data => ({ ok: res.ok, status: res.status, data })))
-        .catch(err => ({ ok: false, status: 0, data: { mensagem: 'Erro ao conectar.' } }));
+function carregarContas() {
+    fetch(BASE + '/contas?_=' + Date.now(), {
+        headers: { 'Authorization': 'Bearer ' + token, 'Cache-Control': 'no-cache' }
+    }).then(res => res.json()).then(contas => {
+        const grid = document.getElementById('listaContasGrid');
+        grid.innerHTML = contas.map(c => `
+            <div class="stat-card" style="cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--roxo)'" onmouseout="this.style.borderColor='var(--borda)'">
+                <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 12px;">
+                    <div>
+                        <p class="stat-label">${c.tipo}</p>
+                        <p class="stat-valor texto-verde" style="font-size: 24px;">R$ ${c.saldo.toFixed(2)}</p>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 8px;">
+                    <button class="btn btn-sm btn-primario" style="flex: 1;" onclick="selecionarContaOperacao(${c.id})">Operar</button>
+                    <button class="btn btn-sm btn-primario" onclick="abrirExtratoModal(${c.id}, '${c.tipo}')">Extrato</button>
+                    <button class="btn btn-sm btn-perigo" onclick="encerrarConta(${c.id})">Encerrar</button>
+                </div>
+            </div>
+        `).join('');
+    });
 }
+
+function carregarSaldoConta() {
+    const contaId = document.getElementById('contaOperacao').value;
+    if (!contaId) {
+        document.getElementById('saldoContaOperacao').classList.add('oculto');
+        return;
+    }
+
+    fetch(BASE + '/contas/' + contaId + '?_=' + Date.now(), {
+        headers: { 'Authorization': 'Bearer ' + token, 'Cache-Control': 'no-cache' }
+    }).then(res => res.json()).then(conta => {
+        document.getElementById('saldoValor').textContent = 'R$ ' + conta.saldo.toFixed(2);
+        document.getElementById('saldoContaOperacao').classList.remove('oculto');
+        contaAtualSaldo = conta.saldo;
+    }).catch(() => { });
+}
+
+function carregarExtrato() {
+    const contaId = document.getElementById('contaOperacao').value;
+    if (!contaId) {
+        document.getElementById('extratoTabela').innerHTML = '<tr><td colspan="6" class="texto-discreto" style="text-align: center; padding: 20px;">Selecione uma conta para ver o extrato.</td></tr>';
+        return;
+    }
+
+    fetch(BASE + '/contas/' + contaId + '/transacoes?_=' + Date.now(), {
+        headers: { 'Authorization': 'Bearer ' + token, 'Cache-Control': 'no-cache' }
+    }).then(res => res.json()).then(transacoes => {
+        const tbody = document.getElementById('extratoTabela');
+        if (transacoes.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="6" class="texto-discreto" style="text-align: center; padding: 20px;">Nenhuma transação.</td></tr>';
+            return;
+        }
+        tbody.innerHTML = transacoes.map(t => {
+            const transferenciaEnviada = t.tipo === 'Transferencia' && !!t.nomeDestinatario;
+            const negativo = t.tipo === 'Saque' || transferenciaEnviada;
+            const corValor = negativo ? 'val-negativo' : 'val-positivo';
+            const sinal = negativo ? '- ' : '+ ';
+            const valorFormatado = sinal + formatarMoeda(Math.abs(t.valor));
+            return `
+                <tr>
+                    <td>${t.tipo}</td>
+                    <td class="${corValor}">${valorFormatado}</td>
+                    <td>R$ ${t.taxa.toFixed(2)}</td>
+                    <td>${t.descricao || '-'}</td>
+                    <td>${t.nomeDestinatario || t.nomeRemetente || '-'}</td>
+                    <td>${formatarData(t.realizadaEm)}</td>
+                </tr>
+            `;
+        }).join('');
+    });
+}
+
+
 
 // ── VALIDAÇÃO DE FORMULÁRIO ──
 function validarCampos(campos) {

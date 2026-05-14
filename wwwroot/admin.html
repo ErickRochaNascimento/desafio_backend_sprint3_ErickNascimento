@@ -204,13 +204,19 @@
             carregarUsuarios();
             carregarExtratoGeral();
 
-            // Escutar alterações vindas de outras abas (como o dashboard do usuário)
+            // Atualiza ao receber evento de outra aba
             window.addEventListener('storage', (e) => {
                 if (e.key === 'ultimaAlteracao') {
                     carregarUsuarios();
                     carregarExtratoGeral();
                 }
             });
+
+            // Polling automático a cada 5 segundos
+            setInterval(() => {
+                carregarUsuarios();
+                carregarExtratoGeral();
+            }, 5000);
         });
 
         // ── NAVEGAÇÃO ENTRE ABAS ──
@@ -283,20 +289,16 @@
                                     </thead>
                                     <tbody>
                                         ${c.extrato.map(t => {
-                                            let corValor = 'texto-negrito';
-                                            const ehSaque = t.tipo === 'Saque';
-                                            const ehDeposito = t.tipo === 'Deposito';
-                                            const ehTransferencia = t.tipo === 'Transferencia';
-                                            const negativo = ehSaque || ehTransferencia;
-                                            if (negativo) corValor = 'texto-negrito texto-vermelho';
-                                            else if (ehDeposito) corValor = 'texto-negrito texto-verde';
+                                            const negativo = t.tipo === 'Saque' || t.tipo === 'Transferencia';
+                                            const corValor = negativo ? 'val-negativo' : 'val-positivo';
+                                            const sinal = negativo ? '- ' : '+ ';
                                             return `
-                                                <tr>
-                                                    <td>${t.tipo}</td>
-                                                    <td class="${corValor}">${formatarValorExtrato(t.valor, negativo)}</td>
-                                                    <td>${formatarData(t.data)}</td>
-                                                </tr>
-                                            `;
+        <tr>
+            <td>${t.tipo}</td>
+            <td class="${corValor}">${sinal}${formatarMoeda(Math.abs(t.valor))}</td>
+            <td>${formatarData(t.data)}</td>
+        </tr>
+    `;
                                         }).join('')}
                                     </tbody>
                                 </table>
@@ -372,23 +374,22 @@
             const transacoes = res.data;
             const tbody = document.getElementById('extratoGeralAdmin');
             tbody.innerHTML = transacoes.map(t => {
-                const ehSaque = t.tipo === 'Saque';
-                const ehDeposito = t.tipo === 'Deposito';
-                const ehTransferencia = t.tipo === 'Transferencia';
-                const negativo = ehSaque || ehTransferencia;
-                let corValor = negativo ? 'texto-negrito texto-vermelho' : 'texto-negrito texto-verde';
-                const valorFormatado = formatarValorExtrato(t.valor, negativo);
+                const negativo = t.tipo === 'Saque' || t.tipo === 'Transferencia';
+                const corValor = negativo ? 'val-negativo' : 'val-positivo';
+                const sinal = negativo ? '- ' : '+ ';
+                const valorFormatado = sinal + formatarMoeda(Math.abs(t.valor));
                 return `
                     <tr>
-                        <td>${t.tipo}</td>
-                        <td class="${corValor}">${valorFormatado}</td>
-                        <td>${formatarMoeda(t.taxa || 0)}</td>
-                        <td>${t.usuario}</td>
-                        <td>${t.descricao || '-'}</td>
-                        <td>${formatarData(t.data)}</td>
-                    </tr>
+            <td>${t.tipo}</td>
+            <td class="${corValor}">${valorFormatado}</td>
+            <td>${formatarMoeda(t.taxa || 0)}</td>
+            <td>${t.usuario}</td>
+            <td>${t.descricao || '-'}</td>
+            <td>${formatarData(t.data)}</td>
+        </tr>
                 `;
-            }).join('');
+
+            })
         }
 
         // ── ATUALIZAR PAINEL ──
