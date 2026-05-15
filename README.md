@@ -80,7 +80,7 @@ dotnet tool install --global dotnet-ef
 ### 4. Inicie a aplicação
 
 ```bash
-dotnet run
+dotnet run --urls "https://localhost:7200;http://localhost:5200"
 ```
 
 A porta exata depende do seu `launchSettings.json` (pasta `Properties/`). Por padrão:
